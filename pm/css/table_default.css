@@ -1,0 +1,10 @@
+
+.mydiv table { border-collapse: collapse; border: 2px solid #3f7c5f; font: normal 80%/140% arial, verdana, helvetica, sans-serif; color: #000; background: #fff; }
+.mydiv td, th { border: 1px solid #e0e0e0; padding: 0.5em; }
+.mydiv thead th { border: 1px solid #e0e0e0; text-align: left; font-size: 1em; font-weight: bold; background: #c6d7cf; }
+.mydiv tbody td a { background: transparent; color: #00c; text-decoration: underline; }
+.mydiv tbody th a { background: transparent; color: #3f7c5f; font-size: 1.3em; text-decoration: underline; font-weight: bold; }
+.mydiv tbody th a:visited { color: #b98b00; }
+.mydiv tbody th, .mydiv tbody td { vertical-align: top; text-align: left; }
+.mydiv tbody tr:hover { background: #d8d9cc; }
+.mydiv tbody tr { background:#feffee; hover:expression( this.onmouseover=new Function("this.style.background='#d8d9cc';"), this.onmouseout=new Function("this.style.background='#feffee';")); }

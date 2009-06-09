@@ -1,0 +1,23 @@
+.tiny
+{
+        font-size: 10px;
+}
+.panel
+{
+        margin: 4px;
+        background-color: #ffffff;
+}
+.panelHeading
+{
+        background-color: #1e4b79;
+}
+.panelHeading TD, TH
+{
+        color: #ffffff;
+        font-weight: bold;
+}
+.tinylink
+{
+        font-size: 11px;
+        color: #BEBEBE;
+}

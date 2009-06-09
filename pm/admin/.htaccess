@@ -1,0 +1,8 @@
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 15
+<Limit GET POST>
+ order deny,allow
+ deny from all
+ allow from localhost
+</Limit> 
