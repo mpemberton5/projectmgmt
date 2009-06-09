@@ -17,27 +17,16 @@ switch($_REQUEST['action']) {
 
 	//Main Project List
 	case 'list':
-		create_complete_top('Project Information');
+		create_complete_top('Home');
 		include(BASE.'projects/projects_list.php');
 		create_bottom();
 		break;
 
 	case 'show':
-		create_complete_top('Project Information');
+		create_complete_top('Project Details');
 		include(BASE.'projects/projects_show.php');
 		create_bottom();
 		break;
-
-//		//show a project
-//	case 'showtaskzz':
-//		create_complete_top('Project Information');
-//		echo "<table><tr><td valign=\"top\">";
-//		include(BASE.'projects/projects_show.php');
-//		echo "</td><td valign=\"top\">";
-//		include(BASE.'tasks/task_show.php');
-//		echo "</td></tr></table>";
-//		create_bottom();
-//		break;
 
 	case 'submit_insert':
 	case 'submit_quick_insert':

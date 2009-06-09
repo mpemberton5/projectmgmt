@@ -102,6 +102,8 @@ function html_head_start($title='') {
 
 	if ($title == '') {
 		$title = MANAGER_NAME;
+	} else {
+		$title = ABBR_MANAGER_NAME . " - " . $title;
 	}
 
 	$content .= "	<title>".$title."</title>\n";

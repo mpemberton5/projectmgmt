@@ -155,7 +155,12 @@ if ($task_id==0) {
 	db_free_result($q);
 	$content .= "</table>\n";
 
-	$content .= "<p><input type=\"submit\" name=\"submit\" class=\"button2\" id=\"submit_btn\" value=\"Submit\" />&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" /></p>";
+	$content .= "<p />\n";
+	$content .= "<div align=\"center\">\n";
+	$content .= "	<input type=\"submit\" name=\"submit\" class=\"button2\" id=\"submit_btn\" value=\"Save\" />\n";
+	$content .= "	&nbsp;&nbsp;&nbsp;\n";
+	$content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
+	$content .= "</div>";
 	$content .= "</form>\n";
 
 }
@@ -186,7 +191,14 @@ if (db_numrows($q) > 0) {
 }
 db_free_result($q);
 
-$content .= "<p><p><input type=\"submit\" name=\"submit\" class=\"button1\" id=\"submit_btn\" value=\"Submit\" />&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" /></p>";
+
+$content .= "<p />\n";
+$content .= "<p />\n";
+$content .= "<div align=\"center\">\n";
+$content .= "	<input type=\"submit\" name=\"submit\" class=\"button1\" id=\"submit_btn\" value=\"Save\" />\n";
+$content .= "	&nbsp;&nbsp;&nbsp;\n";
+$content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
+$content .= "</div>";
 $content .= "</form>\n";
 
 $content .= "	</div>\n";

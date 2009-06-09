@@ -108,13 +108,21 @@ $content .= "</div>\n";
 
 $content .= "<div id=\"fileListTable\"></div>\n";
 
+$content .= "<p />\n";
+$content .= "<div align=\"center\">\n";
+$content .= "	<input type=\"button\" value=\"Close\" onClick=\"parent.fb.end(false); return false;\" />\n";
+$content .= "</div>\n";
+
 $content .= "<script language='javascript' type='text/javascript'>\n";
 $content .= "	$(\"#fileListTable\").load(\"files.php?action=list&project_id=".$project_id."&task_id=".$task_id."\");\n";
-//$content .= "	var hash = window.location.hash.substr(1);\n";
-//$content .= "	if (hash.length==0) {\n";
-//$content .= "		$('#contentArea').load('tasks.php?action=showTasks&project_id=".$project_id."');\n";
-//$content .= "	}\n";
 $content .= "</script>\n";
+
+$content .= "<script language='javascript' type='text/javascript'>\n";
+$content .= "	var mytext = document.getElementById('userfile');\n";
+$content .= "	mytext.focus();\n";
+$content .= "</script>\n";
+
+
 echo $content;
 
 ?>

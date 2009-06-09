@@ -127,7 +127,7 @@ switch($_REQUEST['action']) {
 		}
 
 		// text inputs
-		$input_array = array('notify');
+		$input_array = array('notify', 'task_action');
 		foreach($input_array as $var) {
 			if (isset($_POST[$var]) and !empty($_POST[$var])) {
 				if (!@safe_data($_POST[$var])) {
@@ -139,19 +139,41 @@ switch($_REQUEST['action']) {
 			}
 		}
 
+		// Mark pct complete if user set action to be completed.
+		if ($task_action=="Comp") {
+			$percentcomplete = "100";
+		}
+
 		$note = mysql_real_escape_string($_POST['note']);
 		if (empty($note)) {
 			warning('Task Note Submit', 'No Message!  Please go back and try again');
 		}
 
-		//do data consistency check on parent_id
-		if (db_result(db_query('SELECT COUNT(*) FROM tasks WHERE task_id='.$task_id.' AND project_id='.$project_id), 0, 0) == 0){
-			error('Task Note submit', 'Data consistency error - child post has no parent');
+		// Pull Task Information
+		$q = db_query('SELECT * FROM tasks WHERE task_id='.$task_id.' AND project_id='.$project_id);
+		if (db_numrows($q) < 1) {
+			error("Task Note Submit", "Unable to Find Task Record");
 		}
+		if (!$task_row = db_fetch_array($q, 0)) {
+			error("Task Note Submit", "Unable to Find Task");
+		}
+		$milestone_id = $task_row['parent_task_ID'];
+		$task_name = $task_row['task_name'];
+
+		// Pull Milestone Information
+		$r = db_query('SELECT * FROM tasks WHERE task_id='.$milestone_id.' AND project_id='.$project_id);
+		if (db_numrows($r) < 1) {
+			error("Task Note Submit", "Unable to Find Milestone Record");
+		}
+		if (!$milestone_row = db_fetch_array($r, 0)) {
+			error("Task Note Submit", "Unable to Find Milestone");
+		}
+		$milestone_name = $milestone_row['task_name'];
+		$curr_milestone_order_num = $milestone_row['order_num'];
 
 		//public post
 		db_begin();
-		db_query ("INSERT INTO task_notes (project_ID, task_ID, TimeStamp, Note, user_ID, PercentComplete)
+		db_query("INSERT INTO task_notes (project_ID, task_ID, TimeStamp, Note, user_ID, PercentComplete)
 					VALUES ('$project_id', '$task_id', now(), '$note', ".$_SESSION["UID"].",'$percentcomplete')");
 
 		//get last insert id
@@ -159,13 +181,58 @@ switch($_REQUEST['action']) {
 
 		db_query("UPDATE tasks set PercentComplete=".$percentcomplete." where task_ID=".$task_id);
 
+		$lead_notified = 0;
+
+		// next action
+		if ($percentcomplete==100 or $task_action=="Comp") {
+			// if another task exists within this milestone
+			$next_task_ID = db_result(db_query('SELECT task_ID FROM tasks WHERE parent_task_ID='.$milestone_id.' AND project_id='.$project_id.' AND order_num = '.($task_row['order_num']+1)), 0, 0);
+			if ($next_task_ID > 0) {
+				// - auto notify next task user
+				$ondeck_email = db_result(db_query('SELECT emp.EMail FROM employees emp, tasks t WHERE t.Assigned_To_ID=emp.employee_ID and t.task_ID='.$next_task_ID),0,0);
+				//TODO: change message
+				$message = "Batter Up!";
+				send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
+				// - change on-deck task on milestone
+				db_query("UPDATE tasks SET Curr_Task_ID=".$next_task_ID." WHERE task_id=".$milestone_id." AND Project_id=".$project_id);
+			} else {
+				// search to see if there is another milestone that needs to be put on deck
+				$next_milestone_ID = db_result(db_query('SELECT task_ID FROM tasks WHERE parent_task_ID=0 AND project_id='.$project_id.' AND order_num = '.($curr_milestone_order_num+1)), 0, 0);
+				if ($next_milestone_ID > 0) {
+					// find first task and notify user
+					// if another task exists within this milestone
+					$next_task_ID = db_result(db_query('SELECT task_ID FROM tasks WHERE parent_task_ID='.$next_milestone_ID.' AND project_id='.$project_id.' AND order_num = '.($task_row['order_num']+1)), 0, 0);
+					if ($next_task_ID > 0) {
+						//    - auto notify next task user
+						$ondeck_email = db_result(db_query('SELECT emp.EMail FROM employees emp, tasks t WHERE t.Assigned_To_ID=emp.employee_ID and t.task_ID='.$next_task_ID),0,0);
+						//TODO: change message
+						$message = "Batter Up!";
+						send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
+						//    - change on deck user on milestone
+						db_query("UPDATE tasks SET Curr_Task_ID=".$next_task_ID." WHERE task_id=".$next_milestone_ID." AND Project_id=".$project_id);
+					} else {
+						// No task exists for this Milestone
+						// TODO: what do we do here when project milestone has no tasks?
+					}
+				} else {
+					// this project is complete - notify project lead
+					$lead_notified = 1;
+					$lead_email = db_result(db_query('SELECT emp.EMail FROM employees emp, projects proj WHERE proj.Owner_ID=emp.employee_ID and proj.project_ID='.$project_id),0,0);
+					$message = "Project Done!";
+					//TODO: change message
+					send_html_email($lead_email,"noreply@wfubmc.edu","Project Notification",$message);
+					//    - change on deck user on milestone
+					db_query("UPDATE tasks SET Curr_Task_ID=0 WHERE task_id=".$next_milestone_ID." AND Project_id=".$project_id);
+				}
+			}
+		}
+
+
 		// notifications
-		if ($notify=='Lead') {
+		if ($notify=='Lead' and $lead_notified==0) {
 			$lead_email = db_result(db_query('SELECT emp.EMail FROM employees emp, projects proj WHERE proj.Owner_ID=emp.employee_ID and proj.project_ID='.$project_id),0,0);
 			$project_name=db_result(db_query('SELECT project_name FROM projects WHERE project_ID='.$project_id), 0, 0);
-			$parent_task_id=db_result(db_query('SELECT parent_task_ID FROM tasks WHERE task_ID='.$task_id), 0, 0);
-			$milestone_name=db_result(db_query('SELECT task_name FROM tasks WHERE task_ID='.$parent_task_id), 0, 0);
-			$task_name=db_result(db_query('SELECT task_name FROM tasks WHERE task_ID='.$task_id), 0, 0);
+			$milestone_name=db_result(db_query('SELECT task_name FROM tasks WHERE task_ID='.$milestone_id), 0, 0);
 			$message = "";
 			$message .= "<h2>A Note had been added to a Project!</h2>\n";
 			$message .= "<table>\n";
@@ -179,13 +246,11 @@ switch($_REQUEST['action']) {
 			send_html_email($lead_email,"noreply@wfubmc.edu","Project Notification",$message);
 		}
 
-		if ($percentcomplete==100) {
-			// update parent task
-			//db_query("");
 
-			// Be sure to change Curr_Task_ID = to task_id
-			//db_query("UPDATE tasks SET Curr_Task_ID=".$task_id." WHERE task_id=".$milestone_id." AND Project_id=".$project_id);
-
+		if ($task_action=="Prev") {
+			// TODO: Add Previous move
+			// send task back to previous task if exists
+			// post no impact entry on prev task stating action
 		}
 
 		// update total weight in Milestone
@@ -196,56 +261,60 @@ switch($_REQUEST['action']) {
 
 		db_commit();
 
-		break;
-
-		//submit Edit
-	case 'submit_update':
-		$input_array = array('project_id', 'task_id', 'percentcomplete', 'note_id');
-		foreach ($input_array as $var) {
-			if (!@safe_integer($_POST[$var])) {
-				error('Task Note submit', "Variable $var is not set");
-			}
-			if ($_POST[$var]==0) {
-				error('Task Note submit', "Variable $var is zero");
-			}
-			${$var} = $_POST[$var];
-		}
-
-		$note = mysql_real_escape_string($_POST['note']);
-
-		//do data consistency check on parent_id
-		if (db_result(db_query('SELECT COUNT(*) FROM tasks WHERE task_id='.$task_id.' AND project_id='.$project_id), 0, 0) == 0){
-			error('Task Note submit', 'Data consistency error - child post has no parent');
-		}
-
-		//public post
-		db_begin();
-		db_query('UPDATE task_notes SET Note=\''.$note.'\', PercentComplete='.$percentcomplete.' WHERE note_ID ='.$note_id);
-
-		//set time of last messages post to this project
-		//db_query('UPDATE projects SET lastmessagepost=now() WHERE id='.$project_id);
-
-		db_commit();
+		// Free DB Results
+		db_free_result($q);
+		db_free_result($r);
 
 		break;
 
-		//owner of the thread can delete, admin can delete
-	case 'submit_del':
-		if (!@safe_integer($_GET['message_id'])) {
-			error('Message submit', 'Message_id not valid');
-		}
-		$message_id = $_GET['message_id'];
-
-		//check if user is owner of the task or the owner of the post
-		if ((db_result(db_query('SELECT COUNT(*) FROM messages LEFT JOIN projects ON (messages.project_id=projects.id) WHERE projects.owner='.UID.' AND messages.id='.$message_id), 0, 0) == 1) ||
-		(db_result(db_query('SELECT COUNT(*) FROM messages WHERE creator='.UID.' AND id='.$message_id), 0, 0 ) == 1)) {
-
-			db_begin();
-			delete_messages($message_id);
-			db_commit();
-		} else
-		error('Forum submit', 'You are not authorised to delete that post.');
-		break;
+		//		//submit Edit
+		//	case 'submit_update':
+		//		$input_array = array('project_id', 'task_id', 'percentcomplete', 'note_id');
+		//		foreach ($input_array as $var) {
+		//			if (!@safe_integer($_POST[$var])) {
+		//				error('Task Note submit', "Variable $var is not set");
+		//			}
+		//			if ($_POST[$var]==0) {
+		//				error('Task Note submit', "Variable $var is zero");
+		//			}
+		//			${$var} = $_POST[$var];
+		//		}
+		//
+		//		$note = mysql_real_escape_string($_POST['note']);
+		//
+		//		//do data consistency check on parent_id
+		//		if (db_result(db_query('SELECT COUNT(*) FROM tasks WHERE task_id='.$task_id.' AND project_id='.$project_id), 0, 0) == 0){
+		//			error('Task Note submit', 'Data consistency error - child post has no parent');
+		//		}
+		//
+		//		//public post
+		//		db_begin();
+		//		db_query('UPDATE task_notes SET Note=\''.$note.'\', PercentComplete='.$percentcomplete.' WHERE note_ID ='.$note_id);
+		//
+		//		//set time of last messages post to this project
+		//		//db_query('UPDATE projects SET lastmessagepost=now() WHERE id='.$project_id);
+		//
+		//		db_commit();
+		//
+		//		break;
+		//
+		//		//owner of the thread can delete, admin can delete
+		//	case 'submit_del':
+		//		if (!@safe_integer($_GET['message_id'])) {
+		//			error('Message submit', 'Message_id not valid');
+		//		}
+		//		$message_id = $_GET['message_id'];
+		//
+		//		//check if user is owner of the task or the owner of the post
+		//		if ((db_result(db_query('SELECT COUNT(*) FROM messages LEFT JOIN projects ON (messages.project_id=projects.id) WHERE projects.owner='.UID.' AND messages.id='.$message_id), 0, 0) == 1) ||
+		//		(db_result(db_query('SELECT COUNT(*) FROM messages WHERE creator='.UID.' AND id='.$message_id), 0, 0 ) == 1)) {
+		//
+		//			db_begin();
+		//			delete_messages($message_id);
+		//			db_commit();
+		//		} else
+		//		error('Forum submit', 'You are not authorised to delete that post.');
+		//		break;
 }
 
 ?>

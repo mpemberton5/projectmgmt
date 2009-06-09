@@ -179,17 +179,17 @@ $content .= "<option value=\"Normal\"".(($priority=='Normal') ? ' selected=\'sel
 $content .= "<option value=\"High\"".(($priority=='High') ? ' selected=\'selected\'' : '') .">High</option>\n";
 $content .= "</select></td></tr>\n";
 
-$content .= "<tr><td>Status:</td><td style=\"width:100%\">\n";
-$content .= "<select name=\"status\">\n";
-$content .= "<option value=\"Planning\"".(($status=='Planning') ? ' selected=\'selected\'' : '') .">Planning</option>\n";
-$content .= "<option value=\"Active\"".(($status=='Active') ? ' selected=\'selected\'' : '') .">Active</option>\n";
-$content .= "<option value=\"On Hold\"".(($status=='On Hold') ? ' selected=\'selected\'' : '') .">On Hold</option>\n";
-$content .= "<option value=\"Archived\"".(($status=='Archived') ? ' selected=\'selected\'' : '') .">Archived</option>\n";
-$content .= "<option value=\"Cancelled\"".(($status=='Cancelled') ? ' selected=\'selected\'' : '') .">Cancelled</option>\n";
-$content .= "<option value=\"Complete\"".(($status=='Complete') ? ' selected=\'selected\'' : '') .">Complete</option>\n";
-$content .= "</select></td></tr>\n";
-
 if ($parent_task_id>0) {
+	$content .= "<tr><td>Status:</td><td style=\"width:100%\">\n";
+	$content .= "<select name=\"status\">\n";
+	$content .= "<option value=\"Planning\"".(($status=='Planning') ? ' selected=\'selected\'' : '') .">Planning</option>\n";
+	$content .= "<option value=\"Active\"".(($status=='Active') ? ' selected=\'selected\'' : '') .">Active</option>\n";
+	$content .= "<option value=\"On Hold\"".(($status=='On Hold') ? ' selected=\'selected\'' : '') .">On Hold</option>\n";
+	$content .= "<option value=\"Archived\"".(($status=='Archived') ? ' selected=\'selected\'' : '') .">Archived</option>\n";
+	$content .= "<option value=\"Cancelled\"".(($status=='Cancelled') ? ' selected=\'selected\'' : '') .">Cancelled</option>\n";
+	$content .= "<option value=\"Complete\"".(($status=='Complete') ? ' selected=\'selected\'' : '') .">Complete</option>\n";
+	$content .= "</select></td></tr>\n";
+
 	$content .= "	<tr>\n";
 	$content .= "		<td><div class=\"txtmaxsize\" style=\"width:100%\">Weight of Task:</div></td>\n";
 	$content .= "		<td>\n";
@@ -217,17 +217,22 @@ for ($i=0; $user_row = @db_fetch_array($q, $i); ++$i) {
 }
 $content .= "</select></td></tr>\n";
 
-$content .=  "<tr><td>Description</td><td style=\"width:100%\"><textarea style=\"width: 100%\" name=\"text\" rows=\"5\">".$description."</textarea></td> </tr>\n";
+$content .=  "<tr><td style=\"vertical-align: top\">Description</td><td style=\"width:100%\"><textarea style=\"width: 100%\" name=\"text\" rows=\"5\">".$description."</textarea></td> </tr>\n";
 
 $content .= "</table>\n";
 
-$content .= "<p><input type=\"submit\" name=\"submit\" class=\"button\" id=\"submit_btn\" value=\"Submit\" /></button>&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" /></p>";
+$content .= "<p />\n";
+$content .= "<div align=\"center\">\n";
+$content .= "<input type=\"submit\" name=\"submit\" class=\"button\" id=\"submit_btn\" value=\"Save\" />\n";
+$content .= "&nbsp;&nbsp;&nbsp;\n";
+$content .= "<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
+$content .= "</div>";
 
 $content .= "</form></div>\n";
 
 $content .= "<script language='javascript' type='text/javascript'>\n";
-$content .= "var mytext = document.getElementById('name');\n";
-$content .= "mytext.focus();\n";
+$content .= "	var mytext = document.getElementById('name');\n";
+$content .= "	mytext.focus();\n";
 $content .= "</script>\n";
 
 echo $content;

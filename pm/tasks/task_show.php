@@ -133,7 +133,7 @@ if ($_GET['action']=="showTasks") {
 	$content .= "	<div>\n";
 	$content .= "		<div style=\"position: absolute; width=100%;\"><div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" });'>Edit</a></div></div>\n";
 	$content .= "		<div>\n";
-	$content .= "			<table class=\"nt\" style=\"width=100%;\">\n";
+	$content .= "			<table class=\"nt\" style=\"width=99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"style=\"align: left; width: 1%;\"><b>Name:&nbsp;</b></td>\n";
 	$content .= "					<td class=\"nt\" style=\"align: left; width: 40%;\"><div style=\"white-space:normal;\">".nl2br(html_links($task_row['task_name']))."</div></td>\n";
@@ -200,9 +200,9 @@ if ($_GET['action']=="showTasks") {
 	$content .= "<fieldset>\n";
 	$content .= "	<legend><span class=\"gl\">Milestone Details</span></legend>\n";
 	$content .= "	<div>\n";
-	$content .= "		<div style=\"position: absolute; width=100%\"><div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" });'>Edit</a></div></div>\n";
+	$content .= "		<div style=\"position: absolute; width=100%;\"><div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$parent_task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" });'>Edit</a></div></div>\n";
 	$content .= "		<div>\n";
-	$content .= "			<table class=\"nt\" style=\"width=100%;\">\n";
+	$content .= "			<table class=\"nt\" style=\"width=99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"style=\"align: left; width: 1%;\"><b>Name:&nbsp;</b></td>\n";
 	$content .= "					<td class=\"nt\" style=\"align: left; width: 40%;\"><div style=\"white-space:normal;\">".nl2br(html_links($task_row['task_name']))."</div></td>\n";
@@ -230,7 +230,7 @@ if ($_GET['action']=="showTasks") {
 	$content .= "	<div>\n";
 	$content .= "		<div style=\"position: absolute; width=100%\"><div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Task` doAnimations:false\" });'>Edit</a></div></div>\n";
 	$content .= "		<div>\n";
-	$content .= "			<table class=\"nt\" style=\"width=100%;\">\n";
+	$content .= "			<table class=\"nt\" style=\"width=99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"><b>Name:&nbsp;</b></td>\n";
 	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\"><div style=\"white-space:normal;\">".nl2br(html_links($subtask_row['task_name']))."</div></td>\n";

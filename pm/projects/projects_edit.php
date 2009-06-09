@@ -182,11 +182,17 @@ $content .= "<option value=\"Cancelled\"".(($status=='Cancelled') ? ' selected=\
 $content .= "<option value=\"Complete\"".(($status=='Complete') ? ' selected=\'selected\'' : '') .">Complete</option>\n";
 $content .= "</select></td></tr>\n";
 
-$content .= "<tr><td>Description:</td><td style=\"width:100%\"><textarea style=\"width: 100%\" name=\"description\" rows=\"4\">".$description."</textarea></td> </tr>\n";
+$content .= "<tr><td style=\"vertical-align: top\">Description:</td><td style=\"width:100%\"><textarea style=\"width: 100%\" name=\"description\" rows=\"4\">".$description."</textarea></td> </tr>\n";
 
 $content .= "</table>\n";
-$content .= "<p><input type=\"submit\" name=\"submit\" class=\"button\" id=\"submit_btn\" value=\"Send\" /></button>&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" /></p>";
-$content .= "</form></div>\n";
+$content .= "<p />\n";
+$content .= "<div align=\"center\">\n";
+$content .= "<input type=\"submit\" name=\"submit\" class=\"button\" id=\"submit_btn\" value=\"Save\" />\n";
+$content .= "&nbsp;&nbsp;&nbsp;\n";
+$content .= "<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
+$content .= "</div>";
+$content .= "</form>\n";
+$content .= "</div>\n";
 
 $content .= "<script language='javascript' type='text/javascript'>\n";
 $content .= "var mytext = document.getElementById('name');\n";
