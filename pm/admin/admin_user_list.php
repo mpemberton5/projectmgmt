@@ -19,7 +19,7 @@ $content = '';
 $content .= "<script type='text/javascript' charset='utf-8'>\n";
 $content .= "$(function(){\n";
 $content .= "	$('select#depts').change(function(){\n";
-$content .= "		$.getJSON('/admin.php',{action: 'admin_get_user_list', id: $(this).val(), ajax: 'true'}, function(j){\n";
+$content .= "		$.getJSON('admin.php',{action: 'admin_get_user_list', id: $(this).val(), ajax: 'true'}, function(j){\n";
 $content .= "			var options = '';\n";
 $content .= "			for (var i = 0; i < j.length; i++) {\n";
 $content .= "				options += '<option value=\"' + j[i].optionValue + '\">' + j[i].optionDisplay + '</option>';\n";
@@ -52,7 +52,7 @@ $content .= "</div>\n";
 $content .= "<div class=\"selHolder\">\n";
 $content .= "<H2>Employees</H2>\n";
 $content .= "<select size='10' name='users' id='users'>\n";
-			$content .= "<option>1</option>\n";
+			$content .= "<option></option>\n";
 $content .= "</select>\n";
 $content .= "</div>\n";
 

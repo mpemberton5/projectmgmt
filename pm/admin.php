@@ -41,6 +41,10 @@ switch ($_REQUEST['action']) {
 		create_bottom();
 		break;
 
+	case 'admin_get_user_list':
+		include(BASE.'admin/admin_get_data.php');
+		break;
+
 		//error case
 	default:
 		error('Admin action handler', 'Invalid request given');

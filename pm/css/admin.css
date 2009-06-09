@@ -6,12 +6,15 @@ table.adminform {
 	padding: 10px;
 	border-collapse: collapse;
 }
+
 table.adminform tr.row0 {
 	background-color: #f5f5f5;
 }
+
 table.adminform tr.row1 {
 	background-color: #eeeeee;
 }
+
 table.adminform th {
 	font-size: 12px;
 	padding-top: 6px;
@@ -24,10 +27,12 @@ table.adminform th {
 	background: url(../images/background.gif);
 	background-repeat: repeat;
 }
+
 table.adminform td {
 	padding: 3px;
 	text-align: left;
 }
+
 table.adminform td.editor {
 	font-size: 9px;
 }
@@ -37,12 +42,13 @@ table.cpanel {
 	margin: 0;
 	padding: 0;
 	border: 0;
-margin-left: auto;
-margin-right: auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 table.cpanel td {
-	width: 25%;
+	width: 33%;
+	height: 100px;
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -53,6 +59,7 @@ table.cpanel td {
 	border: 1px solid #d5d5d5;
 	width: 98%;
 }
+
 DIV.selHolder { float: left; border: 3px solid #ccc; margin: 10px; padding: 5px;}
       BODY { margin: 10px; padding: 0; font: 1em "Trebuchet MS", verdana, arial, sans-serif; }
       BODY { font-size: 100%; }
@@ -65,4 +72,3 @@ DIV.selHolder { float: left; border: 3px solid #ccc; margin: 10px; padding: 5px;
       LABEL { display: block; margin-top: 10px; } 
       IMG { margin: 5px; }
       SELECT { margin: 10px; width: 200px; }
-

@@ -17,32 +17,32 @@ if(!$_SESSION['ADMIN']) {
 //set variables
 $content = '';
 
-$content .= "<link rel=\"stylesheet\" href=\"".BASE_SUB."admin/admin.css\" type=\"text/css\" />\n";
+$content .= "<link rel=\"stylesheet\" href=\"".BASE_SUB."css/admin.css\" type=\"text/css\" />\n";
 
 $content .= "<br />\n";
 
 //$content .= "<div style=\"align:center;\">\n";
 $content .= "<table class=\"cpanel\">\n";
 $content .= "	<tr>\n";
-$content .= "		<td style=\"height: 100px;\" align=\"center\">\n";
-$content .= "			<a href=\"admin.php?action=users\" style=\"text-decoration: none;\">";
-$content .= "				<img src=\"".BASE_SUB."images/admin/support.png\" align=\"middle\" height=\"48\" width=\"48\" alt=\"\" />";
+$content .= "		<td>\n";
+$content .= "			<a href=\"admin.php?action=users\">";
+$content .= "				<img src=\"".BASE_SUB."images/admin/support.png\" height=\"48\" width=\"48\" alt=\"\" />";
 $content .= "				<br />";
 $content .= "				Users";
 $content .= "			</a>\n";
 $content .= "		</td>\n";
 
-$content .= "		<td style=\"height: 100px;\" align=\"center\">\n";
-$content .= "			<a href=\"admin.php?action=user_depts\" style=\"text-decoration: none;\">";
-$content .= "				<img src=\"".BASE_SUB."images/admin/user.png\" align=\"middle\" height=\"48\" width=\"48\" alt=\"\" />";
+$content .= "		<td>\n";
+$content .= "			<a href=\"admin.php?action=user_depts\">";
+$content .= "				<img src=\"".BASE_SUB."images/admin/user.png\" height=\"48\" width=\"48\" alt=\"\" />";
 $content .= "				<br />";
-$content .= "				Departments/Groups";
+$content .= "				Departments";
 $content .= "			</a>\n";
 $content .= "		</td>\n";
 
-$content .= "		<td style=\"height: 100px;\" align=\"center\">\n";
-$content .= "			<a href=\"admin.php?action=user_level\" style=\"text-decoration: none;\">";
-$content .= "				<img src=\"".BASE_SUB."images/admin/addedit.png\" align=\"middle\" height=\"48\" width=\"48\" alt=\"\" />";
+$content .= "		<td>\n";
+$content .= "			<a href=\"admin.php?action=user_level\">";
+$content .= "				<img src=\"".BASE_SUB."images/admin/addedit.png\" height=\"48\" width=\"48\" alt=\"\" />";
 $content .= "				<br />";
 $content .= "				User Levels";
 $content .= "			</a>\n";
