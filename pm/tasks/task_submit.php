@@ -123,6 +123,11 @@ switch($_REQUEST['action']) {
 		// get taskid for the new task/project
 		$task_id = db_lastoid('tasks_id_seq');
 
+		if ($ord_num==0) {
+			// Make task the on-deck task
+			db_query("UPDATE tasks SET Curr_Task_ID=".$task_id." WHERE task_id=".$parent_task_id." AND Project_id=".$project_id);
+		}
+
 		db_query('call spUpdateMilestoneTotalWeight('.$task_id.')');
 
 		//transaction complete
@@ -158,53 +163,53 @@ switch($_REQUEST['action']) {
 		db_commit();
 		break;
 
-	case 'submit_invite':
-		//mandatory numeric inputs
-		$input_array = array('task_id', 'project_id');
-		foreach($input_array as $var) {
-			if (!@safe_integer($_POST[$var])) {
-				error('Task submit', 'Variable '.$var.' is not correctly set');
-			}
-			${$var} = $_POST[$var];
-		}
-
-		$message = $_POST['message'];
-
-		//Get Data
-		if (!($row = db_fetch_array( db_query('SELECT * FROM tasks WHERE id='.$task_id.' AND creator='.UID), 0))) {
-			error('Task Invite', 'There is no task information available for that contact');
-		}
-
-		if ($row['assigned_to'] == 0) {
-			error("Task Invite","There is no assigned_to contact");
-		} else {
-			//get user information
-			if (!($contact_row = db_fetch_array( db_query('SELECT * FROM contacts WHERE id='.$row['assigned_to']), 0))) {
-				error('Task Invite', 'There is no contact information for that contact');
-			}
-		}
-
-		// SEND EMAIL
-		if ($contact_row['email'] <> "") {
-			//begin transaction
-			db_begin();
-
-			//change status of assigned_to_status as invited
-			db_query('UPDATE tasks
-							SET last_edited=now(),
-							assigned_to_status=12
-							WHERE id='.$task_id.' AND project_id='.$project_id);
-
-			// SEND EMAIL
-			$token = md5(uniqid(rand(),1));
-			db_query('INSERT INTO link_table(token,method,project_id,task_id,max_tries) VALUES("'.$token.'", "V", '.$project_id.', '.$task_id.', 5)');
-			email($contact_row['email'], "CAPP: Invitation to a new Project Task", "Follow this link to review the invitation.  ".BASE_URL."/?qid=".$token."\n\nPersonal Note: ".$message);
-
-			//transaction complete
-			db_commit();
-		}
-
-		break;
+//	case 'submit_invite':
+//		//mandatory numeric inputs
+//		$input_array = array('task_id', 'project_id');
+//		foreach($input_array as $var) {
+//			if (!@safe_integer($_POST[$var])) {
+//				error('Task submit', 'Variable '.$var.' is not correctly set');
+//			}
+//			${$var} = $_POST[$var];
+//		}
+//
+//		$message = $_POST['message'];
+//
+//		//Get Data
+//		if (!($row = db_fetch_array( db_query('SELECT * FROM tasks WHERE id='.$task_id.' AND creator='.UID), 0))) {
+//			error('Task Invite', 'There is no task information available for that contact');
+//		}
+//
+//		if ($row['assigned_to'] == 0) {
+//			error("Task Invite","There is no assigned_to contact");
+//		} else {
+//			//get user information
+//			if (!($contact_row = db_fetch_array( db_query('SELECT * FROM contacts WHERE id='.$row['assigned_to']), 0))) {
+//				error('Task Invite', 'There is no contact information for that contact');
+//			}
+//		}
+//
+//		// SEND EMAIL
+//		if ($contact_row['email'] <> "") {
+//			//begin transaction
+//			db_begin();
+//
+//			//change status of assigned_to_status as invited
+//			db_query('UPDATE tasks
+//							SET last_edited=now(),
+//							assigned_to_status=12
+//							WHERE id='.$task_id.' AND project_id='.$project_id);
+//
+//			// SEND EMAIL
+//			$token = md5(uniqid(rand(),1));
+//			db_query('INSERT INTO link_table(token,method,project_id,task_id,max_tries) VALUES("'.$token.'", "V", '.$project_id.', '.$task_id.', 5)');
+//			email($contact_row['email'], "CAPP: Invitation to a new Project Task", "Follow this link to review the invitation.  ".BASE_URL."/?qid=".$token."\n\nPersonal Note: ".$message);
+//
+//			//transaction complete
+//			db_commit();
+//		}
+//
+//		break;
 
 	default:
 		error('Task Submit','Invalid Request');

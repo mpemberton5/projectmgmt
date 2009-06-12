@@ -1,11 +1,5 @@
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-dl, dt, dd, ol, ul, li,
-form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td
+	{
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -16,35 +10,40 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	font-family: inherit;
 	vertical-align: baseline;
 }
+
 /* remember to define focus styles! */
 :focus {
 	outline: 0;
 }
+
 body {
 	line-height: 1;
 	color: black;
 	background: white;
 }
-ol, ul {
+
+ol,ul {
 	list-style: none;
 }
+
 /* tables still need 'cellspacing="0"' in the markup */
 table {
 	border-collapse: separate;
 	border-spacing: 0;
 }
-caption, th, td {
+
+caption,th,td {
 	text-align: left;
 	font-weight: normal;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
+
+blockquote:before,blockquote:after,q:before,q:after {
 	content: "";
 }
-blockquote, q {
+
+blockquote,q {
 	quotes: "" "";
 }
-
 
 /*
    Add the following to your CSS file should you wish the cursor to
@@ -174,12 +173,14 @@ td.total {
 th.sortable,th.sortable-text,th.sortable-date,th.sortable-keep,th.sortable-date-dmy,th.sortable-numeric,th.sortable-currency,th.sortable-sortByTwelveHourTimestamp,th.sortable-sortIPAddress,th.sortable-sortEnglishLonghandDateFormat,th.sortable-sortScientificNotation,th.sortable-sortImage,th.sortable-sortFileSize,th.sortable-sortAlphaNumeric,th.sortable-sortEnglishDateTime
 	{
 	cursor: pointer;
-	background: #CAE8EA url(../images/table/bg_header_sortable.jpg) no-repeat;
+	background: #CAE8EA url(../images/table/bg_header_sortable.jpg)
+		no-repeat;
 	padding: 8px 12px 4px 16px;
 }
 
 th.forwardSort {
-	background: #CAE8EA url(../images/table/bg_header_down.jpg) no-repeat 0 0;
+	background: #CAE8EA url(../images/table/bg_header_down.jpg) no-repeat 0
+		0;
 }
 
 th.reverseSort {
@@ -348,8 +349,8 @@ table.tablesorter thead tr .headerSortDown,table.tablesorter thead tr .headerSor
 }
 
 .treeview .hitarea {
-	background: url(/public/jquery-treeview/images/treeview-default.gif) -64px
-		-25px no-repeat;
+	background: url(/public/jquery-treeview/images/treeview-default.gif)
+		-64px -25px no-repeat;
 	height: 16px;
 	width: 16px;
 	margin-left: -16px;
@@ -383,8 +384,9 @@ table.tablesorter thead tr .headerSortDown,table.tablesorter thead tr .headerSor
 }
 
 .treeview li {
-	background: url(/public/jquery-treeview/images/treeview-default-line.gif)
-		0 0 no-repeat;
+	background:
+		url(/public/jquery-treeview/images/treeview-default-line.gif) 0 0
+		no-repeat;
 }
 
 .treeview li.collapsable,.treeview li.expandable {
@@ -400,8 +402,8 @@ table.tablesorter thead tr .headerSortDown,table.tablesorter thead tr .headerSor
 }
 
 .treeview li.lastCollapsable,.treeview li.lastExpandable {
-	background-image: url(/public/jquery-treeview/images/treeview-default.gif)
-		;
+	background-image:
+		url(/public/jquery-treeview/images/treeview-default.gif);
 }
 
 .treeview li.lastCollapsable {
@@ -434,7 +436,8 @@ table.tablesorter thead tr .headerSortDown,table.tablesorter thead tr .headerSor
 
 .treeview-black .hitarea,.treeview-black li.lastCollapsable,.treeview-black li.lastExpandable
 	{
-	background-image: url(/public/jquery-treeview/images/treeview-black.gif);
+	background-image: url(/public/jquery-treeview/images/treeview-black.gif)
+		;
 }
 
 .treeview-gray li {
@@ -468,7 +471,8 @@ table.tablesorter thead tr .headerSortDown,table.tablesorter thead tr .headerSor
 }
 
 .filetree span.folder {
-	background: url(/public/jquery-treeview/images/folder.gif) 0 0 no-repeat;
+	background: url(/public/jquery-treeview/images/folder.gif) 0 0 no-repeat
+		;
 }
 
 .filetree li.expandable span.folder {
@@ -521,13 +525,14 @@ legend {
 	background: #FFF;
 }
 */
-fieldset { 
-	-moz-border-radius-bottomleft:7px;
-	-moz-border-radius-bottomright:7px;
-	-moz-border-radius-topleft:5px;
-	-moz-border-radius-topright:7px;
+fieldset {
+	-moz-border-radius-bottomleft: 7px;
+	-moz-border-radius-bottomright: 7px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 7px;
 	border-radius: 3px;
 }
+
 .gfs {
 	zoverflow: auto;
 	padding: 0 5px 0 5px;
@@ -551,6 +556,7 @@ fieldset {
 	padding: 0;
 	border: 0;
 }
+
 /**** SORTABLE ****/
 #sortable {
 	list-style-type: none;
@@ -572,23 +578,30 @@ fieldset {
 }
 
 .vert {
-	position:absolute;
-	top:30px;
-/*	#top:10px;*/
-	width:4px;
-	border-right:1px dotted red;
+	position: absolute;
+	top: 30px;
+	/*	#top:10px;*/
+	width: 4px;
+	border-right: 1px dotted red;
 }
+
 .txtmaxsize {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	display:block;
-	width:250px;
+	display: block;
+	width: 250px;
 }
+
 pre {
-white-space: pre-wrap; /* css-3 */
-white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
-white-space: -pre-wrap; /* Opera 4-6 */
-white-space: -o-pre-wrap; /* Opera 7 */
-word-wrap: break-word; /* Internet Explorer 5.5+ */
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+label.error {
+	color: red;
+	font-style: italic
 }

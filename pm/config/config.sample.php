@@ -6,7 +6,7 @@
 
   //You need to add the full webserver name and directory to CAPP here. For example:
   //'http://www.your-url-here.com/backend/org/' (do not forget the tailing slash)
-  define('BASE_URL', 'http://localhost'.BASE_SUB);
+  define('BASE_URL', 'http://938-4dgvmb1:8080'.BASE_SUB);
 
   //The name of the site
   define('MANAGER_NAME', 'WFUBMC Project Management');
@@ -24,7 +24,7 @@
   define('DATABASE_TYPE', 'mysql');
 
   //Database host (usually 'localhost')
-  define('DATABASE_HOST', '192.168.15.111');
+  define('DATABASE_HOST', 'localhost');
 
     /*Note:
       For PostgreSQL DATABASE_HOST should not be changed from localhost.

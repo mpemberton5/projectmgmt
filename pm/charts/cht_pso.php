@@ -11,7 +11,7 @@ require_once(BASE.'includes/security.php');
 include_once(BASE.'database/database.php');
 
 /* http://teethgrinder.co.uk/open-flash-chart-2/ */
-include_once($_SERVER["DOCUMENT_ROOT"] . 'public/charts/version-2-Jorm-2/php-ofc-library/open-flash-chart.php');
+include_once($_SERVER["DOCUMENT_ROOT"] . '/public/charts/version-2-Jorm-2/php-ofc-library/open-flash-chart.php');
 
 //$title = new title( "Projects by Employee" );
 //$title->set_style( "{font-size: 20px; font-family: Times New Roman; font-weight: bold; color: #000080; text-align: center;}" );

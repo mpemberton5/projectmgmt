@@ -11,7 +11,7 @@ require_once(BASE.'includes/security.php');
 include_once(BASE.'database/database.php');
 
 /* http://teethgrinder.co.uk/open-flash-chart-2/ */
-include_once($_SERVER["DOCUMENT_ROOT"] . 'public/charts/version-2-Jorm-2/php-ofc-library/open-flash-chart.php');
+include_once($_SERVER["DOCUMENT_ROOT"] . '/public/charts/version-2-Jorm-2/php-ofc-library/open-flash-chart.php');
 
 $result = mysql_query("select count(*) as kount from projects where EndDate < DATE_ADD(now(),INTERVAL 7 DAY) and PercentComplete<75");
 $result1 = mysql_query("select count(*) as tkount from projects");

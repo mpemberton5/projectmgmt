@@ -16,9 +16,9 @@ if (!isset($_REQUEST['action'])) {
 switch($_REQUEST['action']) {
 
 	//show a task
-	case 'show':
-	case 'showSub':
-	case 'showTasks':
+	case 'showTopLevel':
+	case 'showMilestoneLevel':
+	case 'showTaskLevel':
 		//catch & redirect hack for invalid entry from ProjectJump
 		if (isset($_REQUEST['task_id']) && ($_REQUEST['task_id'] == -1)) {
 			header('Location: '.BASE_URL.'index.php');

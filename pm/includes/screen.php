@@ -45,10 +45,10 @@ function html_header($redirect_time=0) {
 	//we don't want any caching of these pages
 	////  header('Cache-Control: no-store, no-cache, must-revalidate');
 	////  header('Cache-Control: post-check=0, pre-check=0', false);
-	  header('Expires: Wed, 28 Jul 1997 12:37:00 GMT');
+//	  header('Expires: Wed, 28 Jul 1997 12:37:00 GMT');
 	////  header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 	////  header('Pragma: no-cache');
-	header('Content-Type: text/html; charset=ISO-8859-1');
+//	header('Content-Type: text/html; charset=ISO-8859-1');
 
 	//do a refresh if required
 	if ($redirect_time != 0) {

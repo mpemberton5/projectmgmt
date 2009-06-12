@@ -48,11 +48,11 @@ function list_posts_from_task($project_id) {
 			//if this is a subpost, store the parent id
 			if ($parent_task_id != 0) {
 				$parent_array[$parent_task_id] = $parent_task_id;
-				//$this_post = "				<li><a class=\"clickMe\" id=\"task-".$task_id."\" href=\"tasks.php?action=showSub&project_id=".$project_id."&task_id=".$task_id."\">".$task_name."</a></li>\n";
-				$this_post = "				<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=showSub&project_id=".$project_id."&task_id=".$task_id."'\">".$task_name."</li>\n";
+				//$this_post = "				<li><a class=\"clickMe\" id=\"task-".$task_id."\" href=\"tasks.php?action=showTaskLevel&project_id=".$project_id."&task_id=".$task_id."\">".$task_name."</a></li>\n";
+				$this_post = "				<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=showTaskLevel&project_id=".$project_id."&task_id=".$task_id."'\">".$task_name."</li>\n";
 			} else {
-				//$this_post = "		<li><a class=\"clickMe\" id=\"task-".$task_id."\" style=\"font-weight: bold;\" href=\"tasks.php?action=show&project_id=".$project_id."&task_id=".$task_id."\">".$task_name."</a>\n";
-				$this_post = "		<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=show&project_id=".$project_id."&task_id=".$task_id."'\">".$task_name."\n";
+				//$this_post = "		<li><a class=\"clickMe\" id=\"task-".$task_id."\" style=\"font-weight: bold;\" href=\"tasks.php?action=showMilestoneLevel&project_id=".$project_id."&task_id=".$task_id."\">".$task_name."</a>\n";
+				$this_post = "		<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=showMilestoneLevel&project_id=".$project_id."&task_id=".$task_id."'\">".$task_name."\n";
 			}
 
 			$post_array[$i]['post'] = $this_post;
@@ -209,7 +209,7 @@ $content .= "</table>";
 $content .= "<script language='javascript' type='text/javascript'>\n";
 $content .= "	var hash = window.location.hash.substr(1);\n";
 $content .= "	if (hash.length==0) {\n";
-$content .= "		$('#contentArea').load('tasks.php?action=showTasks&project_id=".$project_id."');\n";
+$content .= "		$('#contentArea').load('tasks.php?action=showTopLevel&project_id=".$project_id."');\n";
 $content .= "	}\n";
 $content .= "</script>\n";
 echo $content;

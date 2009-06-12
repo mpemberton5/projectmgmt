@@ -81,7 +81,7 @@ db_free_result($q);
 /*********************************/
 /*** PROJECT VIEW OF ALL TASKS ***/
 /*********************************/
-if ($_GET['action']=="showTasks") {
+if ($_GET['action']=="showTopLevel") {
 	// show task list that allows reordering
 
 	$content .= "<fieldset>\n";
@@ -119,13 +119,17 @@ if ($_GET['action']=="showTasks") {
 	//****************
 	// Milestone Level
 	//****************
-} else if ($_GET['action']=="show") {
+} else if ($_GET['action']=="showMilestoneLevel") {
 
 	if ($task_id>0) {
-		$task_row = db_fetch_array(db_query("select t.*, e.FirstName, e.LastName from tasks t, employees e where e.employee_id=t.Assigned_To_ID and t.task_ID=".$task_id),0);
+		$milestone_row = db_fetch_array(db_query("select t.*, e.FirstName, e.LastName from tasks t, employees e where e.employee_id=t.Assigned_To_ID and t.task_ID=".$task_id),0);
 	}
-
-	$milestone_pct = $task_row['PercentComplete'];
+	// now get the current task details
+	if ($milestone_row['Curr_Task_ID']>0) {
+		$currTaskName = db_simplequery("tasks","task_name","task_ID",$milestone_row['Curr_Task_ID']);
+	} else {
+		$currTaskName = "";
+	}
 
 	// show specific task details
 	$content .= "<fieldset>\n";
@@ -136,14 +140,14 @@ if ($_GET['action']=="showTasks") {
 	$content .= "			<table class=\"nt\" style=\"width=99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"style=\"align: left; width: 1%;\"><b>Name:&nbsp;</b></td>\n";
-	$content .= "					<td class=\"nt\" style=\"align: left; width: 40%;\"><div style=\"white-space:normal;\">".nl2br(html_links($task_row['task_name']))."</div></td>\n";
-	$content .= "					<td class=\"nt\" valign=\"top\"style=\"align: left; width: 1%;\"><b>On Deck:&nbsp;</b></td>\n";
-	$content .= "					<td class=\"nt\" style=\"align: left; width: 50%;\"><div style=\"white-space:normal;\">".$task_row['FirstName']." ".$task_row['LastName']."</div></td>\n";
-	$content .= "					<td class=\"nt\" style=\"text-align:right; color:#15A50D; font-size: 20px; font-weight: bold;\" rowspan=\"2\">".$milestone_pct."%</td>\n";
+	$content .= "					<td class=\"nt\" style=\"align: left; width: 40%;\"><div style=\"white-space:normal;\">".nl2br(html_links($milestone_row['task_name']))."</div></td>\n";
+	$content .= "					<td class=\"nt\" valign=\"top\"style=\"align: left; width: 1%;\"><b>Current Task:&nbsp;</b></td>\n";
+	$content .= "					<td class=\"nt\" style=\"align: left; width: 50%;\"><div style=\"white-space:normal;\">".$currTaskName."</div></td>\n";
+	$content .= "					<td class=\"nt\" style=\"text-align:right; color:#15A50D; font-size: 20px; font-weight: bold;\" rowspan=\"2\">".$milestone_row['PercentComplete']."%</td>\n";
 	$content .= "				</tr>\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"><b>Description:&nbsp;</b></td>\n";
-	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\" colspan=\"3\"><div style=\"white-space:normal;\">".nl2br(html_links($task_row['Description']))."</div></td>\n";
+	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\" colspan=\"3\"><div style=\"white-space:normal;\">".nl2br(html_links($milestone_row['Description']))."</div></td>\n";
 	$content .= "				</tr>\n";
 	$content .= "			</table>\n";
 	$content .= "		</div>\n";
@@ -169,11 +173,11 @@ if ($_GET['action']=="showTasks") {
 		$content .= "		<div>\n";
 		$content .= "			<table style=\"width:95%\">\n";
 		//show all tasks
-		for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
+		for ($i=0; $task_row = @db_fetch_array($q, $i); ++$i) {
 			$content .= "			<tr>\n";
-			$content .= "				<td><a href=\"javascript:void(0)\" onclick=\"SelectTask(".$row['task_ID'].");return false;\"><b>".$row['task_name']."</b></a></td>";
-			$content .= "				<td>".$row['FirstName']." ".$row['LastName']."</div></td>\n";
-			$content .= "				<td>".$row['PercentComplete']."%</td>\n";
+			$content .= "				<td><a href=\"javascript:void(0)\" onclick=\"SelectTask(".$task_row['task_ID'].");return false;\"><b>".$task_row['task_name']."</b></a></td>";
+			$content .= "				<td>".$task_row['FirstName']." ".$task_row['LastName']."</div></td>\n";
+			$content .= "				<td>".$task_row['PercentComplete']."%</td>\n";
 			$content .= "			</tr>\n";
 		}
 		$content .= "			</table>\n";
@@ -187,32 +191,34 @@ if ($_GET['action']=="showTasks") {
 	//****************
 	// Task Level
 	//****************
-} else if ($_GET['action']=="showSub") {
-	$parent_task_id = db_simplequery("tasks","parent_task_ID","task_ID",$task_id);
+} else if ($_GET['action']=="showTaskLevel") {
+	$milestone_ID = db_simplequery("tasks","parent_task_ID","task_ID",$task_id);
 
-	if ($parent_task_id>0) {
+	if ($milestone_ID>0) {
 		//		$task_row = db_fetch_array(db_query("select * from tasks where task_ID=".$parent_task_id),0);
-		$task_row = db_fetch_array(db_query("select t.*, e.FirstName, e.LastName from tasks t, employees e where e.employee_id=t.Assigned_To_ID and t.task_ID=".$parent_task_id),0);
+		$milestone_row = db_fetch_array(db_query("select t.*, e.FirstName, e.LastName from tasks t, employees e where e.employee_id=t.Assigned_To_ID and t.task_ID=".$milestone_ID),0);
 	}
-	$milestone_pct = $task_row['PercentComplete'];
+
+	// now get the current task details
+	$currTaskName = db_simplequery("tasks","task_name","task_ID",$milestone_row['Curr_Task_ID']);
 
 	// show specific task details
 	$content .= "<fieldset>\n";
 	$content .= "	<legend><span class=\"gl\">Milestone Details</span></legend>\n";
 	$content .= "	<div>\n";
-	$content .= "		<div style=\"position: absolute; width=100%;\"><div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$parent_task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" });'>Edit</a></div></div>\n";
+	$content .= "		<div style=\"position: absolute; width=100%;\"><div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$milestone_ID."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" });'>Edit</a></div></div>\n";
 	$content .= "		<div>\n";
 	$content .= "			<table class=\"nt\" style=\"width=99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"style=\"align: left; width: 1%;\"><b>Name:&nbsp;</b></td>\n";
-	$content .= "					<td class=\"nt\" style=\"align: left; width: 40%;\"><div style=\"white-space:normal;\">".nl2br(html_links($task_row['task_name']))."</div></td>\n";
-	$content .= "					<td class=\"nt\" valign=\"top\"style=\"align: left; width: 1%;\"><b>On Deck:&nbsp;</b></td>\n";
-	$content .= "					<td class=\"nt\" style=\"align: left; width: 50%;\"><div style=\"white-space:normal;\">".$task_row['FirstName']." ".$task_row['LastName']."</div></td>\n";
-	$content .= "					<td class=\"nt\" style=\"text-align:right; color:#15A50D; font-size: 20px; font-weight: bold;\" rowspan=\"2\">".$milestone_pct."%</td>\n";
+	$content .= "					<td class=\"nt\" style=\"align: left; width: 40%;\"><div style=\"white-space:normal;\">".nl2br(html_links($milestone_row['task_name']))."</div></td>\n";
+	$content .= "					<td class=\"nt\" valign=\"top\"style=\"align: left; width: 1%;\"><b>Current Task:&nbsp;</b></td>\n";
+	$content .= "					<td class=\"nt\" style=\"align: left; width: 50%;\"><div style=\"white-space:normal;\">".$currTaskName."</div></td>\n";
+	$content .= "					<td class=\"nt\" style=\"text-align:right; color:#15A50D; font-size: 20px; font-weight: bold;\" rowspan=\"2\">".$milestone_row['PercentComplete']."%</td>\n";
 	$content .= "				</tr>\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"><b>Description:&nbsp;</b></td>\n";
-	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\" colspan=\"3\"><div style=\"white-space:normal;\">".nl2br(html_links($task_row['Description']))."</div></td>\n";
+	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\" colspan=\"3\"><div style=\"white-space:normal;\">".nl2br(html_links($milestone_row['Description']))."</div></td>\n";
 	$content .= "				</tr>\n";
 	$content .= "			</table>\n";
 	$content .= "		</div>\n";
@@ -222,7 +228,7 @@ if ($_GET['action']=="showTasks") {
 	$content .= "<p>\n";
 
 	if ($task_id>0) {
-		$subtask_row = db_fetch_array(db_query("select * from tasks where task_ID=".$task_id),0);
+		$task_row = db_fetch_array(db_query("select * from tasks where task_ID=".$task_id),0);
 	}
 	// show specific sub-task details
 	$content .= "<fieldset>\n";
@@ -233,11 +239,11 @@ if ($_GET['action']=="showTasks") {
 	$content .= "			<table class=\"nt\" style=\"width=99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"><b>Name:&nbsp;</b></td>\n";
-	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\"><div style=\"white-space:normal;\">".nl2br(html_links($subtask_row['task_name']))."</div></td>\n";
+	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\"><div style=\"white-space:normal;\">".nl2br(html_links($task_row['task_name']))."</div></td>\n";
 	$content .= "				</tr>\n";
 	$content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
 	$content .= "					<td class=\"nt\" valign=\"top\"><b>Description:&nbsp;</b></td>\n";
-	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\"><div style=\"white-space:normal;\">".nl2br(html_links($subtask_row['Description']))."</div></td>\n";
+	$content .= "					<td class=\"nt\" style=\"align: left; width: 100%;\"><div style=\"white-space:normal;\">".nl2br(html_links($task_row['Description']))."</div></td>\n";
 	$content .= "				</tr>\n";
 	$content .= "			</table>\n";
 	$content .= "		</div>\n";
@@ -263,8 +269,15 @@ if ($_GET['action']=="showTasks") {
 		$tmpcontent .= "$(document).ready(function(){\n";
 		//show all notes
 		for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
+			if ($row['user_ID']>0) {
+				$posted_by = db_simplequery("employees","CONCAT(LastName,', ',FirstName)","employee_ID",$row['user_ID']);
+			} else {
+				$posted_by = "SYSTEM";
+			}
+
 			$tmpcontent .= "	$(\"#note".$i."\").html(\"".mysql_escape_string($row['Note'])."\");\n";
-			$content .= "<div><b>Entry Posted:</b> ".$row['TimeStamp']."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Percent Complete:</b> ".$row['PercentComplete']."</div><pre id=\"note".$i."\" class=\"generalbox\"></pre>\n";
+			$content .= "<div><b>Entry Posted:</b> ".$row['TimeStamp']."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Percent Complete:</b> ".$row['PercentComplete']."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Posted By:</b> ".$posted_by."</div>\n";
+			$content .= "<pre id=\"note".$i."\" class=\"generalbox\"></pre>\n";
 		}
 		$tmpcontent .= "});\n";
 		$tmpcontent .= "</script>\n";

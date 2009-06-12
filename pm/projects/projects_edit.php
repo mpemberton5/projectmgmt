@@ -68,40 +68,44 @@ if ($_REQUEST['action'] == "popupEdit") {
 	$managed = "";
 	$contingency = "";
 	$priority = "Normal";
-	$status = "Active";
+	$status = "Planning";
 	$description = "";
 }
 
+$content .= "<script type='text/javascript' src='/public/jquery-validate/jquery.validate.min.js'></script>\n";
+$content .= "<script type='text/javascript' src='js/jquery.metadata.min.js'></script>\n";
 
 $content .= "<script type='text/javascript'>\n";
 $content .= "$(document).ready(function() {\n";
+
 $content .= "	$(\".button\").click(function() {\n";
-$content .= " \n";
-$content .= "	// we want to store the values from the form input box, then send via ajax below\n";
-$content .= "	var parameter1 = $(\"input\").serialize();\n";
-$content .= "	var parameter2 = $(\"textarea\").serialize();\n";
-$content .= "	var parameter3 = $(\"checkbox\").serialize();\n";
-$content .= "	var parameter4 = $(\"select\").serialize();\n";
-$content .= "	var parameters = parameter1 + '&' + parameter2 + '&' + parameter3 + '&' + parameter4;\n";
-//$content .= " alert(parameters)\n";
+$content .= "		// we want to store the values from the form input box, then send via ajax below\n";
+$content .= "		var parameter1 = $(\"input\").serialize();\n";
+$content .= "		var parameter2 = $(\"textarea\").serialize();\n";
+$content .= "		var parameter3 = $(\"checkbox\").serialize();\n";
+$content .= "		var parameter4 = $(\"select\").serialize();\n";
+$content .= "		var parameters = parameter1 + '&' + parameter2 + '&' + parameter3 + '&' + parameter4;\n";
+
 $content .= "		$.ajax({\n";
 $content .= "			type: \"POST\",\n";
 $content .= "			url: \"projects.php\",\n";
 $content .= "			data: parameters,\n";
 $content .= "			dataType: 'text',\n";
+$content .= "			beforeSend: function(){\n";
+$content .= "				if (!$('#UpdateForm').valid()) return false;\n";
+$content .= "			},\n";
 $content .= "			error: function(xhr, ajaxOptions, thrownError){\n";
-//$content .= "		        alert(parameters);\n";
 $content .= "				parent.fb.start({href:'error.php?error='+xhr.responseText, rev:'theme:red showClose:true width:560 height:240', title:'Unexpected Error'});\n";
-$content .= "    		},\n";
+$content .= "   			},\n";
 $content .= "			success: function(data){\n";
 $content .= $return_page;
-//$content .= "				parent.fb.loadPageOnClose='projects.php?action=show&project_id='+data;\n";
-//$content .= "				parent.fb.loadPageOnClose='self';\n";
 $content .= "				parent.fb.end(true);\n";
 $content .= "			}\n";
 $content .= "		});\n";
-$content .= "	return false;\n";
+
+$content .= "		return false;\n";
 $content .= "	});\n";
+
 $content .= "	$(\"#startdate\").datepicker({\n";
 $content .= "		dateFormat: 'mm-dd-yy',\n";
 $content .= "		showOn: 'button',\n";
@@ -112,6 +116,7 @@ $content .= "		beforeShow: function (i, e) {\n";
 $content .= "			e.dpDiv.css('z-index', '10000');\n";
 $content .= "		}\n";
 $content .= "	});\n";
+
 $content .= "	$(\"#enddate\").datepicker({\n";
 $content .= "		dateFormat: 'mm-dd-yy',\n";
 $content .= "		showOn: 'button',\n";
@@ -127,14 +132,14 @@ $content .= "</script>\n";
 
 //all okay show task info
 $content .= "<div class=\"container\"";
-$content .= "<form action=\"\" name=\"UpdateForm\" method=\"post\">\n";
+$content .= "<form action=\"\" name=\"UpdateForm\" id=\"UpdateForm\" method=\"post\">\n";
 $content .= "<input type=\"hidden\" name=\"action\" value=\"".$form_submit."\" />\n ";
 $content .= "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
 
 
 $content .= "<table style=\"width:100%\">\n";
 
-$content .= "<tr><td>Project Name:</td><td style=\"width:100%\"><input id=\"name\" type=\"text\" name=\"name\" size=\"30\" value=\"".$project_name."\" /></td></tr>\n";
+$content .= "<tr><td>Project Name:</td><td style=\"width:100%\"><input id=\"name\" type=\"text\" name=\"name\" size=\"30\" value=\"".$project_name."\" class=\"required\"  minlength=\"2\" /></td></tr>\n";
 
 $q = db_query('SELECT * FROM employees WHERE Department_ID=(select emp.Department_ID from employees emp where emp.employee_ID='.$_SESSION['UID'].') ORDER BY LastName,FirstName');
 

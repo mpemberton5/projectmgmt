@@ -213,10 +213,11 @@ $q = db_query($SQL);
 $content .= "				<div class=\"demo\" id=\"demo\">\n";
 $content .= "					<div id=\"tabs\" class=\"ui-tabs\">\n";
 $content .= "						<ul class=\"ui-tabs-nav\">\n";
-$content .= "							<li><a href=\"#tabs-1\"><div style=\"font-size: 15px;\">To Do List</div></a></li>\n";
-$content .= "							<li><a href=\"#tabs-2\"><div style=\"font-size: 15px;\">Open Projects</div></a></li>\n";
-$content .= "							<li><a href=\"#tabs-3\"><div style=\"font-size: 15px;\">My Projects</div></a></li>\n";
-$content .= "							<li><a href=\"#tabs-4\"><div style=\"font-size: 15px;\">Archives</div></a></li>\n";
+$content .= "							<li><a href=\"#tabs-1\"><div style=\"font-size: 12px;\">To Do List</div></a></li>\n";
+$content .= "							<li><a href=\"#tabs-2\"><div style=\"font-size: 12px;\">Contributor</div></a></li>\n";
+$content .= "							<li><a href=\"#tabs-3\"><div style=\"font-size: 12px;\">Owner</div></a></li>\n";
+$content .= "							<li><a href=\"#tabs-4\"><div style=\"font-size: 12px;\">Monitor</div></a></li>\n";
+$content .= "							<li><a href=\"#tabs-5\"><div style=\"font-size: 12px;\">Browse</div></a></li>\n";
 $content .= "						</ul>\n";
 $content .= "						<div id=\"tabs-1\" class=\"ui-tabs-container ui-tabs-hide\">\n";
 
@@ -245,10 +246,10 @@ if (db_numrows($q) > 0) {
 
 		$content .= "      <tr>";
 
-		//http://localhost/pm/projects.php?action=show&project_id=7#tasks.php?action=showSub&project_id=7&task_id=25
+		//http://localhost/pm/projects.php?action=show&project_id=7#tasks.php?action=showTaskLevel&project_id=7&task_id=25
 		//show name and a link
 		$content .= "<td>";
-		$content .= "<a href=\"projects.php?action=show&project_id=".$row['Project_ID']."#tasks.php?action=showSub&amp;project_id=".$row['Project_ID']."&amp;task_id=".$row['task_ID'];
+		$content .= "<a href=\"projects.php?action=show&project_id=".$row['Project_ID']."#tasks.php?action=showTaskLevel&amp;project_id=".$row['Project_ID']."&amp;task_id=".$row['task_ID'];
 		$content .= "\"><b>".$row['task_name']."</b></a>\n";
 		$content .= "</td>";
 
@@ -412,7 +413,10 @@ if (db_numrows($q) > 0) {
 }
 $content .= "</div>\n";
 $content .= "<div id=\"tabs-4\" class=\"ui-tabs-container ui-tabs-hide\">\n";
-$content .= "	<div>Search Closed Projects</div>";
+$content .= "	<div>Monitored Projects</div>";
+$content .= "</div>\n";
+$content .= "<div id=\"tabs-5\" class=\"ui-tabs-container ui-tabs-hide\">\n";
+$content .= "	<div>Browse Projects</div>";
 $content .= "</div>\n";
 $content .= "</div>\n";
 //}

@@ -120,9 +120,9 @@ switch($_REQUEST['action']) {
 			if (!@safe_integer($_POST[$var])) {
 				error('Task Note submit', "Variable $var is not set");
 			}
-			if ($_POST[$var]==0) {
-				error('Task Note submit', "Variable $var is zero");
-			}
+//			if ($_POST[$var]==0) {
+//				error('Task Note submit', "Variable $var is zero");
+//			}
 			${$var} = $_POST[$var];
 		}
 
@@ -203,7 +203,7 @@ switch($_REQUEST['action']) {
 					// if another task exists within this milestone
 					$next_task_ID = db_result(db_query('SELECT task_ID FROM tasks WHERE parent_task_ID='.$next_milestone_ID.' AND project_id='.$project_id.' AND order_num = '.($task_row['order_num']+1)), 0, 0);
 					if ($next_task_ID > 0) {
-						//    - auto notify next task user
+						// - auto notify next task user
 						$ondeck_email = db_result(db_query('SELECT emp.EMail FROM employees emp, tasks t WHERE t.Assigned_To_ID=emp.employee_ID and t.task_ID='.$next_task_ID),0,0);
 						//TODO: change message
 						$message = "Batter Up!";
@@ -221,12 +221,11 @@ switch($_REQUEST['action']) {
 					$message = "Project Done!";
 					//TODO: change message
 					send_html_email($lead_email,"noreply@wfubmc.edu","Project Notification",$message);
-					//    - change on deck user on milestone
+					// - change on deck user on milestone
 					db_query("UPDATE tasks SET Curr_Task_ID=0 WHERE task_id=".$next_milestone_ID." AND Project_id=".$project_id);
 				}
 			}
 		}
-
 
 		// notifications
 		if ($notify=='Lead' and $lead_notified==0) {
@@ -247,10 +246,24 @@ switch($_REQUEST['action']) {
 		}
 
 
-		if ($task_action=="Prev") {
+		if ($task_action=="Prev" and $task_row['order_num'] > 0) {
 			// TODO: Add Previous move
 			// send task back to previous task if exists
-			// post no impact entry on prev task stating action
+			$prev_task_ID = db_result(db_query('SELECT task_ID FROM tasks WHERE parent_task_ID='.$milestone_id.' AND project_id='.$project_id.' AND order_num = '.($task_row['order_num']-1)), 0, 0);
+			if ($prev_task_ID > 0) {
+				// - auto notify prev task user
+				$ondeck_email = db_result(db_query('SELECT emp.EMail FROM employees emp, tasks t WHERE t.Assigned_To_ID=emp.employee_ID and t.task_ID='.$prev_task_ID),0,0);
+				//TODO: change message
+				$message = "Batter Up!";
+				send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
+				// - change on deck user on milestone
+				db_query("UPDATE tasks SET Curr_Task_ID=".$prev_task_ID." WHERE task_id=".$milestone_id." AND Project_id=".$project_id);
+				// post no impact entry on prev task stating action
+				db_query("INSERT INTO task_notes (project_ID, task_ID, TimeStamp, Note, user_ID, PercentComplete)
+						VALUES ('$project_id', '$prev_task_ID', now(), 'NOTIFICATION: Task reopened', 0,'90')");
+				// now update the prev task info
+				db_query("UPDATE tasks set PercentComplete=90 where task_ID=".$prev_task_ID);
+			}
 		}
 
 		// update total weight in Milestone
