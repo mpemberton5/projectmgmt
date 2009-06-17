@@ -76,6 +76,7 @@ if ($_SESSION['MGMT']==0) {
 
 	$portlet_content .= "<div id=\"container\">\n";
 	$colctr = 0;
+	$totctr = 1;
 	foreach($col_array as $var) {
 		$portlet_content .= "	<div class=\"column\" id=\"col".$colctr."\">\n";
 		$tmpArr1 = split(",",$var);
@@ -83,9 +84,32 @@ if ($_SESSION['MGMT']==0) {
 			if (strlen($value)>0) {
 				$portlet_content .= "		<div class=\"portlet\" id=\"".$value."\">\n";
 				$portlet_content .= "			<div class=\"portlet-header\">Projects by Employee</div>\n";
-				$portlet_content .= "			<div class=\"portlet-content\"><div id='".$value."_div'></div></div>\n";
+				$portlet_content .= "			<div class=\"portlet-content\">\n";
+				$portlet_content .= "				<div id='".$value."_div'>\n";
+				$portlet_content .= "					<object classid='clsid:d27cdb6e-ae6d-11cf-96b8-444553540000'\n";
+				$portlet_content .= "							codebase='http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0'\n";
+				$portlet_content .= "							id='".$value."_obj' align='middle' height='350' width='350'>\n";
+				$portlet_content .= "						<param name='allowScriptAccess' value='always' />\n";
+				$portlet_content .= "						<param name='movie' value='/public/charts/version-2-DZ-Ichor/open-flash-chart/open-flash-chart.swf?data-file=charts.php?action=".$value."' />\n";
+				$portlet_content .= "						<param name='quality' value='high' />\n";
+				$portlet_content .= "						<param name='bgcolor' value='#FFFFFF' />\n";
+				$portlet_content .= "						<param name='WMode' VALUE='Transparent'>\n";
+
+				$portlet_content .= "						<embed src='/public/charts/version-2-DZ-Ichor/open-flash-chart/open-flash-chart.swf?data-file=charts.php?action=".$value."' quality='high'\n";
+				$portlet_content .= "							bgcolor='#FFFFFF' name='open-flash-chart' allowscriptaccess='always' type='application/x-shockwave-flash'\n";
+				$portlet_content .= "							pluginspage='http://www.macromedia.com/go/getflashplayer' align='middle' height='350' width='350' id='".$value."_obj' />\n";
+				$portlet_content .= "					</object>\n";
+				$portlet_content .= "				</div>\n";
+
+				$portlet_content .= "			</div>\n";
 				$portlet_content .= "		</div>\n";
-				$portlet_js .= "	swfobject.embedSWF('/public/charts/version-2-Jorm-2/open-flash-chart.swf', '".$value."_div','350', '350', '9.0.0', 'expressInstall.swf',{'data-file':'charts.php?action=".$value."'},{wmode:'transparent'});\n";
+//				$portlet_js .= "	swfobject.embedSWF('/public/charts/version-2-DZ-Ichor/open-flash-chart/open-flash-chart.swf', '".$value."_div','350', '350', '9.0.0', 'expressInstall.swf',{'data-file':'charts.php?action=".$value."'},{wmode:'transparent'});\n";
+
+
+
+
+				$totctr++;
+
 			}
 		}
 		$portlet_content .= "	</div>\n";
@@ -119,7 +143,7 @@ if ($_SESSION['MGMT']==0) {
 	$content .= "	for (var i=0; i<arrLen; i++){\n";
 	$content .= "		parameters = parameters + '&col' + i + '=' + arrVal[i];\n";
 	$content .= "	}\n";
-	//	$content .= "	alert(parameters);\n";
+//	$content .= "	alert(parameters);\n";
 	$content .= "	$.ajax({\n";
 	$content .= "		type: 'POST',\n";
 	$content .= "		url: 'charts.php',\n";

@@ -144,7 +144,7 @@ $content .= "<textarea id=\"note\" name=\"note\" style=\"width:100%\">".$note."<
 $content .= "<p />";
 
 $content .= "<div style=\"width: 98%; height: 100px;\">\n";
-$content .= "	<div style=\"float: left; width: 49%;\">";
+$content .= "	<div style=\"float: left; width: 49%;\">\n";
 $content .= "		<fieldset class=\"gfs\" style=\"width: 90%;\">\n";
 $content .= "			<legend><span class=\"gl\" style=\"width: 120px;\">Percent Complete</span></legend>\n";
 $content .= "			<fieldset class=\"fspc\">\n";
@@ -164,7 +164,7 @@ $content .= "				</select>\n";
 $content .= "			</fieldset>\n";
 $content .= "		</fieldset>\n";
 $content .= "	</div>\n";
-$content .= "	<div style=\"float: right; width: 49%;\">";
+$content .= "	<div style=\"float: right; width: 49%;\">\n";
 $content .= "		<fieldset class=\"gfs\" style=\"width: 90%;\">\n";
 $content .= "			<legend><span class=\"gl\" style=\"width: 90px;\">Notifications</span></legend>\n";
 $content .= "			<input type=\"radio\" name=\"notify\" value=\"None\" checked />None<br />\n";
@@ -175,15 +175,15 @@ $content .= "	</div>\n";
 $content .= "</div>\n";
 
 $content .= "<div style=\"width: 98%; height: 100px;\">\n";
-$content .= "	<div style=\"float: left; width: 49%;\">";
+$content .= "	<div style=\"float: left; width: 49%;\">\n";
 $content .= "		<fieldset class=\"gfs\" style=\"width: 90%;\">\n";
 $content .= "			<legend><span class=\"gl\" style=\"width: 90px;\">Next Action</span></legend>\n";
 $content .= "			<input type=\"radio\" name=\"task_action\" value=\"None\" checked />None<br />\n";
-$content .= "			<input type=\"radio\" name=\"task_action\" value=\"Prev\"/>Send to Previous Task<br />\n";
-$content .= "			<input type=\"radio\" name=\"task_action\" value=\"Comp\"/>Complete Task\n";
+$content .= "			<input type=\"radio\" name=\"task_action\" value=\"Prev\" />Send to Previous Task<br />\n";
+$content .= "			<input type=\"radio\" name=\"task_action\" value=\"Comp\" />Complete Task\n";
 $content .= "		</fieldset>\n";
 $content .= "	</div>\n";
-$content .= "	<div style=\"float: right; width: 49%;\">";
+$content .= "	<div style=\"float: right; width: 49%;\">\n";
 $content .= "		<fieldset class=\"gfs\" style=\"width: 90%; height: 83px;\">\n";
 $content .= "			<legend><span class=\"gl\" style=\"width: 90px;\">Attachments</span></legend>\n";
 $content .= "			<br /><div align=\"center\"><input type=\"button\" name=\"add_attach\" value=\"Add\" onclick='parent.fb.start({ href:\"files.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`Add Attachment` doAnimations:false\" });' /></div>\n";

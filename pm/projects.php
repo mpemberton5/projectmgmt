@@ -29,6 +29,7 @@ switch($_REQUEST['action']) {
 		break;
 
 	case 'submit_insert':
+	case 'submit_delete':
 	case 'submit_quick_insert':
 	case 'submit_update':
 		include(BASE.'projects/projects_submit.php');

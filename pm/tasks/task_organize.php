@@ -148,7 +148,7 @@ if ($task_id==0) {
 		$content .= "		<td style=\"width:100%; border-width: 0px 0px 0px 0px;\"><div class=\"txtmaxsize\" style=\"width:280px\">".$task_row['task_name'].":</div></td>\n";
 		$content .= "		<td style=\"width:100%; border-width: 0px 0px 0px 0px;\">\n";
 		$content .= "			<div class=\"slide\" id=\"slider-".$task_row['task_ID']."\" style=\"width:260px; margin:5px; clear:right;\">".$task_row['weight']."</div>\n";
-		$content .= "			<input id=\"taskw-".$task_row['task_ID']."\" type=\"hidden\" name=\"taskw-".$task_row['task_ID']."\" value=\"".$task_row['weight']."\" />";
+		$content .= "			<input id=\"taskw-".$task_row['task_ID']."\" type=\"hidden\" name=\"taskw-".$task_row['task_ID']."\" value=\"".$task_row['weight']."\" />\n";
 		$content .= "		</td>\n";
 		$content .= "	</tr>\n";
 	}
@@ -160,7 +160,7 @@ if ($task_id==0) {
 	$content .= "	<input type=\"submit\" name=\"submit\" class=\"button2\" id=\"submit_btn\" value=\"Save\" />\n";
 	$content .= "	&nbsp;&nbsp;&nbsp;\n";
 	$content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
-	$content .= "</div>";
+	$content .= "</div>\n";
 	$content .= "</form>\n";
 
 }
@@ -176,16 +176,18 @@ $q = db_query($SQL);
 $content .= "<form action=\"\" id=\"ReorderTasks\" name=\"ReorderTasks\" method=\"post\">\n";
 $content .= "	<input type=\"hidden\" name=\"action\" value=\"submit_task_list_order\" />\n";
 $content .= "	<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
-//$content .= "	<input type=\"hidden\" name=\"parent_task_id\" value=\"".$parent_task_id."\" />\n";
+$content .= "	<input type=\"hidden\" name=\"parent_task_id\" value=\"".$task_id."\" />\n";
 
 //check for any tasks
 if (db_numrows($q) > 0) {
-	$content .= "Note: drag items to change order.<p>\n";
+	$content .= "Note: drag items to change order.<p />\n";
 	$content .= "<ul id=\"sortable\">\n";
 	//show all tasks
 	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
-		$content .= "	<li id=\"task-".$row['task_ID']."\" class=\"ui-state-default\">";
-		$content .= "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span><div class=\"txtmaxsize\" style=\"width:550px\">".$row['task_name']."</div></li>\n";
+		$content .= "	<li id=\"task-".$row['task_ID']."\" class=\"ui-state-default\">\n";
+		$content .= "		<span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span>\n";
+		$content .= "		<div class=\"txtmaxsize\" style=\"width:550px\">".$row['task_name']."</div>\n";
+		$content .= "	</li>\n";
 	}
 	$content .= "</ul>\n";
 }
@@ -198,7 +200,7 @@ $content .= "<div align=\"center\">\n";
 $content .= "	<input type=\"submit\" name=\"submit\" class=\"button1\" id=\"submit_btn\" value=\"Save\" />\n";
 $content .= "	&nbsp;&nbsp;&nbsp;\n";
 $content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
-$content .= "</div>";
+$content .= "</div>\n";
 $content .= "</form>\n";
 
 $content .= "	</div>\n";

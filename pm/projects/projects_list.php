@@ -19,106 +19,6 @@ $content = '';
 
 $content .= "<link type='text/css' rel='stylesheet' href='/public/slider/css/redmond/jquery-ui-1.7.1.custom.css'>\n";
 
-/*
- $to = "mpembert@wfubmc.edu";
- $subject = "Hi!";
- $body = "Hi,\n\nHow are you?";
- $headers = "From: noreply@wfubmc.edu\r\n" . "X-Mailer: php";
- if (mail($to, $subject, $body, $headers)) {
- echo("<p>Message sent!</p>");
- } else {
- echo("<p>Message delivery failed...</p>");
- }
-
- send_html_email("mpembert@wfubmc.edu","noreply@wfubmc.edu","This is Great!","Please include the following degrees");
- */
-
-////*********************************************
-//// MANAGEMENT
-////*********************************************
-//if ($_SESSION['MGMT']) {
-//	$content .= "<span class=\"textlink\">[<a href=\"index.php\">Return to Dashboard</a>]</span>\n";
-//
-//	if (isset($_GET['ptype'])) {
-//		$_SESSION['ptype'] = $_GET['ptype'];
-//	}
-//
-//	// query to get the projects
-//	$SQL  = "SELECT *, ";
-//	$SQL .= "(select count(*) from tasks where tasks.project_id=proj.project_id) as TotTasks, ";
-//	$SQL .= "(select Dept_Name from departments where departments.department_id=emp.department_id) as Dept ";
-//	$SQL .= "FROM projects proj, employees emp ";
-//	$SQL .= "WHERE emp.employee_id=proj.owner_id ";
-//	$SQL .= "AND Status='".$_SESSION['ptype']."' ";
-//	$SQL .= "AND managed=1 ";
-//	$SQL .= "ORDER BY EndDate";
-//
-//	$q = db_query($SQL);
-//
-//	//check if there are project
-//	if (db_numrows($q) > 0) {
-//
-//		$content .= "<h1>".$_SESSION['ptype']." Projects</h1>";
-//
-//		//setup content table
-//		$content .= "<div class=\"mydiv\">";
-//		$content .= "  <table id=\"theTable\" cellpadding=\"0\" cellspacing=\"0\" class=\"sortable-onload-3 no-arrow rowstyle-alt colstyle-alt paginate-15 max-pages-10 paginationcallback-callbackTest-calculateTotalRating paginationcallback-callbackTest-displayTextInfo\">\n";
-//		$content .= "    <thead>";
-//		$content .= "      <tr>";
-//		$content .= "        <th class=\"sortable-text\">Project Name</th>";
-//		$content .= "        <th class=\"sortable-text\">Lead Contact</th>";
-//		$content .= "        <th class=\"sortable-text\">Department</th>";
-//		$content .= "        <th class=\"sortable-date\">Date Started</th>";
-//		$content .= "        <th class=\"sortable-numeric\">Tasks</th>";
-//		$content .= "        <th class=\"sortable-numeric\">Alloc. Hours</th>";
-//		$content .= "      </tr>";
-//		$content .= "    </thead>";
-//		$content .= "    <tbody>";
-//
-//		//show all projects
-//		for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
-//
-//			if (($i % 2) == 1) {
-//				$content .= "      <tr>";
-//			} else {
-//				$content .= "      <tr class=\"alt\">";
-//			}
-//
-//			//show name and a link
-//			$content .= "        <td>";
-//			$content .= "<a href=\"projects.php?action=show&amp;project_id=".$row['project_ID'];
-//			$content .= "\"><b>".$row['Project_Name']."</b></a>\n";
-//			$content .= "</td>";
-//
-//			$content .= "<td>".$row['FirstName']." ".$row['LastName']."</td>";
-//			$content .= "<td>".$row['Dept']."</td>";
-//			if (empty($row['StartDate']) or $row['StartDate']==='0000-00-00') {
-//				$startdate = "";
-//			} else {
-//				$startdate = date('m-d-Y',strtotime($row['StartDate']));
-//			}
-//			$content .= "<td>".$startdate."</td>";
-//
-//			$content .= "        <td><div align=\"center\">".$row['TotTasks']."</div></td>";
-//
-//			$content .= "<td><div align=\"center\">".$row['BudgetHours']."</div></td>";
-//
-//			$content .= "      </tr>";
-//
-//		}
-//		db_free_result($q);
-//
-//		$content .= "    </tbody>";
-//		$content .= "  </table>";
-//		$content .= "</div>";
-//	}
-//
-//
-//	//*********************************************
-//	// USERS
-//	//*********************************************
-//} else {
-
 $content .= "<script type=\"text/javascript\" src=\"".BASE."js/jquery.tablesorter.min.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"".BASE."js/jquery.metadata.min.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"/public/jquery-treeview/lib/jquery.cookie.js\"></script>\n";
@@ -137,8 +37,8 @@ $content .= "			load: function(event, ui) {\n";
 $content .= "			}\n";
 $content .= "		});\n";
 $content .= "		$(\"#mainTable\").tablesorter( {sortList: [[7,1],[4,1]]} );\n";
-$content .= "		$(\"#mainTable2\").tablesorter( {sortList: [[4,0]]} );\n";
-$content .= "		$(\"#mainTable3\").tablesorter( {sortList: [[4,0]]} );\n";
+$content .= "		$(\"#mainTable2\").tablesorter( {sortList: [[3,0]]} );\n";
+$content .= "		$(\"#mainTable3\").tablesorter( {sortList: [[3,0]]} );\n";
 $content .= "	});\n";
 $content .= "	$.cookie('ui-dynatree-cookie-select', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-active', '');\n";
@@ -244,47 +144,45 @@ if (db_numrows($q) > 0) {
 	//show all projects
 	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
 
-		$content .= "      <tr>";
+		$content .= "      <tr>\n";
 
 		//http://localhost/pm/projects.php?action=show&project_id=7#tasks.php?action=showTaskLevel&project_id=7&task_id=25
 		//show name and a link
-		$content .= "<td>";
-		$content .= "<a href=\"projects.php?action=show&project_id=".$row['Project_ID']."#tasks.php?action=showTaskLevel&amp;project_id=".$row['Project_ID']."&amp;task_id=".$row['task_ID'];
-		$content .= "\"><b>".$row['task_name']."</b></a>\n";
-		$content .= "</td>";
+		$content .= "<td>\n";
+		$content .= "<a href=\"projects.php?action=show&project_id=".$row['Project_ID']."#tasks.php?action=showTaskLevel&amp;project_id=".$row['Project_ID']."&amp;task_id=".$row['task_ID']."\"><b>".$row['task_name']."</b></a>\n";
+		$content .= "</td>\n";
 
-		$content .= "<td>".date('m-d-Y',strtotime($row['LastUpdated']))."</td>";
-		$content .= "<td>".$row['PercentComplete']."</td>";
-		$content .= "<td>".$row['Status']."</td>";
-		$content .= "<td>".$row['Priority']."</td>";
+		$content .= "<td>".date('m-d-Y',strtotime($row['LastUpdated']))."</td>\n";
+		$content .= "<td>".$row['PercentComplete']."</td>\n";
+		$content .= "<td>".$row['Status']."</td>\n";
+		$content .= "<td>".$row['Priority']."</td>\n";
 		if (empty($row['Start_Date']) or $row['Start_Date']==='0000-00-00') {
 			$startdate = "";
 		} else {
 			$startdate = date('m-d-Y',strtotime($row['Start_Date']));
 		}
-		$content .= "<td>".$startdate."</td>";
+		$content .= "<td>".$startdate."</td>\n";
 		if (empty($row['End_Date']) or $row['End_Date']==='0000-00-00') {
 			$enddate = "";
 		} else {
 			$enddate = date('m-d-Y',strtotime($row['End_Date']));
 		}
-		$content .= "<td>".$enddate."</td>";
-		$content .= "<td>".$row['managed']."</td>";
+		$content .= "<td>".$enddate."</td>\n";
+		$content .= "<td>".$row['managed']."</td>\n";
 
-		$content .= "<td style=\"text-align:center\">";
+		$content .= "<td style=\"text-align:center\">\n";
 
 		$content .= "<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"task_notes.php?action=popupAdd&project_id=".$row['Project_ID']."&task_id=".$row['task_ID']."\", rev:\"width:650 height:530 infoPos:tc showClose:false disableScroll:true caption:`NEW Task Note` doAnimations:false\" });'\">New</a>\n";
 
-		$content .= "</td>";
+		$content .= "</td>\n";
 
-		$content .= "      </tr>";
+		$content .= "      </tr>\n";
 
 	}
 	db_free_result($q);
 
-	$content .= "    </tbody>";
-	$content .= "  </table>";
-	//		$content .= "</div>";
+	$content .= "    </tbody>\n";
+	$content .= "  </table>\n";
 }
 $content .= "</div>\n";
 $content .= "<div id=\"tabs-2\" class=\"ui-tabs-container ui-tabs-hide\">\n";
@@ -306,44 +204,40 @@ if (db_numrows($q) > 0) {
 
 	//setup content table
 	$content .= "<table id=\"mainTable2\" cellpadding=\"0\" cellspacing=\"0\" class=\"tablesorter\">\n";
-	$content .= "    <thead>";
-	$content .= "      <tr>";
-	$content .= "        <th>Project Name</th>";
-	$content .= "        <th>Lead Contact</th>";
-	$content .= "        <th>Department</th>";
-	$content .= "        <th>Date Started</th>";
-	$content .= "        <th>Alloc. Hours</th>";
-	$content .= "      </tr>";
-	$content .= "    </thead>";
-	$content .= "    <tbody>";
+	$content .= "    <thead>\n";
+	$content .= "      <tr>\n";
+	$content .= "        <th>Project Name</th>\n";
+	$content .= "        <th>Lead Contact</th>\n";
+	$content .= "        <th>Department</th>\n";
+	$content .= "        <th>Date Started</th>\n";
+	$content .= "      </tr>\n";
+	$content .= "    </thead>\n";
+	$content .= "    <tbody>\n";
 
 	//show all projects
 	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
-		$content .= "      <tr>";
+		$content .= "      <tr>\n";
 		//show name and a link
-		$content .= "<td>";
-		$content .= "<a href=\"projects.php?action=show&amp;project_id=".$row['project_ID'];
-		$content .= "\"><b>".$row['Project_Name']."</b></a>\n";
-		$content .= "</td>";
+		$content .= "<td>\n";
+		$content .= "<a href=\"projects.php?action=show&amp;project_id=".$row['project_ID']."\"><b>".$row['Project_Name']."</b></a>\n";
+		$content .= "</td>\n";
 
-		$content .= "<td>".$row['FirstName']." ".$row['LastName']."</td>";
-		$content .= "<td>".$row['Dept']."</td>";
+		$content .= "<td>".$row['FirstName']." ".$row['LastName']."</td>\n";
+		$content .= "<td>".$row['Dept']."</td>\n";
 		if (empty($row['StartDate']) or $row['StartDate']==='0000-00-00') {
 			$startdate = "";
 		} else {
 			$startdate = date('m-d-Y',strtotime($row['StartDate']));
 		}
-		$content .= "<td>".$startdate."</td>";
+		$content .= "<td>".$startdate."</td>\n";
 
-		$content .= "<td><div align=\"center\">".$row['BudgetHours']."</div></td>";
-
-		$content .= "      </tr>";
+		$content .= "      </tr>\n";
 
 	}
 	db_free_result($q);
 
-	$content .= "    </tbody>";
-	$content .= "  </table>";
+	$content .= "    </tbody>\n";
+	$content .= "  </table>\n";
 }
 $content .= "</div>\n";
 $content .= "<div id=\"tabs-3\" class=\"ui-tabs-container ui-tabs-hide\">\n";
@@ -366,60 +260,54 @@ if (db_numrows($q) > 0) {
 	//setup content table
 	//		$content .= "<div class=\"mydiv\">";
 	$content .= "<table id=\"mainTable3\" cellpadding=\"0\" cellspacing=\"0\" class=\"tablesorter\">\n";
-	$content .= "    <thead>";
-	$content .= "      <tr>";
-	$content .= "        <th>Project Name</th>";
-	$content .= "        <th>Lead Contact</th>";
-	$content .= "        <th>Department</th>";
-	$content .= "        <th>Date Started</th>";
-	$content .= "        <th>Tasks</th>";
-	$content .= "        <th>Alloc. Hours</th>";
-	$content .= "      </tr>";
-	$content .= "    </thead>";
-	$content .= "    <tbody>";
+	$content .= "    <thead>\n";
+	$content .= "      <tr>\n";
+	$content .= "        <th>Project Name</th>\n";
+	$content .= "        <th>Lead Contact</th>\n";
+	$content .= "        <th>Department</th>\n";
+	$content .= "        <th>Date Started</th>\n";
+	$content .= "        <th>Tasks</th>\n";
+	$content .= "      </tr>\n";
+	$content .= "    </thead>\n";
+	$content .= "    <tbody>\n";
 
 	//show all projects
 	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
-		$content .= "      <tr>";
+		$content .= "      <tr>\n";
 
 		//show name and a link
-		$content .= "<td>";
-		$content .= "<a href=\"projects.php?action=show&amp;project_id=".$row['project_ID'];
-		$content .= "\"><b>".$row['Project_Name']."</b></a>\n";
-		$content .= "</td>";
+		$content .= "<td>\n";
+		$content .= "<a href=\"projects.php?action=show&amp;project_id=".$row['project_ID']."\"><b>".$row['Project_Name']."</b></a>\n";
+		$content .= "</td>\n";
 
-		$content .= "<td>".$row['FirstName']." ".$row['LastName']."</td>";
-		$content .= "<td>".$row['Dept']."</td>";
+		$content .= "<td>".$row['FirstName']." ".$row['LastName']."</td>\n";
+		$content .= "<td>".$row['Dept']."</td>\n";
 		if (empty($row['StartDate']) or $row['StartDate']==='0000-00-00') {
 			$startdate = "";
 		} else {
 			$startdate = date('m-d-Y',strtotime($row['StartDate']));
 		}
-		$content .= "<td>".$startdate."</td>";
+		$content .= "<td>".$startdate."</td>\n";
 
 		//$inc_tasks = db_result(db_query('SELECT count(*) FROM tasks WHERE project_id='.$row['id'].' AND creator='.$_SESSION['UID'].' AND status <> "deleted" AND status <> "done"'),0,0);
-		$content .= "<td><div align=\"center\">".$row['TotTasks']."</div></td>";
+		$content .= "<td><div align=\"center\">".$row['TotTasks']."</div></td>\n";
 
-		$content .= "<td><div align=\"center\">".$row['BudgetHours']."</div></td>";
-
-		$content .= "      </tr>";
+		$content .= "      </tr>\n";
 
 	}
 	db_free_result($q);
 
-	$content .= "    </tbody>";
-	$content .= "  </table>";
-	//		$content .= "</div>";
+	$content .= "    </tbody>\n";
+	$content .= "  </table>\n";
 }
 $content .= "</div>\n";
 $content .= "<div id=\"tabs-4\" class=\"ui-tabs-container ui-tabs-hide\">\n";
-$content .= "	<div>Monitored Projects</div>";
+$content .= "	<div>Monitored Projects</div>\n";
 $content .= "</div>\n";
 $content .= "<div id=\"tabs-5\" class=\"ui-tabs-container ui-tabs-hide\">\n";
-$content .= "	<div>Browse Projects</div>";
+$content .= "	<div>Browse Projects</div>\n";
 $content .= "</div>\n";
 $content .= "</div>\n";
-//}
 
 echo $content;
 

@@ -87,11 +87,13 @@ if (!($fp = @fopen(FILE_BASE.'/'.$folder.'/'.$os_file, 'rb'))) {
 header('Pragma: public');
 header('Cache-Control: no-store, max-age=0, no-cache, must-revalidate');
 header('Cache-Control: post-check=0, pre-check=0', false);
+header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
 header('Cache-control: private');
 
 //send the headers describing the file type
 header('Content-Type: '.$row['mime']);
-header('Content-Disposition: inline; filename='.$row['filename']);
+// changed disposition from inline to attachment
+header('Content-Disposition: attachment; filename='.$row['filename']);
 header('Content_Length: '.$row['size']);
 
 //send it

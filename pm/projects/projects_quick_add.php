@@ -33,7 +33,6 @@ $javascript = '';
 $content .= "<script type='text/javascript'>\n";
 $content .= "$(document).ready(function() {\n";
 $content .= "	$(\".button\").click(function() {\n";
-$content .= " \n";
 $content .= "	// we want to store the values from the form input box, then send via ajax below\n";
 $content .= "	var parameter1 = $(\"input\").serialize();\n";
 $content .= "	var parameter2 = $(\"textarea\").serialize();\n";
@@ -61,7 +60,7 @@ $content .= "});\n";
 $content .= "</script>\n";
 
 //all okay show task info
-$content .= "<div class=\"container\"";
+$content .= "<div class=\"container\">\n";
 $content .= "	<form action=\"\" name=\"UpdateForm\" method=\"post\">\n";
 $content .= "		<input type=\"hidden\" name=\"action\" value=\"".$form_submit."\" />\n";
 $content .= "		<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";

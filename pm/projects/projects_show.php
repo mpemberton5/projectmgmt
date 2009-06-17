@@ -187,7 +187,7 @@ $content .= "</script>\n";
 // TABLE START
 $content .= "<table style=\"width:100%;\">\n";
 $content .= "	<tr>\n";
-$content .= "		<td align=\"left\" style=\"width: 180px; overflow:hidden; vertical-align:top;\">";
+$content .= "		<td align=\"left\" style=\"width: 180px; overflow:hidden; vertical-align:top;\">\n";
 
 $content .= "			<div class=\"clickMe txtmaxsize\" style=\"font-family: sans-serif; font-weight: bold; font-size: large; width: 250px; overflow:hidden;\">\n";
 $content .= "				<a onClick=\"gotoTopLevel();\" href=\"projects.php?action=show&project_id=".$project_id."\">".$project_name."</a>\n";
@@ -198,13 +198,13 @@ $content .= list_posts_from_task($project_id);
 $content .= "			</div>\n";
 
 $content .= "		</td>\n";
-$content .= "		<td valign=\"top\" align=\"left\">";
+$content .= "		<td valign=\"top\" align=\"left\">\n";
 $content .= "			<div id=\"wrapper\">\n";
 $content .= "				<div id=\"contentArea\"></div>\n";
-$content .= "			</div>";
+$content .= "			</div>\n";
 $content .= "		</td>\n";
 $content .= "	</tr>\n";
-$content .= "</table>";
+$content .= "</table>\n";
 
 $content .= "<script language='javascript' type='text/javascript'>\n";
 $content .= "	var hash = window.location.hash.substr(1);\n";

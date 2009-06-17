@@ -14,6 +14,7 @@ include_once(BASE.'includes/time.php');
 if ($_REQUEST['action']=="submit_task_list_order") {
 	if (isset($_POST['project_id'])) {
 		$project_id = $_POST['project_id'];
+		$parent_task_id = $_POST['parent_task_id'];
 		if (db_result(db_query('SELECT COUNT(*) FROM projects WHERE project_id='.$project_id.' LIMIT 1'), 0, 0) < 1) {
 			error('Database integrity check', 'Input data does not match - no project for task');
 		}
@@ -23,6 +24,8 @@ if ($_REQUEST['action']=="submit_task_list_order") {
 			print $SQL . "\n";
 			mysql_query($SQL) or die(mysql_error());
 		}
+		// go ahead and recalculate current task on Milestone just in case
+		db_query('call spSetCurrTaskInMilestone('.$parent_task_id.')');
 	} else {
 		error("error","no project_id");
 	}
@@ -53,7 +56,7 @@ if ($_REQUEST['action']=="submit_weight") {
 }
 
 // numeric inputs
-$input_array = array('task_id','project_id','parent_task_id','assigned_to','percentcomplete');
+$input_array = array('task_id','project_id','parent_task_id','assigned_to','percentcomplete','weight');
 foreach($input_array as $var) {
 	if (isset($_POST[$var])) {
 		if (!@safe_integer($_POST[$var])) {
@@ -66,7 +69,7 @@ foreach($input_array as $var) {
 }
 
 // text inputs
-$input_array = array('name','status','priority','startdate','enddate','weight');
+$input_array = array('name','status','priority','startdate','enddate');
 foreach($input_array as $var) {
 	if (isset($_POST[$var]) and !empty($_POST[$var])) {
 		if (!@safe_data($_POST[$var])) {
@@ -91,14 +94,14 @@ foreach($input_array as $var) {
 	}
 }
 
-//check task name is present
-if (empty($name)) {
-	error("Task Submit", "Project Name must not be blank!");
-}
-
 switch($_REQUEST['action']) {
 
 	case 'submit_insert':
+
+		//check task name is present
+		if (empty($name)) {
+			error("Task Submit", "Project Name must not be blank!");
+		}
 
 		if (db_result(db_query('SELECT COUNT(*) FROM projects WHERE project_id='.$project_id.' LIMIT 1'), 0, 0) < 1) {
 			error('Database integrity check', 'Input data does not match - no project for task');
@@ -115,8 +118,9 @@ switch($_REQUEST['action']) {
 		//start transaction
 		db_begin();
 
+		// gets next available order_num in milestone
 		$ord_num = db_result(db_query('SELECT max(order_num)+1 FROM tasks WHERE project_id='.$project_id.' and parent_task_ID='.$parent_task_id.' LIMIT 1'),0,0);
-		//		$ord_num = db_simplequery("tasks","max(order_num)+1","project_id",$project_id);
+
 		$q = db_query("INSERT INTO tasks(task_name,parent_task_ID,weight,Description,order_num,Assigned_To_ID,Start_Date,End_Date,Priority,Status,PercentComplete,Project_id)
 					values ('".db_escape_string($name)."','$parent_task_id','$weight','".db_escape_string($text)."','$ord_num','$assigned_to','".database_date($startdate,1)."','".database_date($enddate,1)."','$priority','$status','$percentcomplete','$project_id')");
 
@@ -124,7 +128,7 @@ switch($_REQUEST['action']) {
 		$task_id = db_lastoid('tasks_id_seq');
 
 		if ($ord_num==0) {
-			// Make task the on-deck task
+			// Make task the on-deck task if first task
 			db_query("UPDATE tasks SET Curr_Task_ID=".$task_id." WHERE task_id=".$parent_task_id." AND Project_id=".$project_id);
 		}
 
@@ -136,6 +140,11 @@ switch($_REQUEST['action']) {
 
 	case 'submit_update':
 
+		//check task name is present
+		if (empty($name)) {
+			error("Task Submit", "Project Name must not be blank!");
+		}
+
 		//special case: task_id cannot be zero
 		if ($task_id == 0) {
 			error('Task submit', 'Variable task_id is not correctly set');
@@ -145,8 +154,7 @@ switch($_REQUEST['action']) {
 		db_begin();
 
 		//change the info
-		db_query('UPDATE tasks
-					SET task_name=\''.db_escape_string($name).'\',
+		db_query('UPDATE tasks SET task_name=\''.db_escape_string($name).'\',
 					Description=\''.db_escape_string($text).'\',
 					weight='.$weight.',
 					Assigned_To_ID='.$assigned_to.',
@@ -157,59 +165,36 @@ switch($_REQUEST['action']) {
 					LastUpdated=now()
 					WHERE task_id='.$task_id.' AND Project_id='.$project_id);
 
+		// call sp to recalculate pct completes
 		db_query('call spUpdateMilestoneTotalWeight('.$task_id.')');
 
 		//transaction complete
 		db_commit();
 		break;
 
-//	case 'submit_invite':
-//		//mandatory numeric inputs
-//		$input_array = array('task_id', 'project_id');
-//		foreach($input_array as $var) {
-//			if (!@safe_integer($_POST[$var])) {
-//				error('Task submit', 'Variable '.$var.' is not correctly set');
-//			}
-//			${$var} = $_POST[$var];
-//		}
-//
-//		$message = $_POST['message'];
-//
-//		//Get Data
-//		if (!($row = db_fetch_array( db_query('SELECT * FROM tasks WHERE id='.$task_id.' AND creator='.UID), 0))) {
-//			error('Task Invite', 'There is no task information available for that contact');
-//		}
-//
-//		if ($row['assigned_to'] == 0) {
-//			error("Task Invite","There is no assigned_to contact");
-//		} else {
-//			//get user information
-//			if (!($contact_row = db_fetch_array( db_query('SELECT * FROM contacts WHERE id='.$row['assigned_to']), 0))) {
-//				error('Task Invite', 'There is no contact information for that contact');
-//			}
-//		}
-//
-//		// SEND EMAIL
-//		if ($contact_row['email'] <> "") {
-//			//begin transaction
-//			db_begin();
-//
-//			//change status of assigned_to_status as invited
-//			db_query('UPDATE tasks
-//							SET last_edited=now(),
-//							assigned_to_status=12
-//							WHERE id='.$task_id.' AND project_id='.$project_id);
-//
-//			// SEND EMAIL
-//			$token = md5(uniqid(rand(),1));
-//			db_query('INSERT INTO link_table(token,method,project_id,task_id,max_tries) VALUES("'.$token.'", "V", '.$project_id.', '.$task_id.', 5)');
-//			email($contact_row['email'], "CAPP: Invitation to a new Project Task", "Follow this link to review the invitation.  ".BASE_URL."/?qid=".$token."\n\nPersonal Note: ".$message);
-//
-//			//transaction complete
-//			db_commit();
-//		}
-//
-//		break;
+	case 'submit_delete':
+		//delete task or milestone+tasks
+		db_begin();
+		// if this is a task
+		if ($task_id>0) {
+			// first delete task
+			db_query("DELETE FROM tasks WHERE task_ID=".$task_id);
+			// go ahead and recalculate current task on Milestone just in case
+			db_query('call spSetCurrTaskInMilestone('.$parent_task_id.')');
+			// reorder existing tasks for milestone
+			db_query('call spUpdateTaskOrder('.$parent_task_id.')');
+		} else {
+			// first delete all tasks in milestone
+			db_query("DELETE FROM tasks WHERE parent_task_ID=".$parent_task_id);
+			// next delete milestone
+			db_query("DELETE FROM tasks WHERE task_ID=".$parent_task_id);
+			// reorder existing milestones in Project
+			db_query('call spUpdateMilestoneOrder('.$project_id.')');
+		}
+		// call sp to recalculate pct completes
+		db_query('call spUpdateMilestoneTotalWeight('.$task_id.')');
+		db_commit();
+		break;
 
 	default:
 		error('Task Submit','Invalid Request');

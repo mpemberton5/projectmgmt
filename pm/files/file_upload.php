@@ -86,13 +86,13 @@ $content .= "</script>\n";
 //$project_name = db_result(db_query('SELECT project_name FROM projects WHERE id='.$project_id), 0, 0);
 
 $content .= "<form id=\"uploadForm\" method=\"POST\" enctype=\"multipart/form-data\" action=\"files.php\">\n";
-$content .= "<input type=\"hidden\" name=\"action\" value=\"submit_upload\" />\n";
-$content .= "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
-$content .= "<input type=\"hidden\" name=\"task_id\" value=\"".$task_id."\" />\n";
-$content .= "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".FILE_MAXSIZE."\" />\n";
-$content .= "<input type=\"hidden\" id=\"uploadResponseType\"  name=\"mimetype\" value=\"html\" />\n";
-$content .= "Document to Upload:<input id=\"userfile\" type=\"file\" name=\"userfile\" size=\"50\" />\n";
-$content .= "<input type=\"submit\" value=\"Upload\" /></p>\n";
+$content .= "	<input type=\"hidden\" name=\"action\" value=\"submit_upload\" />\n";
+$content .= "	<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
+$content .= "	<input type=\"hidden\" name=\"task_id\" value=\"".$task_id."\" />\n";
+$content .= "	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".FILE_MAXSIZE."\" />\n";
+$content .= "	<input type=\"hidden\" id=\"uploadResponseType\"  name=\"mimetype\" value=\"html\" />\n";
+$content .= "	Document to Upload:&nbsp;<input id=\"userfile\" type=\"file\" name=\"userfile\" size=\"50\" />\n";
+$content .= "	<input type=\"submit\" value=\"Upload\" /></p>\n";
 $content .= "</form>\n";
 
 $content .= "<div>\n";

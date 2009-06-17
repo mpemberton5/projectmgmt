@@ -78,7 +78,7 @@ $content .= "<script type='text/javascript' src='js/jquery.metadata.min.js'></sc
 $content .= "<script type='text/javascript'>\n";
 $content .= "$(document).ready(function() {\n";
 
-$content .= "	$(\".button\").click(function() {\n";
+$content .= "	$(\"#submit_btn\").click(function() {\n";
 $content .= "		// we want to store the values from the form input box, then send via ajax below\n";
 $content .= "		var parameter1 = $(\"input\").serialize();\n";
 $content .= "		var parameter2 = $(\"textarea\").serialize();\n";
@@ -103,6 +103,26 @@ $content .= "				parent.fb.end(true);\n";
 $content .= "			}\n";
 $content .= "		});\n";
 
+$content .= "		return false;\n";
+$content .= "	});\n";
+
+$content .= "	$(\"#discard_btn\").click(function() {\n";
+$content .= "		var answer = confirm(\"Are you sure you want to Discard this Project?\")\n";
+$content .= "		if (answer) {\n";
+$content .= "			$.ajax({\n";
+$content .= "				type: \"POST\",\n";
+$content .= "				url: \"projects.php\",\n";
+$content .= "				data: 'action=submit_delete&project_id=".$project_id."',\n";
+$content .= "				dataType: 'text',\n";
+$content .= "				error: function(xhr, ajaxOptions, thrownError){\n";
+$content .= "					parent.fb.start({href:'error.php?error='+xhr.responseText, rev:'theme:red showClose:true width:560 height:240', title:'Unexpected Error'});\n";
+$content .= "   				},\n";
+$content .= "				success: function(data){\n";
+$content .= "					parent.fb.loadPageOnClose='projects.php?action=list';\n";
+$content .= "					parent.fb.end(true);\n";
+$content .= "				}\n";
+$content .= "			});\n";
+$content .= "		}\n";
 $content .= "		return false;\n";
 $content .= "	});\n";
 
@@ -131,77 +151,139 @@ $content .= "});\n";
 $content .= "</script>\n";
 
 //all okay show task info
-$content .= "<div class=\"container\"";
+$content .= "<div class=\"container\">\n";
 $content .= "<form action=\"\" name=\"UpdateForm\" id=\"UpdateForm\" method=\"post\">\n";
-$content .= "<input type=\"hidden\" name=\"action\" value=\"".$form_submit."\" />\n ";
+$content .= "<input type=\"hidden\" name=\"action\" value=\"".$form_submit."\" />\n";
 $content .= "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
 
 
 $content .= "<table style=\"width:100%\">\n";
 
-$content .= "<tr><td>Project Name:</td><td style=\"width:100%\"><input id=\"name\" type=\"text\" name=\"name\" size=\"30\" value=\"".$project_name."\" class=\"required\"  minlength=\"2\" /></td></tr>\n";
+$content .= "<tr>\n";
+$content .= "	<td>Project Name:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<input id=\"name\" type=\"text\" name=\"name\" size=\"30\" value=\"".$project_name."\" class=\"required\"  minlength=\"2\" />\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
 
 $q = db_query('SELECT * FROM employees WHERE Department_ID=(select emp.Department_ID from employees emp where emp.employee_ID='.$_SESSION['UID'].') ORDER BY LastName,FirstName');
 
 //select contact
-$content .= "<tr><td>Lead Contact:</td><td><select name=\"assigned_to\">\n";
+$content .= "<tr>\n";
+$content .= "	<td>Lead Contact:</td>\n";
+$content .= "	<td>\n";
+$content .= "		<select name=\"assigned_to\">\n";
 for ($i=0; $user_row = @db_fetch_array($q, $i); ++$i) {
 
-	$content .= "<option value=\"".$user_row['employee_ID']."\"";
+	$content .= "			<option value=\"".$user_row['employee_ID']."\"";
 
 	if ($user_row['employee_ID'] == $owner_id) {
 		$content .= " selected=\"selected\"";
 	}
 	$content .= ">".$user_row['LastName'].", ".$user_row['FirstName']."</option>\n";
 }
-$content .= "</select></td></tr>\n";
+$content .= "		</select>\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
 
-$content .= "<tr><td>Start Date:</td><td style=\"width:100%\"><input id='startdate' name='startdate' type='text' size='12' value=\"".$startdate."\"></td></tr>";
-$content .= "<tr><td>End Date:</td><td style=\"width:100%\"><input id='enddate' name='enddate' type='text' size='12' value=\"".$enddate."\"></td></tr>";
+$content .= "<tr>\n";
+$content .= "	<td>Start Date:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<input id='startdate' name='startdate' type='text' size='12' value=\"".$startdate."\" />\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
+$content .= "<tr>\n";
+$content .= "	<td>End Date:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<input id='enddate' name='enddate' type='text' size='12' value=\"".$enddate."\" />\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
 
-$content .= "<tr><td>Impact:</td><td style=\"width:100%\">\n";
-$content .= "<select name=\"impact\">\n";
-$content .= "<option value=\"Low\"".(($impact=='Low') ? ' selected=\'selected\'' : '').">Low</option>\n";
-$content .= "<option value=\"Normal\"".(($impact=='Normal') ? ' selected=\'selected\'' : '').">Normal</option>\n";
-$content .= "<option value=\"High\"".(($impact=='High') ? ' selected=\'selected\'' : '').">High</option>\n";
-$content .= "</select></td></tr>\n";
+$content .= "<tr>\n";
+$content .= "	<td>Impact:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<select name=\"impact\">\n";
+$content .= "			<option value=\"Low\"".(($impact=='Low') ? ' selected=\'selected\'' : '').">Low</option>\n";
+$content .= "			<option value=\"Normal\"".(($impact=='Normal') ? ' selected=\'selected\'' : '').">Normal</option>\n";
+$content .= "			<option value=\"High\"".(($impact=='High') ? ' selected=\'selected\'' : '').">High</option>\n";
+$content .= "		</select>\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
 
-$content .= "<tr><td>CE:</td><td style=\"width:100%\"><input id=\"CE\" type=\"checkbox\" name=\"CE\" value=\"1\"".(($CE=='1') ? ' checked' : '')."/></td></tr>\n";
-$content .= "<tr><td>Managed:</td><td style=\"width:100%\"><input id=\"managed\" type=\"checkbox\" name=\"managed\" value=\"1\"".(($managed=='1') ? ' checked' : '')."/></td></tr>\n";
-$content .= "<tr><td>Contingency:</td><td style=\"width:100%\"><input id=\"contingency\" type=\"text\" name=\"contingency\" size=\"5\" value=\"".$contingency."\" /></td></tr>\n";
+$content .= "<tr>\n";
+$content .= "	<td>CE:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<input id=\"CE\" type=\"checkbox\" name=\"CE\" value=\"1\"".(($CE=='1') ? ' checked' : '')." />\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
+$content .= "<tr>\n";
+$content .= "	<td>Managed:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<input id=\"managed\" type=\"checkbox\" name=\"managed\" value=\"1\"".(($managed=='1') ? ' checked' : '')." />\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
+$content .= "<tr>\n";
+$content .= "	<td>Contingency:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<input id=\"contingency\" type=\"text\" name=\"contingency\" size=\"5\" value=\"".$contingency."\" />\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
 
-$content .= "<tr><td>Priority:</td><td style=\"width:100%\">\n";
-$content .= "<select name=\"priority\">\n";
-$content .= "<option value=\"Low\"".(($priority=='Low') ? ' selected=\'selected\'' : '') .">Low</option>\n";
-$content .= "<option value=\"Normal\"".(($priority=='Normal') ? ' selected=\'selected\'' : '') .">Normal</option>\n";
-$content .= "<option value=\"High\"".(($priority=='High') ? ' selected=\'selected\'' : '') .">High</option>\n";
-$content .= "</select></td></tr>\n";
+$content .= "<tr>\n";
+$content .= "	<td>Priority:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<select name=\"priority\">\n";
+$content .= "			<option value=\"Low\"".(($priority=='Low') ? ' selected=\'selected\'' : '') .">Low</option>\n";
+$content .= "			<option value=\"Normal\"".(($priority=='Normal') ? ' selected=\'selected\'' : '') .">Normal</option>\n";
+$content .= "			<option value=\"High\"".(($priority=='High') ? ' selected=\'selected\'' : '') .">High</option>\n";
+$content .= "		</select>\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
 
-$content .= "<tr><td>Status:</td><td style=\"width:100%\">\n";
-$content .= "<select name=\"status\">\n";
-$content .= "<option value=\"Planning\"".(($status=='Planning') ? ' selected=\'selected\'' : '') .">Planning</option>\n";
-$content .= "<option value=\"Active\"".(($status=='Active') ? ' selected=\'selected\'' : '') .">Active</option>\n";
-$content .= "<option value=\"On Hold\"".(($status=='On Hold') ? ' selected=\'selected\'' : '') .">On Hold</option>\n";
-$content .= "<option value=\"Archived\"".(($status=='Archived') ? ' selected=\'selected\'' : '') .">Archived</option>\n";
-$content .= "<option value=\"Cancelled\"".(($status=='Cancelled') ? ' selected=\'selected\'' : '') .">Cancelled</option>\n";
-$content .= "<option value=\"Complete\"".(($status=='Complete') ? ' selected=\'selected\'' : '') .">Complete</option>\n";
-$content .= "</select></td></tr>\n";
+$content .= "<tr>\n";
+$content .= "	<td>Status:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<select name=\"status\">\n";
+$content .= "			<option value=\"Planning\"".(($status=='Planning') ? ' selected=\'selected\'' : '') .">Planning</option>\n";
+$content .= "			<option value=\"Active\"".(($status=='Active') ? ' selected=\'selected\'' : '') .">Active</option>\n";
+$content .= "			<option value=\"On Hold\"".(($status=='On Hold') ? ' selected=\'selected\'' : '') .">On Hold</option>\n";
+$content .= "			<option value=\"Archived\"".(($status=='Archived') ? ' selected=\'selected\'' : '') .">Archived</option>\n";
+$content .= "			<option value=\"Cancelled\"".(($status=='Cancelled') ? ' selected=\'selected\'' : '') .">Cancelled</option>\n";
+$content .= "			<option value=\"Complete\"".(($status=='Complete') ? ' selected=\'selected\'' : '') .">Complete</option>\n";
+$content .= "		</select>\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
 
-$content .= "<tr><td style=\"vertical-align: top\">Description:</td><td style=\"width:100%\"><textarea style=\"width: 100%\" name=\"description\" rows=\"4\">".$description."</textarea></td> </tr>\n";
-
+$content .= "<tr>\n";
+$content .= "	<td style=\"vertical-align: top\">Description:</td>\n";
+$content .= "	<td style=\"width:100%\">\n";
+$content .= "		<textarea style=\"width: 100%\" name=\"description\" rows=\"4\">".$description."</textarea>\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
 $content .= "</table>\n";
+
 $content .= "<p />\n";
+
 $content .= "<div align=\"center\">\n";
-$content .= "<input type=\"submit\" name=\"submit\" class=\"button\" id=\"submit_btn\" value=\"Save\" />\n";
-$content .= "&nbsp;&nbsp;&nbsp;\n";
-$content .= "<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
+$content .= "	<input type=\"submit\" name=\"Submit\" class=\"button\" id=\"submit_btn\" value=\"Save\" />\n";
+$content .= "	&nbsp;&nbsp;&nbsp;\n";
+$content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
+if ($project_id>0) {
+	if (db_result(db_query('SELECT COUNT(*) FROM task_notes WHERE project_ID='.$project_id.' LIMIT 1'), 0, 0) > 0) {
+		$content .= "	&nbsp;&nbsp;&nbsp;\n";
+		$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Discard\" /> Unable to delete active project.\n";
+	} else {
+		$content .= "	&nbsp;&nbsp;&nbsp;\n";
+		$content .= "	<input type=\"submit\" name=\"Discard\" class=\"button\" id=\"discard_btn\" value=\"Discard\" />\n";
+	}
+}
 $content .= "</div>";
 $content .= "</form>\n";
 $content .= "</div>\n";
 
 $content .= "<script language='javascript' type='text/javascript'>\n";
-$content .= "var mytext = document.getElementById('name');\n";
-$content .= "mytext.focus();\n";
+$content .= "	var mytext = document.getElementById('name');\n";
+$content .= "	mytext.focus();\n";
 $content .= "</script>\n";
 
 echo $content;

@@ -52,7 +52,7 @@ switch($_REQUEST['action']) {
 		//update task
 	case 'submit_insert':
 	case 'submit_update':
-	case 'submit_invite':
+	case 'submit_delete':
 	case 'submit_task_list_order':
 	case 'submit_weight':
 		include(BASE.'tasks/task_submit.php');

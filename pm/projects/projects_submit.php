@@ -34,11 +34,6 @@ function reparent_children($project_id) {
 	return;
 }
 
-// Retrieve passed variables
-if (empty($_POST['name'])) {
-	error("Task Submit", "Project Name must not be blank!");
-}
-
 // numeric inputs
 $input_array = array('task_id','project_id','parent_task_id','assigned_to','percentcomplete','CE','managed','contingency');
 foreach($input_array as $var) {
@@ -81,6 +76,11 @@ foreach($input_array as $var) {
 switch($_REQUEST['action']) {
 
 	case 'submit_insert':
+		// Retrieve passed variables
+		if (empty($_POST['name'])) {
+			error("Task Submit", "Project Name must not be blank!");
+		}
+
 		//start transaction
 		db_begin();
 		$q = db_query("INSERT INTO projects (Project_Name,Description,CreationDate,StartDate,EndDate,Priority,Status,Owner_ID,CE,Managed,Contingency,Impact)
@@ -96,6 +96,11 @@ switch($_REQUEST['action']) {
 		break;
 
 	case 'submit_update':
+		// Retrieve passed variables
+		if (empty($_POST['name'])) {
+			error("Task Submit", "Project Name must not be blank!");
+		}
+
 		//special case: project_id cannot be zero
 		if ($project_id == 0) {
 			error('Projects submit', 'Variable project_id is not correctly set');
@@ -154,6 +159,16 @@ switch($_REQUEST['action']) {
 		db_commit();
 		// this is passed back to origination page if needed
 		echo $project_id;
+		break;
+
+	case 'submit_delete':
+		//TODO: confirm
+		//delete tasks/milestones
+		//delete project
+		db_begin();
+		db_query("DELETE FROM tasks WHERE Project_ID=".$project_id);
+		db_query("DELETE FROM projects WHERE project_ID=".$project_id);
+		db_commit();
 		break;
 
 	default:
