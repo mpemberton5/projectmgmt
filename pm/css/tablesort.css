@@ -548,7 +548,7 @@ fieldset {
 	background-color: #CCC;
 	border: 1px #777 solid;
 	display: block;
-	width: 200px;
+	width: 220px;
 }
 
 .nt {
@@ -603,5 +603,47 @@ pre {
 
 label.error {
 	color: red;
-	font-style: italic
+	font-style: italic;
+}
+
+
+.jsddm {
+	margin: 0;
+	padding: 0;
+}
+
+.jsddm li {
+	float: left;
+	list-style: none;
+	font: 12px Tahoma, Arial;
+}
+
+.jsddm li a {
+	display: block;
+	padding: 2px 5px 4px;
+	text-decoration: none;
+	width: 20px;
+	white-space: nowrap;
+}
+
+.jsddm li ul {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	visibility: hidden;
+	border: 1px black solid;
+}
+
+.jsddm li ul li {
+	float: none;
+	display: inline;
+}
+
+.jsddm li ul li a {
+	width: auto;
+	background: #ffffff;
+}
+
+.jsddm li ul li a:hover {
+	background: #cccccc;
 }

@@ -186,7 +186,7 @@ $content .= "	</div>\n";
 $content .= "	<div style=\"float: right; width: 49%;\">\n";
 $content .= "		<fieldset class=\"gfs\" style=\"width: 90%; height: 83px;\">\n";
 $content .= "			<legend><span class=\"gl\" style=\"width: 90px;\">Attachments</span></legend>\n";
-$content .= "			<br /><div align=\"center\"><input type=\"button\" name=\"add_attach\" value=\"Add\" onclick='parent.fb.start({ href:\"files.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`Add Attachment` doAnimations:false\" });' /></div>\n";
+$content .= "			<br /><div align=\"center\"><input type=\"button\" name=\"add_attach\" value=\"Add\" onclick='parent.fb.start({ href:\"files.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`Add Attachment` doAnimations:false\" }); return false;' /></div>\n";
 $content .= "		</fieldset>\n";
 $content .= "	</div>\n";
 $content .= "</div>\n";

@@ -273,8 +273,13 @@ if ($project_id>0) {
 		$content .= "	&nbsp;&nbsp;&nbsp;\n";
 		$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Discard\" /> Unable to delete active project.\n";
 	} else {
-		$content .= "	&nbsp;&nbsp;&nbsp;\n";
-		$content .= "	<input type=\"submit\" name=\"Discard\" class=\"button\" id=\"discard_btn\" value=\"Discard\" />\n";
+		if (db_result(db_query('SELECT COUNT(*) FROM projects WHERE Owner_ID='.$_SESSION['UID'].' LIMIT 1'), 0, 0) > 0) {
+			$content .= "	&nbsp;&nbsp;&nbsp;\n";
+			$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Discard\" /> Unable to delete active project.\n";
+		} else {
+			$content .= "	&nbsp;&nbsp;&nbsp;\n";
+			$content .= "	<input type=\"submit\" name=\"Discard\" class=\"button\" id=\"discard_btn\" value=\"Discard\" />\n";
+		}
 	}
 }
 $content .= "</div>";

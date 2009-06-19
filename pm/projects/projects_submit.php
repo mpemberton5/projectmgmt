@@ -35,7 +35,7 @@ function reparent_children($project_id) {
 }
 
 // numeric inputs
-$input_array = array('task_id','project_id','parent_task_id','assigned_to','percentcomplete','CE','managed','contingency');
+$input_array = array('task_id','project_id','parent_task_id','assigned_to','percentcomplete','CE','managed','contingency','watch_flag');
 foreach($input_array as $var) {
 	if (isset($_POST[$var]) and !empty($_POST[$var])) {
 		if (!@safe_integer($_POST[$var])) {
@@ -168,6 +168,19 @@ switch($_REQUEST['action']) {
 		db_begin();
 		db_query("DELETE FROM tasks WHERE Project_ID=".$project_id);
 		db_query("DELETE FROM projects WHERE project_ID=".$project_id);
+		db_commit();
+		break;
+
+	case 'submit_watch':
+		if ($watch_flag==0) {
+			// Not Watching Now, so start watching - add record
+			$q = db_query("INSERT INTO user_prefs (user_ID,pref_type,value1) values ('".$_SESSION['UID']."', 'watchedProject', '$project_id')");
+		} else {
+			// currently catching, delete record
+			db_query("DELETE FROM user_prefs WHERE user_ID=".$_SESSION['UID']." and pref_type='watchedProject' and value1=".$project_id);
+		}
+
+		db_begin();
 		db_commit();
 		break;
 

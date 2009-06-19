@@ -42,30 +42,103 @@ if (!($project_row = db_fetch_array($q, 0))) {
 
 $project_pct = $project_row['PercentComplete'];
 $milestone_pct="0";
+$watched_project = db_result(db_query("select count(*) from user_prefs where user_ID=".$_SESSION['UID']." and pref_type='watchedProject' and value1=".$project_id." LIMIT 1"), 0, 0);
 
 $content .= "<script type='text/javascript'>\n";
-$content .= "	function SelectTask(node){\n";
-$content .= "		var task = 'task-' + node;\n";
-$content .= "		$(\"#treev\").dynatree(\"getTree\").activateKey(task);\n";
+$content .= "function SelectTask(node){\n";
+$content .= "	var task = 'task-' + node;\n";
+$content .= "	$(\"#treev\").dynatree(\"getTree\").activateKey(task);\n";
+$content .= "}\n";
+
+$content .= "var timeout = 200;\n";
+$content .= "var closetimer = 0;\n";
+$content .= "var ddmenuitem = 0;\n";
+$content .= "function jsddm_open() {\n";
+$content .= "	jsddm_canceltimer();\n";
+$content .= "	jsddm_close();\n";
+$content .= "	ddmenuitem = $(this).find('ul').css('visibility', 'visible');\n";
+$content .= "}\n";
+$content .= "function jsddm_close() {\n";
+$content .= "	if(ddmenuitem) ddmenuitem.css('visibility', 'hidden');\n";
+$content .= "}\n";
+$content .= "function jsddm_timer() {\n";
+$content .= "	closetimer = window.setTimeout(jsddm_close, timeout);\n";
+$content .= "}\n";
+$content .= "function jsddm_canceltimer() {\n";
+$content .= "	if(closetimer) {\n";
+$content .= "		window.clearTimeout(closetimer);\n";
+$content .= "		closetimer = null;\n";
 $content .= "	}\n";
+$content .= "}\n";
+$content .= "$(document).ready(function() {\n";
+$content .= "	$('.jsddm > li').bind('mouseover', jsddm_open)\n";
+$content .= "	$('.jsddm > li').bind('mouseout', jsddm_timer)\n";
+$content .= "});\n";
+$content .= "document.onclick = jsddm_close;\n";
+
+$content .= "function SaveWatch() {\n";
+$content .= "	var parameters = 'action=submit_watch&user_id=".$_SESSION['UID']."&project_id=".$project_id."&watch_flag=' + document.getElementById('hiddenWatchedFlag').value;\n";
+$content .= "	$.ajax({\n";
+$content .= "		type: \"POST\",\n";
+$content .= "		url: \"projects.php\",\n";
+$content .= "		data: parameters,\n";
+$content .= "		error: function(xhr, ajaxOptions, thrownError){\n";
+$content .= "			parent.fb.start({href:'error.php?error='+xhr.responseText, rev:'theme:red showClose:true width:560 height:240', title:'Unexpected Error'});\n";
+$content .= "   		},\n";
+$content .= "		success: function(data){\n";
+$content .= "			parent.fb.loadPageOnClose='self';\n";
+$content .= "			parent.fb.end(true);\n";
+$content .= "			if (document.getElementById('hiddenWatchedFlag').value==1) {\n";
+$content .= "				document.getElementById('hiddenWatchedFlag').value=0;\n";
+$content .= "				document.getElementById('watch_img').src='images/checkbox-small-unchecked.gif';\n";
+$content .= "				$.jGrowl(\"Project removed from Watched List\");\n";
+$content .= "			} else {\n";
+$content .= "				document.getElementById('hiddenWatchedFlag').value=1;\n";
+$content .= "				document.getElementById('watch_img').src='images/checkbox-small-checked.gif';\n";
+$content .= "				$.jGrowl(\"Project added to Watched List\");\n";
+$content .= "			}\n";
+$content .= "			jsddm_close;\n";
+$content .= "		}\n";
+$content .= "	});\n";
+$content .= "}\n";
 $content .= "</script>\n";
 
 // show project details
 $content .= "<fieldset>\n";
 $content .= "	<legend>\n";
-$content .= "		<span class=\"gl\" style=\"width: 260px;\">Project Details</span>\n";
+$content .= "		<span class=\"gl\" style=\"width: 220px;\">Project Details</span>\n";
 $content .= "	</legend>\n";
 $content .= "	<div>\n";
-$content .= "		<div style=\"position: absolute; width: 100%;\">\n";
+$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
 $content .= "			<div style=\"position: relative; display: inline; float: left; top: -25px; #top: -21; right: -178px;\">\n";
-$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href:\"projects.php?action=popupEdit&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`EDIT Project Details` doAnimations:false\" });'>Edit</a>\n";
+
+
+$content .= "<ul class=\"jsddm\">\n";
+$content .= "    <li><a href=\"javascript:void(0)\">Action</a>\n";
+$content .= "        <ul>\n";
+$content .= "            <li><a href=\"javascript:void(0)\" onclick='fb.start({ href:\"projects.php?action=popupEdit&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`EDIT Project Details` doAnimations:false\" }); return false;'><img src='images/blank.gif' width='10px' height='10px'>&nbsp;&nbsp;Edit</a></li>\n";
+$content .= "            <li><a href=\"javascript:void(0)\" onclick='fb.start({ href:\"files.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`Add Attachment` doAnimations:false\" }); return false;'><img src='images/blank.gif' width='10px' height='10px'>&nbsp;&nbsp;Attachments</a></li>\n";
+if ($watched_project) {
+	$content .= "            <li id='watch'><a href=\"javascript:void(0)\" onClick=\"SaveWatch();return false;\"><img id='watch_img' src='images/checkbox-small-checked.gif'>&nbsp;&nbsp;Watch</a></li>\n";
+} else {
+	$content .= "            <li id='watch'><a href=\"javascript:void(0)\" onClick=\"SaveWatch();return false;\"><img id='watch_img' src='images/checkbox-small-unchecked.gif'>&nbsp;&nbsp;Watch</a></li>\n";
+}
+$content .= "        </ul>\n";
+$content .= "    </li>\n";
+$content .= "</ul>\n";
+
+
+
+
+
+//$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href:\"projects.php?action=popupEdit&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`EDIT Project Details` doAnimations:false\" });'>Edit</a>\n";
 $content .= "			</div>\n";
 $content .= "		</div>\n";
-$content .= "		<div style=\"position: absolute; width: 100%;\">\n";
-$content .= "			<div style=\"position: relative; display: inline; float: left; top: -25px; #top: -21; right: -222px; #right: -228px;\">\n";
-$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href:\"files.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`Add Attachment` doAnimations:false\" });'>Attach</a>\n";
-$content .= "			</div>\n";
-$content .= "		</div>\n";
+//$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+//$content .= "			<div style=\"position: relative; display: inline; float: left; top: -25px; #top: -21; right: -222px; #right: -228px;\">\n";
+//$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href:\"files.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`Add Attachment` doAnimations:false\" });'>Attach</a>\n";
+//$content .= "			</div>\n";
+//$content .= "		</div>\n";
 $content .= "		<div>\n";
 $content .= "			<table class=\"nt\" style=\"width: 99%;\">\n";
 $content .= "				<tr class=\"nt\" style=\"align:left;\">\n";
@@ -103,8 +176,34 @@ if ($_GET['action']=="showTopLevel") {
 	$content .= "<fieldset>\n";
 	$content .= "	<legend><span class=\"gl\">Milestones</span></legend>\n";
 	$content .= "	<div>\n";
-	$content .= "		<div style=\"position: absolute; width: 1px;\"><div style=\"position: relative; display: inline; float: left; top:-25px; #top:-21; left:100px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=organize&project_id=".$project_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`ORGANIZE Tasks` doAnimations:false\" });'>Organize</a></div></div>\n";
-	$content .= "		<div style=\"position: absolute; width: 1px;\"><div style=\"position: relative; display: inline; float: left; top:-25px; #top:-21; left:178px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Milestone` doAnimations:false\" });'>New</a></div></div>\n";
+//	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+//	$content .= "			<div style=\"position: relative; display: inline; float: left; top:-25px; #top:-21; left:100px;\">\n";
+//	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=organize&project_id=".$project_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`ORGANIZE Tasks` doAnimations:false\" }); return false;'>Organize</a>\n";
+//	$content .= "			</div>\n";
+//	$content .= "		</div>\n";
+//	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+//	$content .= "			<div style=\"position: relative; display: inline; float: left; top:-25px; #top:-21; left:178px;\">\n";
+//	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Milestone` doAnimations:false\" }); return false;'>New</a>\n";
+//	$content .= "			</div>\n";
+//	$content .= "		</div>\n";
+
+
+
+	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+	$content .= "			<div style=\"position: relative; display: inline; float: left; top:-25px; #top:-21; left:178px;\">\n";
+	$content .= "				<ul class=\"jsddm\">\n";
+	$content .= "					<li><a href=\"javascript:void(0)\">Action</a>\n";
+	$content .= "						<ul>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=organize&project_id=".$project_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`ORGANIZE Milestones` doAnimations:false\" }); return false;'>Organize</a></li>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Milestone` doAnimations:false\" }); return false;'>New</a></li>\n";
+	$content .= "						</ul>\n";
+	$content .= "					</li>\n";
+	$content .= "				</ul>\n";
+	$content .= "			</div>\n";
+	$content .= "		</div>\n";
+
+
+
 
 	// query all tasks/subtasks
 	//query to get the children for this project_id
@@ -153,9 +252,18 @@ if ($_GET['action']=="showTopLevel") {
 	$content .= "	<div>\n";
 	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
 	$content .= "			<div style=\"position: relative; display: inline; float: left; top: -25px; #top: -21; right: -178px;\">\n";
-	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" });'>Edit</a>\n";
+	$content .= "				<ul class=\"jsddm\">\n";
+	$content .= "					<li><a href=\"javascript:void(0)\">Action</a>\n";
+	$content .= "						<ul>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" }); return false;'>Edit</a></li>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Milestone` doAnimations:false\" }); return false;'>New</a></li>\n";
+	$content .= "						</ul>\n";
+	$content .= "					</li>\n";
+	$content .= "				</ul>\n";
+	//	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" }); return false;'>Edit</a>\n";
 	$content .= "			</div>\n";
 	$content .= "		</div>\n";
+
 	$content .= "		<div>\n";
 	$content .= "			<table class=\"nt\" style=\"width: 99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align: left;\">\n";
@@ -180,8 +288,28 @@ if ($_GET['action']=="showTopLevel") {
 	$content .= "<fieldset>\n";
 	$content .= "	<legend><span class=\"gl\">Task List</span></legend>\n";
 	$content .= "	<div>\n";
-	$content .= "		<div style=\"position: absolute; width: 1px;\"><div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-100px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=organize&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`ORGANIZE Tasks` doAnimations:false\" });'>Organize</a></div></div>\n";
-	$content .= "		<div style=\"position: absolute; width: 1px;\"><div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\"><a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Task` doAnimations:false\" });'>New</a></div></div>\n";
+//	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+//	$content .= "			<div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-100px;\">\n";
+//	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=organize&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`ORGANIZE Tasks` doAnimations:false\" }); return false;'>Organize</a>\n";
+//	$content .= "			</div>\n";
+//	$content .= "		</div>\n";
+//	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+//	$content .= "			<div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\">\n";
+//	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Task` doAnimations:false\" }); return false;'>New</a>\n";
+//	$content .= "			</div>\n";
+//	$content .= "		</div>\n";
+	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+	$content .= "			<div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\">\n";
+	$content .= "				<ul class=\"jsddm\">\n";
+	$content .= "					<li><a href=\"javascript:void(0)\">Action</a>\n";
+	$content .= "						<ul>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=organize&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`ORGANIZE Tasks` doAnimations:false\" }); return false;'>Organize</a></li>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Task` doAnimations:false\" }); return false;'>New</a></li>\n";
+	$content .= "						</ul>\n";
+	$content .= "					</li>\n";
+	$content .= "				</ul>\n";
+	$content .= "			</div>\n";
+	$content .= "		</div>\n";
 
 	// query all tasks/subtasks
 	//query to get the children for this project_id
@@ -226,11 +354,30 @@ if ($_GET['action']=="showTopLevel") {
 	$content .= "<fieldset>\n";
 	$content .= "	<legend><span class=\"gl\">Milestone Details</span></legend>\n";
 	$content .= "	<div>\n";
+//	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+//	$content .= "			<div style=\"position: relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\">\n";
+//	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$milestone_ID."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" });'>Edit</a>\n";
+//	$content .= "			</div>\n";
+//	$content .= "		</div>\n";
+
+
 	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
-	$content .= "			<div style=\"position: relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\">\n";
-	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$milestone_ID."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" });'>Edit</a>\n";
+	$content .= "			<div style=\"position: relative; display: inline; float: left; top: -25px; #top: -21; right: -178px;\">\n";
+	$content .= "				<ul class=\"jsddm\">\n";
+	$content .= "					<li><a href=\"javascript:void(0)\">Action</a>\n";
+	$content .= "						<ul>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$milestone_ID."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Milestone` doAnimations:false\" }); return false;'>Edit</a></li>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Milestone` doAnimations:false\" }); return false;'>New</a></li>\n";
+	$content .= "						</ul>\n";
+	$content .= "					</li>\n";
+	$content .= "				</ul>\n";
 	$content .= "			</div>\n";
 	$content .= "		</div>\n";
+
+
+
+
+
 	$content .= "		<div>\n";
 	$content .= "			<table class=\"nt\" style=\"width: 99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align: left;\">\n";
@@ -258,11 +405,30 @@ if ($_GET['action']=="showTopLevel") {
 	$content .= "<fieldset>\n";
 	$content .= "	<legend><span class=\"gl\">Task Details</span></legend>\n";
 	$content .= "	<div>\n";
+//	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
+//	$content .= "			<div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\">\n";
+//	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Task` doAnimations:false\" }); return false;'>Edit</a>\n";
+//	$content .= "			</div>\n";
+//	$content .= "		</div>\n";
+
+
+
 	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
-	$content .= "			<div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\">\n";
-	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Task` doAnimations:false\" });'>Edit</a>\n";
+	$content .= "			<div style=\"position: relative; display: inline; float: left; top: -25px; #top: -21; right: -178px;\">\n";
+	$content .= "				<ul class=\"jsddm\">\n";
+	$content .= "					<li><a href=\"javascript:void(0)\">Action</a>\n";
+	$content .= "						<ul>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`EDIT Task` doAnimations:false\" }); return false;'>Edit</a></li>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc showClose:false disableScroll:true caption:`NEW Task` doAnimations:false\" }); return false;'>New</a></li>\n";
+	$content .= "						</ul>\n";
+	$content .= "					</li>\n";
+	$content .= "				</ul>\n";
 	$content .= "			</div>\n";
 	$content .= "		</div>\n";
+
+
+
+
 	$content .= "		<div>\n";
 	$content .= "			<table class=\"nt\" style=\"width: 99%;\">\n";
 	$content .= "				<tr class=\"nt\" style=\"align: left;\">\n";
@@ -286,7 +452,7 @@ if ($_GET['action']=="showTopLevel") {
 	$content .= "	<div>\n";
 	$content .= "		<div style=\"position: absolute; width: 1px;\">\n";
 	$content .= "			<div style=\"position:relative; display: inline; float: left; top:-25px; #top:-21; right:-178px;\">\n";
-	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"task_notes.php?action=popupAdd&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:530 infoPos:tc showClose:false disableScroll:true caption:`NEW Task Note` doAnimations:false\" });'>New</a>\n";
+	$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"task_notes.php?action=popupAdd&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:530 infoPos:tc showClose:false disableScroll:true caption:`NEW Task Note` doAnimations:false\" }); return false;'>New</a>\n";
 	$content .= "			</div>\n";
 	$content .= "		</div>\n";
 
@@ -320,6 +486,7 @@ if ($_GET['action']=="showTopLevel") {
 	$content .= "	</div>\n";
 	$content .= "</fieldset>\n";
 }
+$content .= "<input type=\"hidden\" id=\"hiddenWatchedFlag\" value=\"".$watched_project."\" />\n";
 echo $content;
 
 ?>
