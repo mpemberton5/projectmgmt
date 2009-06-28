@@ -21,7 +21,6 @@ switch ($_REQUEST['action']) {
 		break;
 
 	case 'users':
-//		create_complete_top('Administration', 4, 0, 'name', 0);
 		create_complete_top('Administration');
 		include(BASE.'admin/admin_main.php');
 		include(BASE.'admin/admin_user_list.php');
@@ -35,14 +34,21 @@ switch ($_REQUEST['action']) {
 		create_bottom();
 		break;
 
-	case 'user_depts':
+	case 'depts':
 		create_complete_top('Administration');
 		include(BASE.'admin/admin_main.php');
-		include(BASE.'admin/admin_user_depts.php');
+		include(BASE.'admin/admin_dept_list.php');
 		create_bottom();
 		break;
 
-	case 'user_level':
+	case 'deptPopupAdd':
+	case 'deptPopupEdit':
+		create_complete_top('Administration', 4, 0, 'Dept_Name', 0);
+		include(BASE.'admin/admin_dept_edit.php');
+		create_bottom();
+		break;
+
+		case 'user_level':
 		create_complete_top('Administration');
 		include(BASE.'admin/admin_main.php');
 		include(BASE.'admin/admin_user_level.php');
@@ -52,10 +58,15 @@ switch ($_REQUEST['action']) {
 	case 'admin_get_user_list':
 	case 'user_submit_insert':
 	case 'user_submit_update':
-		include(BASE.'admin/admin_submit.php');
+		include(BASE.'admin/admin_user_submit.php');
 		break;
 
-		//error case
+	case 'dept_submit_insert':
+	case 'dept_submit_update':
+		include(BASE.'admin/admin_dept_submit.php');
+		break;
+
+	//error case
 	default:
 		error('Admin action handler', 'Invalid request given');
 		break;

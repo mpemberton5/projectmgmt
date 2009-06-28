@@ -34,7 +34,7 @@ $content .= "			</a>\n";
 $content .= "		</td>\n";
 
 $content .= "		<td>\n";
-$content .= "			<a href=\"admin.php?action=user_depts\">";
+$content .= "			<a href=\"admin.php?action=depts\">";
 $content .= "				<img src=\"".BASE_SUB."images/admin/user.png\" height=\"48\" width=\"48\" alt=\"\" />";
 $content .= "				<br />";
 $content .= "				Departments";
