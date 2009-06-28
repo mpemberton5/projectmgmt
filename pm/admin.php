@@ -21,9 +21,17 @@ switch ($_REQUEST['action']) {
 		break;
 
 	case 'users':
-		create_complete_top('Administration', 4, 0, 'name', 0);
-//		include(BASE.'admin/admin_main.php');
+//		create_complete_top('Administration', 4, 0, 'name', 0);
+		create_complete_top('Administration');
+		include(BASE.'admin/admin_main.php');
 		include(BASE.'admin/admin_user_list.php');
+		create_bottom();
+		break;
+
+	case 'userPopupAdd':
+	case 'userPopupEdit':
+		create_complete_top('Administration', 4, 0, 'MedCtrLogin', 0);
+		include(BASE.'admin/admin_user_edit.php');
 		create_bottom();
 		break;
 
@@ -42,7 +50,9 @@ switch ($_REQUEST['action']) {
 		break;
 
 	case 'admin_get_user_list':
-		include(BASE.'admin/admin_get_data.php');
+	case 'user_submit_insert':
+	case 'user_submit_update':
+		include(BASE.'admin/admin_submit.php');
 		break;
 
 		//error case

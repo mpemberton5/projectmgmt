@@ -106,6 +106,14 @@ function InitSession() {
 		die();
 	}
 
+	// Do not allow if user is inactive
+	if ($row['active']<1) {
+		session_destroy();
+		header('Location: '.BASE_URL.'login.php');
+		//secure_error('Access denied; Unable to Read User Information (2)', 1);
+		die();
+	}
+
 	// SET VARIABLES
 	$_SESSION['UID'] = $row['employee_ID'];
 	$_SESSION['LEVEL_ID'] = $row['Level_ID'];

@@ -182,6 +182,8 @@ for ($i=0; $user_row = @db_fetch_array($q, $i); ++$i) {
 	}
 	$content .= ">".$user_row['LastName'].", ".$user_row['FirstName']."</option>\n";
 }
+db_free_result($q);
+
 $content .= "		</select>\n";
 $content .= "	</td>\n";
 $content .= "</tr>\n";
