@@ -97,7 +97,7 @@ define('TLS', 'N' );
 //default_gray.css
 //default_pastel.css
 
-define('CSS_MAIN', 'tablesort.css' );
+define('CSS_MAIN', 'default.css' );
 define('CSS_CALENDAR', 'calendar.css' );
 define('CSS_PRINT', 'print.css' );
 
