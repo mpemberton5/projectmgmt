@@ -1,5 +1,5 @@
 <?php
-/* $Id: admin_config.php,v 1.1 2009/04/22 00:05:07 markp Exp $ */
+/* $Id$ */
 
 //security check
 //if (!defined('UID')) {

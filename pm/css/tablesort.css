@@ -1,14 +1,30 @@
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td
+/*********************************************/
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td
 	{
 	margin: 0;
 	padding: 0;
 	border: 0;
 	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
 	font-size: 100%;
-	font-family: inherit;
 	vertical-align: baseline;
+	background: transparent;
+}
+
+body {
+	line-height: 1;
+}
+
+ol,ul {
+	list-style: none;
+}
+
+blockquote,q {
+	quotes: none;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+	content: '';
+	content: none;
 }
 
 /* remember to define focus styles! */
@@ -16,33 +32,19 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	outline: 0;
 }
 
-body {
-	line-height: 1;
-	color: black;
-	background: white;
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
 }
 
-ol,ul {
-	list-style: none;
+del {
+	text-decoration: line-through;
 }
 
 /* tables still need 'cellspacing="0"' in the markup */
 table {
-	border-collapse: separate;
+	border-collapse: collapse;
 	border-spacing: 0;
-}
-
-caption,th,td {
-	text-align: left;
-	font-weight: normal;
-}
-
-blockquote:before,blockquote:after,q:before,q:after {
-	content: "";
-}
-
-blockquote,q {
-	quotes: "" "";
 }
 
 /*
@@ -122,6 +124,19 @@ table {
 	border-collapse: collapse;
 }
 
+table.scrollTable {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+table.scrollTable td {
+	padding: 0;
+	border: 0;
+}
 .cs1 {
 	width: 30em;
 }
@@ -179,8 +194,7 @@ th.sortable,th.sortable-text,th.sortable-date,th.sortable-keep,th.sortable-date-
 }
 
 th.forwardSort {
-	background: #CAE8EA url(../images/table/bg_header_down.jpg) no-repeat 0
-		0;
+	background: #CAE8EA url(../images/table/bg_header_down.jpg) no-repeat 0 0;
 }
 
 th.reverseSort {
@@ -508,7 +522,7 @@ table.tablesorter thead tr .headerSortDown,table.tablesorter thead tr .headerSor
 }
 
 legend {
-	margin: 0 0;
+	margin: 0 0 0 5px;
 	padding: 0;
 	border: 0;
 }
@@ -531,6 +545,9 @@ fieldset {
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 7px;
 	border-radius: 3px;
+	border: 1px solid black;
+	margin: 1px;
+	padding: 0 0 0 5px;
 }
 
 .gfs {
@@ -606,7 +623,6 @@ label.error {
 	font-style: italic;
 }
 
-
 .jsddm {
 	margin: 0;
 	padding: 0;
@@ -632,6 +648,7 @@ label.error {
 	position: absolute;
 	visibility: hidden;
 	border: 1px black solid;
+	z-index: 10000;
 }
 
 .jsddm li ul li {

@@ -1,5 +1,5 @@
 <?php
-/* $Id: charts_submit.php,v 1.2 2009/06/08 21:13:04 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

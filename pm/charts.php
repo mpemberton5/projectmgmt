@@ -1,5 +1,5 @@
 <?php
-/* $Id: charts.php,v 1.3 2009/06/08 21:13:04 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 require_once(BASE.'includes/security.php');

@@ -1,5 +1,5 @@
 <?php
-/* $Id: security.php,v 1.6 2009/06/06 02:25:13 markp Exp $ */
+/* $Id$ */
 
 //get includes
 require_once('path.php');

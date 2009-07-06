@@ -1,5 +1,5 @@
 <?php
-/* $Id: index.php,v 1.12 2009/06/08 21:13:04 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 require_once(BASE.'path_config.php');
@@ -17,44 +17,6 @@ if ($_SESSION['MGMT']==0) {
 	die();
 	/* MGR AND ABOVE */
 } elseif ($_SESSION['MGMT']==1) {
-	//CSS LINK
-	$content .= "<!-- CSS -->\n";
-	$content .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".BASE_SUB."css/announcements.css\" />\n";
-
-	$content .= "<script type='text/javascript' src='/public/charts/version-2-Jorm-2/js/swfobject.js'></script>\n";
-	$content .= "<script type='text/javascript'>\n";
-	$content .= "	swfobject.embedSWF('/public/charts/version-2-Jorm-2/open-flash-chart.swf', 'my_chart','350', '350', '9.0.0', 'expressInstall.swf',{'data-file':'charts.php?action=manager_chart1'} );\n";
-	$content .= "	swfobject.embedSWF('/public/charts/version-2-Jorm-2/open-flash-chart.swf', 'pie_chart','350', '350', '9.0.0', 'expressInstall.swf',{'data-file':'charts.php?action=overall_status','loading':'Overall Project Status Pie is loading ...'} );\n";
-	$content .= "	function pie_slice_clicked( index ) {\n";
-	$content .= "		window.location='projects.php?action=list&uid=' + index;\n";
-	$content .= "	}\n";
-	$content .= "</script>\n";
-
-	/*******************/
-	/* OVERVIEW CHARTS */
-	/*******************/
-	$content .= "    <table class=\"tablebox\" cellpadding=\"0\" cellspacing=\"0\">\n";
-	$content .= "      <tr class=\"panelHeading\">\n";
-	$content .= "        <td><img src=\"".BASE_SUB."images/icon-announcements-big.gif\" width=\"24\" height=\"24\" vspace=\"4\" hspace=\"4\" border=\"0\" alt=\"\"> </td>\n";
-	$content .= "        <td width=\"100%\">Management Dashboard</td>\n";
-	$content .= "      </tr>\n";
-	$content .= "      <tr>\n";
-	$content .= "        <td class=\"panel\" colspan=\"3\"><div id=\"divGroupAnnouncements\" style=\"padding: 4px\">\n";
-	$content .= "          <table>\n";
-	$content .= "             <tr valign=\"top\">\n";
-	$content .= "               <td width=\"100%\">\n";
-	$content .= "					<div id='my_chart'></div>\n";
-	$content .= "					<div id='pie_chart'></div>\n";
-	$content .= "               </td>\n";
-	$content .= "             </tr>\n";
-	$content .= "           </table>\n";
-	$content .= "         </div>\n";
-	$content .= "       </td>\n";
-	$content .= "     </tr>\n";
-	$content .= "   </table>\n";
-
-	/* TESTING */
-} elseif ($_SESSION['MGMT']==2) {
 
 	// http://www.stanlemon.net/projects/jgrowl.html
 

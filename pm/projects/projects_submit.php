@@ -1,5 +1,5 @@
 <?php
-/* $Id: projects_submit.php,v 1.9 2009/06/03 20:18:07 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

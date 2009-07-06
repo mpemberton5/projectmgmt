@@ -1,5 +1,5 @@
 <?php
-/* $Id: files.php,v 1.3 2009/06/05 18:16:39 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 require_once(BASE.'includes/security.php');

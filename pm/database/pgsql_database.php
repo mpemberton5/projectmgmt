@@ -1,5 +1,5 @@
 <?php
-/* $Id: pgsql_database.php,v 1.1 2009/04/22 00:05:07 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 

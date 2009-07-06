@@ -1,6 +1,6 @@
 <?php
 /*
- $Id: note_submit.php,v 1.6 2009/06/03 20:18:07 markp Exp $
+ $Id$
  */
 
 //security check

@@ -1,5 +1,5 @@
 <?php
-/* $Id: common.php,v 1.6 2009/05/29 16:49:51 markp Exp $ */
+/* $Id$ */
 
 /**
  * @param $recipient

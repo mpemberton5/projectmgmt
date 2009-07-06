@@ -1,5 +1,5 @@
 <?php
-/* $Id: note_edit.php,v 1.8 2009/06/03 04:19:51 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {
@@ -120,7 +120,7 @@ $content .= "  theme_advanced_buttons2 : 'cut,copy,paste,pastetext,pasteword,|,s
 $content .= "  theme_advanced_buttons3 : '',\n";
 $content .= "  theme_advanced_toolbar_location : 'top',\n";
 $content .= "  theme_advanced_toolbar_align : 'left',\n";
-$content .= "  theme_advanced_path_location : 'bottom',\n";
+$content .= "  theme_advanced_path_location : '',\n";
 $content .= "  plugin_insertdate_dateFormat : '%Y-%m-%d',\n";
 $content .= "  plugin_insertdate_timeFormat : '%H:%M:%S',\n";
 $content .= "  extended_valid_elements : 'a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]'\n";
@@ -165,16 +165,16 @@ $content .= "			</fieldset>\n";
 $content .= "		</fieldset>\n";
 $content .= "	</div>\n";
 $content .= "	<div style=\"float: right; width: 49%;\">\n";
-$content .= "		<fieldset class=\"gfs\" style=\"width: 90%;\">\n";
+$content .= "		<fieldset class=\"gfs\" style=\"width: 90%; height: 83px;\">\n";
 $content .= "			<legend><span class=\"gl\" style=\"width: 90px;\">Notifications</span></legend>\n";
 $content .= "			<input type=\"radio\" name=\"notify\" value=\"None\" checked />None<br />\n";
 $content .= "			<input type=\"radio\" name=\"notify\" value=\"Lead\"/>Notify Project Lead<br />\n";
-$content .= "			<input type=\"radio\" name=\"notify\" value=\"Part\"/>Notify All Project Participants\n";
+//$content .= "			<input type=\"radio\" name=\"notify\" value=\"Part\"/>Notify All Project Participants\n";
 $content .= "		</fieldset>\n";
 $content .= "	</div>\n";
 $content .= "</div>\n";
 
-$content .= "<div style=\"width: 98%; height: 100px;\">\n";
+$content .= "<div style=\"clear: both; width: 98%; height: 100px;\">\n";
 $content .= "	<div style=\"float: left; width: 49%;\">\n";
 $content .= "		<fieldset class=\"gfs\" style=\"width: 90%;\">\n";
 $content .= "			<legend><span class=\"gl\" style=\"width: 90px;\">Next Action</span></legend>\n";

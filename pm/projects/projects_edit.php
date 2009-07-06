@@ -1,5 +1,5 @@
 <?php
-/* $Id: projects_edit.php,v 1.16 2009/06/02 21:13:16 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {
@@ -72,6 +72,8 @@ if ($_REQUEST['action'] == "popupEdit") {
 	$description = "";
 }
 
+$content .= "<link type='text/css' rel='stylesheet' href='/public/slider/css/redmond/jquery-ui-1.7.1.custom.css'>\n";
+
 $content .= "<script type='text/javascript' src='/public/jquery-validate/jquery.validate.min.js'></script>\n";
 $content .= "<script type='text/javascript' src='js/jquery.metadata.min.js'></script>\n";
 
@@ -85,7 +87,6 @@ $content .= "		var parameter2 = $(\"textarea\").serialize();\n";
 $content .= "		var parameter3 = $(\"checkbox\").serialize();\n";
 $content .= "		var parameter4 = $(\"select\").serialize();\n";
 $content .= "		var parameters = parameter1 + '&' + parameter2 + '&' + parameter3 + '&' + parameter4;\n";
-
 $content .= "		$.ajax({\n";
 $content .= "			type: \"POST\",\n";
 $content .= "			url: \"projects.php\",\n";
@@ -102,7 +103,6 @@ $content .= $return_page;
 $content .= "				parent.fb.end(true);\n";
 $content .= "			}\n";
 $content .= "		});\n";
-
 $content .= "		return false;\n";
 $content .= "	});\n";
 
@@ -155,7 +155,6 @@ $content .= "<div class=\"container\">\n";
 $content .= "<form action=\"\" name=\"UpdateForm\" id=\"UpdateForm\" method=\"post\">\n";
 $content .= "<input type=\"hidden\" name=\"action\" value=\"".$form_submit."\" />\n";
 $content .= "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
-
 
 $content .= "<table style=\"width:100%\">\n";
 

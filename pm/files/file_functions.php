@@ -1,5 +1,5 @@
 <?php
-/* $Id: file_functions.php,v 1.1 2009/04/22 00:05:06 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!defined('UID')) {

@@ -1,5 +1,5 @@
 <?php
-/* $Id: tasks.php,v 1.9 2009/06/05 18:16:39 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 require_once(BASE.'includes/security.php');
@@ -56,6 +56,13 @@ switch($_REQUEST['action']) {
 	case 'submit_task_list_order':
 	case 'submit_weight':
 		include(BASE.'tasks/task_submit.php');
+		break;
+
+	case 'popupMilestonesPrint':
+	case 'popupMilestonePrint':
+	case 'popupTasksPrint':
+	case 'popupTaskPrint':
+		include(BASE.'includes/print.php');
 		break;
 
 		//Error case

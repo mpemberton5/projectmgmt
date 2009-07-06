@@ -1,5 +1,5 @@
 <?php
-/* $Id: projects_edit.php,v 1.16 2009/06/02 21:13:16 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

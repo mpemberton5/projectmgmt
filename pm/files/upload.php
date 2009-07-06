@@ -8,7 +8,7 @@
 // } else {
 //  echo("<p>Message delivery failed...</p>");
 // }
-/* $Id: upload.php,v 1.2 2009/06/03 04:19:51 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

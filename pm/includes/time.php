@@ -1,5 +1,5 @@
 <?php
-/* $Id: time.php,v 1.4 2009/05/07 21:36:20 markp Exp $ */
+/* $Id$ */
 
 //security check
 //if (! defined('UID')) {

@@ -1,5 +1,5 @@
 <?php
-/* $Id: mysql_database.php,v 1.3 2009/06/02 21:13:16 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 

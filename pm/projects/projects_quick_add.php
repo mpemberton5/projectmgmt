@@ -1,5 +1,5 @@
 <?php
-/* $Id: projects_quick_add.php,v 1.3 2009/06/03 20:18:07 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

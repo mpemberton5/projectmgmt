@@ -1,5 +1,5 @@
 <?php
-/* $Id: task_submit.php,v 1.16 2009/06/05 18:16:39 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

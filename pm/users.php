@@ -1,6 +1,6 @@
 <?php
 
-/* $Id: users.php,v 1.1 2009/04/22 00:05:06 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 require_once(BASE.'includes/security.php');

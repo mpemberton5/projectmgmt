@@ -1,5 +1,5 @@
 <?php
-/* $Id: cht_to.php,v 1.1 2009/06/08 21:13:04 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

@@ -1,5 +1,5 @@
 <?php
-/* $Id: admin_main.php,v 1.2 2009/06/08 21:13:03 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

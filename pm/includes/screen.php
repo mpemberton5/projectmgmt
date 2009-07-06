@@ -1,5 +1,5 @@
 <?php
-/* $Id: screen.php,v 1.16 2009/06/08 05:04:44 markp Exp $ */
+/* $Id$ */
 /*
  Create the windowed interface and define a simple API
 
@@ -228,7 +228,7 @@ function html_body_top($page_type=0) {
 	$content = "";
 	//create the main table
 	$content .= "	<!-- start main table -->\n";
-	$content .= "	<table width=\"100%\" cellspacing=\"0\" class=\"main\">\n";
+	$content .= "	<table class=\"main\">\n";
 
 	switch ($page_type) {
 
@@ -238,11 +238,12 @@ function html_body_top($page_type=0) {
 			$content .= "			<td class=\"masthead\">\n";
 			$content .= "				<div style=\"position: relative;\">\n";
 			$content .= "					<div style=\"position:absolute; width: 72px; top:1px;left:8px;\">\n";
-			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupAdd\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
+			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupTemplate\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
+//			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupAdd\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
 			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupQuickAdd\", rev:\"width:665 height:220 infoPos:tc showClose:false disableScroll:true caption:`NEW Quick To-Do Project` doAnimations:false\" });'>Quick To-Do</a>\n";
 			$content .= "					</div>\n";
 			$content .= "				</div>\n";
-			$content .= "				<table width=\"100%\" cellspacing=\"0\">\n";
+			$content .= "				<table>\n";
 			$content .= "					<tr>\n";
 			$content .= "						<td style=\"font-weight: bold; font-size: large;\">WFUBMC Project Management</td>\n";
 			$content .= "						<td align=\"right\">\n";

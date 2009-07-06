@@ -1,5 +1,5 @@
 <?php
-/* $Id: oracle_database.php,v 1.1 2009/06/03 20:18:07 markp Exp $ */
+/* $Id$ */
 
 /****** NOT FUNCTIONING ************/
 

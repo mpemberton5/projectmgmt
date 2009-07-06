@@ -1,5 +1,5 @@
 <?php
-/* $Id: file_submit.php,v 1.2 2009/05/29 16:49:51 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {

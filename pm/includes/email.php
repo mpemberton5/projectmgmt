@@ -1,5 +1,5 @@
 <?php
-/* $Id: email.php,v 1.1 2009/04/22 00:05:07 markp Exp $ */
+/* $Id$ */
 /*
   Refer to RFC 821 (RFC 2821), RFC 822 (RFC 2822) for basic SMTP.
   Refer to RFC 1652 for 8BITMIME

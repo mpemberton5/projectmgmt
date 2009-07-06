@@ -1,5 +1,5 @@
 <?php
-/* $Id: projects_list.php,v 1.20 2009/06/05 18:16:39 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {
@@ -17,13 +17,13 @@ include_once(BASE.'includes/time.php');
 //some inital values
 $content = '';
 
-$content .= "<link type='text/css' rel='stylesheet' href='/public/slider/css/redmond/jquery-ui-1.7.1.custom.css'>\n";
+$content .= "<link type='text/css' rel='stylesheet' href='/public/slider/css/redmond/jquery-ui-1.7.1.custom.css' />\n";
 
 $content .= "<script type=\"text/javascript\" src=\"".BASE."js/jquery.tablesorter.min.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"".BASE."js/jquery.metadata.min.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"/public/jquery-treeview/lib/jquery.cookie.js\"></script>\n";
 
-$content .= "<script language=\"javascript\">\n";
+$content .= "<script>\n";
 $content .= "	function goLite(node) {\n";
 $content .= "	   document.getElementById(node).style.backgroundColor = \"#99DDFF\";\n";
 $content .= "	}\n";
@@ -39,13 +39,19 @@ $content .= "		});\n";
 $content .= "		$(\"#mainTable\").tablesorter( {sortList: [[7,1],[4,1]]} );\n";
 $content .= "		$(\"#mainTable2\").tablesorter( {sortList: [[3,0]]} );\n";
 $content .= "		$(\"#mainTable3\").tablesorter( {sortList: [[3,0]]} );\n";
+$content .= "		$(\"#mainTable4\").tablesorter( {sortList: [[3,0]]} );\n";
 $content .= "	});\n";
 $content .= "	$.cookie('ui-dynatree-cookie-select', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-active', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-expand', '');\n";
+
+//$content .= "	$('ul.ui-tabs-nav a:eq(0)').toggleClass('ui-tabs-loading');\n";
+//$content .= "	$.get(\"projects.php?action=getMonitoredProjects\", function(data) {\n";
+//$content .= "		$(\"#MonitoredProjects\").html( data );\n";
+//$content .= "	});\n";
 $content .= "</script>\n";
 
-$content .= "<style type=\"text/css\">\n";
+$content .= "<style>\n";
 $content .= "/* Caching CSS created with the help of;\n";
 $content .= "	Klaus Hartl <klaus.hartl@stilbuero.de> */\n";
 $content .= "@media projection, screen {\n";
@@ -116,9 +122,14 @@ $content .= "						<ul class=\"ui-tabs-nav\">\n";
 $content .= "							<li><a href=\"#tabs-1\"><div style=\"font-size: 12px;\">To Do List</div></a></li>\n";
 $content .= "							<li><a href=\"#tabs-2\"><div style=\"font-size: 12px;\">Contributor</div></a></li>\n";
 $content .= "							<li><a href=\"#tabs-3\"><div style=\"font-size: 12px;\">Owner</div></a></li>\n";
-$content .= "							<li><a href=\"#tabs-4\"><div style=\"font-size: 12px;\">Monitor</div></a></li>\n";
+$content .= "							<li><a href=\"#tabs-4\"><div style=\"font-size: 12px;\">Watched</div></a></li>\n";
 $content .= "							<li><a href=\"#tabs-5\"><div style=\"font-size: 12px;\">Browse</div></a></li>\n";
+//$content .= "							<li><a href=\"projects.php?action=getMonitoredProjects\"><div style=\"font-size: 12px;\">test</div></a></li>\n";
 $content .= "						</ul>\n";
+
+
+
+
 $content .= "						<div id=\"tabs-1\" class=\"ui-tabs-container ui-tabs-hide\">\n";
 
 //check if there are project
@@ -185,7 +196,11 @@ if (db_numrows($q) > 0) {
 	$content .= "  </table>\n";
 }
 $content .= "</div>\n";
-$content .= "<div id=\"tabs-2\" class=\"ui-tabs-container ui-tabs-hide\">\n";
+
+
+
+
+$content .= "						<div id=\"tabs-2\" class=\"ui-tabs-container ui-tabs-hide\">\n";
 
 // PROJECT LIST THAT USER IS ASSOCIATED WITH
 // query to get the projects
@@ -240,7 +255,11 @@ if (db_numrows($q) > 0) {
 	$content .= "  </table>\n";
 }
 $content .= "</div>\n";
-$content .= "<div id=\"tabs-3\" class=\"ui-tabs-container ui-tabs-hide\">\n";
+
+
+
+
+$content .= "						<div id=\"tabs-3\" class=\"ui-tabs-container ui-tabs-hide\">\n";
 
 // PROJECT LIST THAT USER IS ASSOCIATED WITH
 // query to get the projects
@@ -301,10 +320,72 @@ if (db_numrows($q) > 0) {
 	$content .= "  </table>\n";
 }
 $content .= "</div>\n";
-$content .= "<div id=\"tabs-4\" class=\"ui-tabs-container ui-tabs-hide\">\n";
-$content .= "	<div>Monitored Projects</div>\n";
+
+
+
+
+$content .= "						<div id=\"tabs-4\" class=\"ui-tabs-container ui-tabs-hide\">\n";
+// PROJECT LIST THAT USER IS WATCHING
+//"select value1 from user_prefs where user_ID=".$_SESSION['UID'] and pref_type='watchedProject'
+
+// query to get the projects
+$SQL  = "SELECT *, ";
+$SQL .= "(select Dept_Name from departments where departments.department_id=emp.department_id) as Dept ";
+$SQL .= "FROM projects proj, employees emp ";
+$SQL .= "WHERE emp.employee_id=proj.owner_id ";
+$SQL .= "AND proj.project_id in (select value1 from user_prefs where user_ID=".$_SESSION['UID']." and pref_type='watchedProject') ";
+$SQL .= "AND (select count(*) from tasks where tasks.project_id=proj.project_id AND Assigned_To_ID=".$_SESSION['UID'].") > 0 ";
+$SQL .= "AND proj.status<>'Complete' ";
+$SQL .= "ORDER BY EndDate";
+
+$q = db_query($SQL);
+
+//check if there are project
+if (db_numrows($q) > 0) {
+
+	//setup content table
+	$content .= "<table id=\"mainTable4\" cellpadding=\"0\" cellspacing=\"0\" class=\"tablesorter\">\n";
+	$content .= "    <thead>\n";
+	$content .= "      <tr>\n";
+	$content .= "        <th>Project Name</th>\n";
+	$content .= "        <th>Lead Contact</th>\n";
+	$content .= "        <th>Department</th>\n";
+	$content .= "        <th>Date Started</th>\n";
+	$content .= "      </tr>\n";
+	$content .= "    </thead>\n";
+	$content .= "    <tbody>\n";
+
+	//show all projects
+	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
+		$content .= "      <tr>\n";
+		//show name and a link
+		$content .= "<td>\n";
+		$content .= "<a href=\"projects.php?action=show&amp;project_id=".$row['project_ID']."\"><b>".$row['Project_Name']."</b></a>\n";
+		$content .= "</td>\n";
+
+		$content .= "<td>".$row['FirstName']." ".$row['LastName']."</td>\n";
+		$content .= "<td>".$row['Dept']."</td>\n";
+		if (empty($row['StartDate']) or $row['StartDate']==='0000-00-00') {
+			$startdate = "";
+		} else {
+			$startdate = date('m-d-Y',strtotime($row['StartDate']));
+		}
+		$content .= "<td>".$startdate."</td>\n";
+
+		$content .= "      </tr>\n";
+
+	}
+	db_free_result($q);
+
+	$content .= "    </tbody>\n";
+	$content .= "  </table>\n";
+}
 $content .= "</div>\n";
-$content .= "<div id=\"tabs-5\" class=\"ui-tabs-container ui-tabs-hide\">\n";
+
+
+
+
+$content .= "						<div id=\"tabs-5\" class=\"ui-tabs-container ui-tabs-hide\">\n";
 $content .= "	<div>Browse Projects</div>\n";
 $content .= "</div>\n";
 $content .= "</div>\n";

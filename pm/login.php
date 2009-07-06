@@ -1,5 +1,5 @@
 <?php
-/* $Id: login.php,v 1.1 2009/06/05 18:16:39 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 require_once(BASE.'path_config.php');

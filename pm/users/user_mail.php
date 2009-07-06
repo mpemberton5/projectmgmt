@@ -1,5 +1,5 @@
 <?php
-/* $Id: user_mail.php,v 1.1 2009/04/22 00:05:05 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!defined('UID')) {

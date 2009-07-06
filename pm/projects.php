@@ -1,5 +1,5 @@
 <?php
-/* $Id: projects.php,v 1.13 2009/06/05 18:16:39 markp Exp $ */
+/* $Id$ */
 
 require_once('path.php');
 require_once(BASE.'includes/security.php');
@@ -49,6 +49,24 @@ switch($_REQUEST['action']) {
 		include(BASE.'projects/projects_quick_add.php');
 		create_bottom();
 		break;
+
+	case 'popupTemplate':
+		create_complete_top('Project Templates', 4, 0, 'name', 1);
+		include(BASE.'projects/project_templates.php');
+		create_bottom();
+		break;
+
+	case 'template_details':
+		include(BASE.'projects/projects_getdata.php');
+		break;
+
+	case 'popupProjectPrint':
+		include(BASE.'includes/print.php');
+		break;
+
+//	case 'getMonitoredProjects':
+//		include(BASE.'projects/projects_getMonitoredProjects.php');
+//		break;
 
 		//Error case
 	default:

@@ -1,5 +1,5 @@
 <?php
-/* $Id: database.php,v 1.1 2009/04/22 00:05:07 markp Exp $ */
+/* $Id$ */
 
 if (!defined('DATABASE_TYPE')) {
   die('Config file not loaded properly for database');

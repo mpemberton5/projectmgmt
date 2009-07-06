@@ -1,5 +1,5 @@
 <?php
-/* $Id: file_upload.php,v 1.3 2009/06/03 04:19:51 markp Exp $ */
+/* $Id$ */
 
 //security check
 if (!isset($_SESSION['UID'])) {
@@ -22,15 +22,20 @@ if (!@safe_integer($_REQUEST['task_id'])) {
 }
 
 $content = "";
+$content .= "<link type='text/css' rel='stylesheet' href='/public/flexigrid/css/flexigrid/flexigrid.css'>\n";
+//$content .= "<script type=\"text/javascript\" src=\"/public/flexigrid/lib/jquery/jquery.js\"></script>\n";
 
 $content .= "<script type=\"text/javascript\" src=\"js/jquery.form.js\"></script>\n";
+$content .= "<script type=\"text/javascript\" src=\"/public/flexigrid/flexigrid.pack.js\"></script>\n";
 
 $content .= "<script type=\"text/javascript\"><!--\n";
 $content .= "$().ajaxError(function(ev,xhr,o,err) {\n";
 $content .= "    alert(err);\n";
 $content .= "    if (window.console && window.console.log) console.log(err);\n";
 $content .= "});\n";
-$content .= "$(function() {\n";
+
+$content .= "$(document).ready(function() {\n";
+$content .= "	$('.scrollTable').flexigrid();\n";
 $content .= "	$('#uploadForm').ajaxForm({\n";
 $content .= "        beforeSubmit: function(a,f,o) {\n";
 $content .= "            o.dataType = $('#uploadResponseType')[0].value;\n";
@@ -44,9 +49,7 @@ $content .= "                data = elementToString(data.documentElement, true);
 $content .= "            else if (typeof data == 'object')\n";
 $content .= "                data = objToString(data);\n";
 $content .= "            out.append('<div><pre>'+ data +'</pre></div>');\n";
-
-$content .= "			$(\"#fileListTable\").load(\"files.php?action=list&project_id=".$project_id."&task_id=".$task_id."\");\n";
-
+//$content .= "			$(\"#tableContainer\").load(\"files.php?action=list&project_id=".$project_id."&task_id=".$task_id."\");\n";
 $content .= "        }\n";
 $content .= "    });\n";
 $content .= "});\n";
@@ -106,16 +109,44 @@ $content .= "<div>\n";
 $content .= "List of Files for Project\n";
 $content .= "</div>\n";
 
-$content .= "<div id=\"fileListTable\"></div>\n";
+
+$SQL = "SELECT f.*, emp.FirstName, emp.LastName from files f, employees emp where f.project_id=".$project_id." and emp.employee_ID=f.uploaded_by";
+$q = db_query($SQL);
+
+//check if there are project
+if (db_numrows($q) > 0) {
+	$content .= "<table id=\"scrollTable\" class=\"scrollTable\">\n";
+	$content .= "	<thead>\n";
+	$content .= "		<tr>\n";
+	$content .= "			<th width='150px'>FileName</th>\n";
+	$content .= "			<th width='50px'>Size</th>\n";
+	$content .= "			<th width='100px'>Date Uploaded</th>\n";
+	$content .= "			<th width='100px'>Uploaded By</th>\n";
+	$content .= "		</tr>\n";
+	$content .= "	</thead>\n";
+	$content .= "	<tbody>\n";
+	
+	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
+		$content .= "		<tr>\n";
+		$content .= "			<td><a href=\"files.php?action=download&file_id=".$row['file_id']."\">".$row['filename']."</a></td>\n";
+		$content .= "			<td>".$row['size']."</td>\n";
+		$content .= "			<td>".$row['uploaded_date']."</td>\n";
+		$content .= "			<td>".$row['FirstName']." ".$row['LastName']."</td>\n";
+		$content .= "		</tr>\n";
+	}
+	$content .= "	</tbody>\n";
+	$content .= "</table>\n";
+}
+db_free_result($q);
 
 $content .= "<p />\n";
 $content .= "<div align=\"center\">\n";
 $content .= "	<input type=\"button\" value=\"Close\" onClick=\"parent.fb.end(false); return false;\" />\n";
 $content .= "</div>\n";
 
-$content .= "<script language='javascript' type='text/javascript'>\n";
-$content .= "	$(\"#fileListTable\").load(\"files.php?action=list&project_id=".$project_id."&task_id=".$task_id."\");\n";
-$content .= "</script>\n";
+//$content .= "<script language='javascript' type='text/javascript'>\n";
+//$content .= "	$(\"#tableContainer\").load(\"files.php?action=list&project_id=".$project_id."&task_id=".$task_id."\");\n";
+//$content .= "</script>\n";
 
 $content .= "<script language='javascript' type='text/javascript'>\n";
 $content .= "	var mytext = document.getElementById('userfile');\n";
