@@ -136,7 +136,7 @@ $content .= "						<div id=\"tabs-1\" class=\"ui-tabs-container ui-tabs-hide\">\
 if (db_numrows($q) > 0) {
 
 	//setup content table
-	$content .= "								<table id=\"mainTable\" cellpadding=\"0\" cellspacing=\"0\" class=\"tablesorter\">\n";
+	$content .= "								<table id=\"mainTable\" cellpadding=\"0\" cellspacing=\"0\" class=\"tablesorter general\">\n";
 	$content .= "									<thead>\n";
 	$content .= "										<tr>\n";
 	$content .= "											<th>Task Name</th>\n";

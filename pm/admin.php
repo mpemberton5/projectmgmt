@@ -34,6 +34,12 @@ switch ($_REQUEST['action']) {
 		create_bottom();
 		break;
 
+	case 'admin_get_user_list':
+	case 'user_submit_insert':
+	case 'user_submit_update':
+		include(BASE.'admin/admin_user_submit.php');
+		break;
+
 	case 'depts':
 		create_complete_top('Administration');
 		include(BASE.'admin/admin_main.php');
@@ -48,22 +54,35 @@ switch ($_REQUEST['action']) {
 		create_bottom();
 		break;
 
-		case 'user_level':
+	case 'dept_submit_insert':
+	case 'dept_submit_update':
+		include(BASE.'admin/admin_dept_submit.php');
+		break;
+
+	case 'user_level':
 		create_complete_top('Administration');
 		include(BASE.'admin/admin_main.php');
 		include(BASE.'admin/admin_user_level.php');
 		create_bottom();
 		break;
 
-	case 'admin_get_user_list':
-	case 'user_submit_insert':
-	case 'user_submit_update':
-		include(BASE.'admin/admin_user_submit.php');
+	case 'clients':
+		create_complete_top('Administration');
+		include(BASE.'admin/admin_main.php');
+		include(BASE.'admin/admin_client_list.php');
+		create_bottom();
 		break;
 
-	case 'dept_submit_insert':
-	case 'dept_submit_update':
-		include(BASE.'admin/admin_dept_submit.php');
+	case 'clientPopupAdd':
+	case 'clientPopupEdit':
+		create_complete_top('Administration', 4, 0, 'client_full_name', 0);
+		include(BASE.'admin/admin_client_edit.php');
+		create_bottom();
+		break;
+
+	case 'client_submit_insert':
+	case 'client_submit_update':
+		include(BASE.'admin/admin_client_submit.php');
 		break;
 
 	//error case

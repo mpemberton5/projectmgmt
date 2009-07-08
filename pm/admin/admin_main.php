@@ -24,7 +24,7 @@ $content .= "<br />\n";
 //$content .= "<div style=\"align:center;\">\n";
 $content .= "<table class=\"cpanel\">\n";
 $content .= "	<tr>\n";
-$content .= "		<td>\n";
+$content .= "		<td style=\"width: 100px;\">\n";
 //$content .= "				<a href=\"javascript:void(0);\" onclick='fb.start({ href:\"admin.php?action=users\", rev:\"width:765 height:515 infoPos:tc disableScroll:true caption:`Add Attachment` doAnimations:false\" });'>\n";
 $content .= "			<a href=\"admin.php?action=users\">";
 $content .= "				<img src=\"".BASE_SUB."images/admin/support.png\" height=\"48\" width=\"48\" alt=\"\" />";
@@ -33,7 +33,7 @@ $content .= "				Users";
 $content .= "			</a>\n";
 $content .= "		</td>\n";
 
-$content .= "		<td>\n";
+$content .= "		<td style=\"width: 100px;\">\n";
 $content .= "			<a href=\"admin.php?action=depts\">";
 $content .= "				<img src=\"".BASE_SUB."images/admin/user.png\" height=\"48\" width=\"48\" alt=\"\" />";
 $content .= "				<br />";
@@ -41,21 +41,21 @@ $content .= "				Departments";
 $content .= "			</a>\n";
 $content .= "		</td>\n";
 
-$content .= "		<td>\n";
+$content .= "		<td style=\"width: 100px;\">\n";
 $content .= "			<a href=\"admin.php?action=user_level\">";
-$content .= "				<img src=\"".BASE_SUB."images/admin/addedit.png\" height=\"48\" width=\"48\" alt=\"\" />";
+$content .= "				<img src=\"".BASE_SUB."images/admin/credits.png\" height=\"48\" width=\"48\" alt=\"\" />";
 $content .= "				<br />";
 $content .= "				User Levels";
 $content .= "			</a>\n";
 $content .= "		</td>\n";
 
-//$content .= "		<td style=\"height: 100px;\" align=\"center\">";
-//$content .= "			<a href=\"admin.php?action=bus_cat\" style=\"text-decoration: none;\">";
-//$content .= "				<img src=\"".BASE_SUB."images/admin/frontpage.png\" align=\"middle\" height=\"48\" width=\"48\" alt=\"\" />";
-//$content .= "				<br />";
-//$content .= "				Business Categories";
-//$content .= "			</a>";
-//$content .= "		</td>";
+$content .= "		<td style=\"width: 100px;\">";
+$content .= "			<a href=\"admin.php?action=clients\" style=\"text-decoration: none;\">";
+$content .= "				<img src=\"".BASE_SUB."images/admin/langmanager.png\" align=\"middle\" height=\"48\" width=\"48\" alt=\"\" />";
+$content .= "				<br />";
+$content .= "				Clients";
+$content .= "			</a>";
+$content .= "		</td>";
 $content .= "	</tr>\n";
 
 //$content .= "	<tr>";

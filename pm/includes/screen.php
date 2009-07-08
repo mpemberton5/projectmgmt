@@ -243,13 +243,13 @@ function html_body_top($page_type=0) {
 			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupQuickAdd\", rev:\"width:665 height:220 infoPos:tc showClose:false disableScroll:true caption:`NEW Quick To-Do Project` doAnimations:false\" });'>Quick To-Do</a>\n";
 			$content .= "					</div>\n";
 			$content .= "				</div>\n";
-			$content .= "				<table>\n";
+			$content .= "				<table class=\"general\">\n";
 			$content .= "					<tr>\n";
 			$content .= "						<td style=\"font-weight: bold; font-size: large;\">WFUBMC Project Management</td>\n";
 			$content .= "						<td align=\"right\">\n";
 
 			//show username
-			$content .= "							<a href=\"index.php\">";
+			$content .= "							<a href=\"index.php\">&nbsp;&nbsp;";
 			$content .= sprintf('%s\'s Home', $_SESSION['UID_NAME']);
 			$content .= "</a>\n";
 			//$content .= "&nbsp;&nbsp;|&nbsp;&nbsp;";

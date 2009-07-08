@@ -35,7 +35,7 @@ function reparent_children($project_id) {
 }
 
 // numeric inputs
-$input_array = array('task_id','project_id','parent_task_id','assigned_to','percentcomplete','CE','managed','contingency','watch_flag');
+$input_array = array('task_id','project_id','parent_task_id','assigned_to','percentcomplete','CE','managed','contingency','watch_flag','client_id');
 foreach($input_array as $var) {
 	if (isset($_POST[$var]) and !empty($_POST[$var])) {
 		if (!@safe_integer($_POST[$var])) {
@@ -83,8 +83,8 @@ switch($_REQUEST['action']) {
 
 		//start transaction
 		db_begin();
-		$q = db_query("INSERT INTO projects (Project_Name,Description,CreationDate,StartDate,EndDate,Priority,Status,Owner_ID,CE,Managed,Contingency,Impact)
-		              values('".db_escape_string($name)."','".db_escape_string($description)."',now(),'".database_date($startdate,1)."','".database_date($enddate,1)."','$priority','$status','$assigned_to','$CE','$managed','$contingency','$impact')");
+		$q = db_query("INSERT INTO projects (Project_Name,Description,CreationDate,StartDate,EndDate,Priority,Status,Client_ID,Owner_ID,CE,Managed,Contingency,Impact)
+		              values('".db_escape_string($name)."','".db_escape_string($description)."',now(),'".database_date($startdate,1)."','".database_date($enddate,1)."','$priority','$status','$client_id','$assigned_to','$CE','$managed','$contingency','$impact')");
 
 		// get taskid for the new task/project
 		$project_id = db_lastoid('project_id_seq');
@@ -118,6 +118,7 @@ switch($_REQUEST['action']) {
 			EndDate=\''.database_date($enddate,1).'\',
 			Status=\''.$status.'\',
 			Owner_ID=\''.$assigned_to.'\',
+			Client_ID=\''.$client_id.'\',
 			CE=\''.$CE.'\',
 			Managed=\''.$managed.'\',
 			Contingency=\''.$contingency.'\',
@@ -132,8 +133,8 @@ switch($_REQUEST['action']) {
 	case 'submit_quick_insert':
 		//start transaction
 		db_begin();
-		$q = db_query("INSERT INTO projects (Project_Name,Description,CreationDate,StartDate,EndDate,Priority,Status,Owner_ID,CE,Managed,Contingency,Impact)
-		              values('".db_escape_string($name)."','".db_escape_string($description)."',now(),'".database_date($startdate,1)."','".database_date($enddate,1)."','$priority','$status','$assigned_to','$CE','$managed','$contingency','$impact')");
+		$q = db_query("INSERT INTO projects (Project_Name,Description,CreationDate,StartDate,EndDate,Priority,Status,Client_ID,Owner_ID,CE,Managed,Contingency,Impact)
+		              values('".db_escape_string($name)."','".db_escape_string($description)."',now(),'".database_date($startdate,1)."','".database_date($enddate,1)."','$priority','$status','$client_id','$assigned_to','$CE','$managed','$contingency','$impact')");
 
 		// get taskid for the new project
 		$project_id = db_lastoid('project_id_seq');

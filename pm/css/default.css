@@ -119,24 +119,10 @@ table {
 	width: auto;
 	padding: 0;
 	margin: 0 auto 1.5em auto;
-	border-top: 1px solid #C1DAD7;
-	border-left: 1px solid #C1DAD7;
+	border: 1px solid #C1DAD7;
 	border-collapse: collapse;
 }
 
-table.scrollTable {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-size: 100%;
-	vertical-align: baseline;
-	background: transparent;
-}
-table.scrollTable td {
-	padding: 0;
-	border: 0;
-}
 .cs1 {
 	width: 30em;
 }
@@ -245,8 +231,7 @@ td a:hover {
 
 td {
 	font: normal 13px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-	border-right: 1px solid #C1DAD7;
-	border-bottom: 1px solid #C1DAD7;
+	border: 1px solid #C1DAD7;
 	padding: 4px 12px 4px 4px;
 	color: #4f6b72;
 	white-space: nowrap;
@@ -663,4 +648,11 @@ label.error {
 
 .jsddm li ul li a:hover {
 	background: #cccccc;
+}
+
+.scrollTable {
+	margin: 0;
+}
+.scrollTable td {
+	padding: 0px! important;
 }

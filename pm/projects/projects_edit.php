@@ -34,6 +34,7 @@ if ($_REQUEST['action'] == "popupEdit") {
 	$form_submit = "submit_update";
 	$return_page = "				parent.fb.loadPageOnClose='self';\n";
 	$project_name = $project_row['Project_Name'];
+	$client_id = $project_row['Client_ID'];
 	$owner_id = $project_row['Owner_ID'];
 	if (empty($project_row['StartDate']) or $project_row['StartDate']==="0000-00-00") {
 		$startdate = "";
@@ -60,6 +61,7 @@ if ($_REQUEST['action'] == "popupEdit") {
 	$return_page = "				parent.fb.loadPageOnClose='projects.php?action=show&project_id='+data;\n";
 	$project_id = "";
 	$project_name = "";
+	$client_id = "";
 	$owner_id = $_SESSION['UID'];
 	$startdate = "";
 	$enddate = "";
@@ -180,6 +182,29 @@ for ($i=0; $user_row = @db_fetch_array($q, $i); ++$i) {
 		$content .= " selected=\"selected\"";
 	}
 	$content .= ">".$user_row['LastName'].", ".$user_row['FirstName']."</option>\n";
+}
+db_free_result($q);
+
+$content .= "		</select>\n";
+$content .= "	</td>\n";
+$content .= "</tr>\n";
+
+$q = db_query('SELECT * FROM clients ORDER BY client_full_name');
+
+//select contact
+$content .= "<tr>\n";
+$content .= "	<td>Client:</td>\n";
+$content .= "	<td>\n";
+$content .= "		<select name=\"client_id\">\n";
+$content .= "			<option value=\"0\">None</option>\n";
+for ($i=0; $client_row = @db_fetch_array($q, $i); ++$i) {
+
+	$content .= "			<option value=\"".$client_row['client_ID']."\"";
+
+	if ($client_row['client_ID'] == $client_id) {
+		$content .= " selected=\"selected\"";
+	}
+	$content .= ">".$client_row['client_full_name']."</option>\n";
 }
 db_free_result($q);
 
