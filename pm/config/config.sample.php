@@ -65,6 +65,9 @@ define('TZ', '-5' );
 //enable email to send messages? (Values are 'Y' or 'N')
 define('USE_EMAIL', 'Y' );
 
+//user who received feedback from feedback form
+define ('FEEDBACKUSER','mpembert@wfubmc.edu');
+
 //location of SMTP server (IP address or FQDN)
 define('SMTP_HOST', 'mail.wfubmc.edu' );
 

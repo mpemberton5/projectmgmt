@@ -158,6 +158,7 @@ function html_css($page_type=0) {
 		case 0: //main window + menu sidebar
 		case 1: //single main window (no menu sidebar)
 		default:
+			$content .= "	<link rel='shortcut icon' href='favicon.ico'>\n";
 			$content .= "	<link type='text/css' rel='stylesheet' href='".BASE_CSS.CSS_MAIN."' />\n";
 			$content .= "	<link type='text/css' rel='stylesheet' href='/public/jquery/development-bundle/themes/base/ui.all.css' />\n";
 			$content .= "	<link type='text/css' rel='stylesheet' href='/public/jquery/development-bundle/demos/demos.css' />\n";
@@ -238,10 +239,13 @@ function html_body_top($page_type=0) {
 			$content .= "			<td class=\"masthead\">\n";
 			$content .= "				<div style=\"position: relative;\">\n";
 			$content .= "					<div style=\"position:absolute; width: 72px; top:1px;left:8px;\">\n";
-//			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupTemplate\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
-			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupAdd\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
-			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupQuickAdd\", rev:\"width:665 height:220 infoPos:tc showClose:false disableScroll:true caption:`NEW Quick To-Do Project` doAnimations:false\" });'>Quick To-Do</a>\n";
+//			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupTemplate\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
+			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupAdd\", rev:\"width:665 height:515 infoPos:tc info:`feedback.php?currform=screen.php-New Project` infoText:Feedback infoOptions:`width:555 height:350` disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
+			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupQuickAdd\", rev:\"width:665 height:220 infoPos:tc info:`feedback.php?currform=screen.php-Quick To-Do` infoText:Feedback infoOptions:`width:555 height:350` disableScroll:true caption:`NEW Quick To-Do Project` doAnimations:false\" });'>Quick To-Do</a>\n";
 			$content .= "					</div>\n";
+			$content .= "				</div>\n";
+			$content .= "				<div style=\"position: relative; float: right;\">\n";
+			$content .= "					<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"feedback.php?currform=Main\", rev:\"width:555 height:350 doAnimations:false\" });'><img name=\"Feedback\" src=\"images/feedback.jpg\" width=\"64\" height=\"46\" border=\"0\" alt=\"Feedback\"></a>\n";
 			$content .= "				</div>\n";
 			$content .= "				<table class=\"general\">\n";
 			$content .= "					<tr>\n";

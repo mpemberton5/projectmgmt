@@ -183,7 +183,7 @@ if (db_numrows($q) > 0) {
 
 		$content .= "<td style=\"text-align:center\">\n";
 
-		$content .= "<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"task_notes.php?action=popupAdd&project_id=".$row['Project_ID']."&task_id=".$row['task_ID']."\", rev:\"width:650 height:530 infoPos:tc showClose:false disableScroll:true caption:`NEW Task Note` doAnimations:false\" }); return false;'\">New</a>\n";
+		$content .= "<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"task_notes.php?action=popupAdd&project_id=".$row['Project_ID']."&task_id=".$row['task_ID']."\", rev:\"width:650 height:530 infoPos:tc info:`feedback.php?currform=projects_list.php-New Task Note` infoText:Feedback infoOptions:`width:555 height:350` disableScroll:true caption:`NEW Task Note` doAnimations:false\" }); return false;'\">New</a>\n";
 
 		$content .= "</td>\n";
 
