@@ -238,8 +238,8 @@ function html_body_top($page_type=0) {
 			$content .= "			<td class=\"masthead\">\n";
 			$content .= "				<div style=\"position: relative;\">\n";
 			$content .= "					<div style=\"position:absolute; width: 72px; top:1px;left:8px;\">\n";
-			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupTemplate\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
-//			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupAdd\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
+//			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupTemplate\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
+			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupAdd\", rev:\"width:665 height:515 infoPos:tc showClose:false disableScroll:true caption:`NEW Project` doAnimations:false\" });'>New Project</a><hr />\n";
 			$content .= "						<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"projects.php?action=popupQuickAdd\", rev:\"width:665 height:220 infoPos:tc showClose:false disableScroll:true caption:`NEW Quick To-Do Project` doAnimations:false\" });'>Quick To-Do</a>\n";
 			$content .= "					</div>\n";
 			$content .= "				</div>\n";

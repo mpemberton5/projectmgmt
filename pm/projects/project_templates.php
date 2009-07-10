@@ -48,10 +48,11 @@ if (db_numrows($q)>0) {
 	//select control
 	$content .= "<br />\n";
 	$content .= "<div style=\"text-align: center\">\n";
-	$content .= "<table class=\"nt\">\n";
-	$content .= "<tr class=\"nt\">\n";
-	$content .= "	<td class=\"nt\">Template:</td>\n";
-	$content .= "	<td class=\"nt\">\n";
+//	$content .= "<table class=\"nt\">\n";
+//	$content .= "<tr class=\"nt\">\n";
+//	$content .= "	<td class=\"nt\">Template:</td>\n";
+//	$content .= "	<td class=\"nt\">\n";
+	$content .= "	<label for=\"Templates\">Template:</label>\n";
 	$content .= "		<select style=\"width:200px;\" id=\"Templates\">\n";
 	$content .= "			<option style=\"font-style:italic;\" value=\"0\">Select Template</option>\n";
 	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
@@ -59,9 +60,11 @@ if (db_numrows($q)>0) {
 		$content .= ">".$row['pt_name']."</option>\n";
 	}
 	$content .= "		</select>\n";
-	$content .= "	</td>\n";
-	$content .= "</tr>\n";
-	$content .= "</table>\n";
+
+	$content .= "<button type=\"button\">New Project Wizard</button>\n";
+//	$content .= "	</td>\n";
+//	$content .= "</tr>\n";
+//	$content .= "</table>\n";
 	$content .= "</div>\n";
 }
 db_free_result($q);
