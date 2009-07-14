@@ -18,10 +18,12 @@ include_once(BASE.'includes/time.php');
 $content = '';
 
 $content .= "<link type='text/css' rel='stylesheet' href='/public/slider/css/redmond/jquery-ui-1.7.1.custom.css' />\n";
+$content .= "<link type='text/css' rel='stylesheet' href='/public/flexigrid/css/flexigrid/flexigrid.css'>\n";
 
 $content .= "<script type=\"text/javascript\" src=\"".BASE."js/jquery.tablesorter.min.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"".BASE."js/jquery.metadata.min.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"/public/jquery-treeview/lib/jquery.cookie.js\"></script>\n";
+$content .= "<script type=\"text/javascript\" src=\"/public/flexigrid/flexigrid.js\"></script>\n";
 
 $content .= "<script>\n";
 $content .= "	function goLite(node) {\n";
@@ -31,6 +33,29 @@ $content .= "	function goDim(node) {\n";
 $content .= "	   document.getElementById(node).style.backgroundColor = \"\";\n";
 $content .= "	}\n";
 $content .= "	$(document).ready(function() {\n";
+$content .= "	$('#scrollTable').flexigrid({
+			url: 'projects.php',
+			dataType: 'json',
+			params: [{name: 'action', value:'list_all'}],
+			colModel : [
+				{display: 'Project Name', name : 'Project_Name', width : 250, sortable : true, align: 'left', process: onItemClick},
+				{display: 'Status', name : 'Status', width : 75, sortable : true, align: 'right', process: onItemClick},
+				{display: 'Dept Name', name : 'Dept', width : 120, sortable : true, align: 'left', process: onItemClick},
+				{display: 'Lead Contact', name : 'empName', width : 150, sortable : true, align: 'left', process: onItemClick}
+				],
+			sortname: 'Project_Name',
+			sortorder: 'asc',
+			usepager: true,
+			title: 'All Projects',
+			useRp: false,
+			resizable: false,
+			singleSelect: true,
+			rp: 10,
+			showTableToggleBtn: false,
+			width: '700',
+			height: 'auto'
+});\n";
+
 $content .= "		$(\"#tabs\").tabs({\n";
 $content .= "			load: function(event, ui) {\n";
 //	$content .= "alert('test');";
@@ -45,10 +70,13 @@ $content .= "	$.cookie('ui-dynatree-cookie-select', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-active', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-expand', '');\n";
 
-//$content .= "	$('ul.ui-tabs-nav a:eq(0)').toggleClass('ui-tabs-loading');\n";
-//$content .= "	$.get(\"projects.php?action=getMonitoredProjects\", function(data) {\n";
-//$content .= "		$(\"#MonitoredProjects\").html( data );\n";
-//$content .= "	});\n";
+$content .= "function onItemClick(cellDiv,id) {\n";
+$content .= "	$(cellDiv).click(\n";
+$content .= "		function(){\n";
+$content .= "			window.open(\"projects.php?action=show&project_id=\"+id,\"_self\");\n";
+$content .= "		})\n";
+$content .= "}\n";
+
 $content .= "</script>\n";
 
 $content .= "<style>\n";
@@ -136,21 +164,21 @@ $content .= "						<div id=\"tabs-1\" class=\"ui-tabs-container ui-tabs-hide\">\
 if (db_numrows($q) > 0) {
 
 	//setup content table
-	$content .= "								<table id=\"mainTable\" cellpadding=\"0\" cellspacing=\"0\" class=\"tablesorter general\">\n";
-	$content .= "									<thead>\n";
-	$content .= "										<tr>\n";
-	$content .= "											<th>Task Name</th>\n";
-	$content .= "											<th class=\"{sorter: 'shortDate'}\">Last Updated</th>\n";
-	$content .= "											<th>% Complete</th>\n";
-	$content .= "											<th>Status</th>\n";
-	$content .= "											<th>Priority</th>\n";
-	$content .= "											<th class=\"{sorter: 'shortDate'}\">Start Date</th>\n";
-	$content .= "											<th class=\"{sorter: 'shortDate'}\">End Date</th>\n";
-	$content .= "											<th>Managed</th>\n";
-	$content .= "											<th style=\"width:50px; text-align:center\" class=\"{sorter: false}\">Note</th>\n";
-	$content .= "										</tr>\n";
-	$content .= "									</thead>\n";
-	$content .= "									<tbody>\n";
+	$content .= "						<table id=\"mainTable\" cellpadding=\"0\" cellspacing=\"0\" class=\"tablesorter general\">\n";
+	$content .= "							<thead>\n";
+	$content .= "								<tr>\n";
+	$content .= "									<th>Task Name</th>\n";
+	$content .= "									<th class=\"{sorter: 'shortDate'}\">Last Updated</th>\n";
+	$content .= "									<th>% Complete</th>\n";
+	$content .= "									<th>Status</th>\n";
+	$content .= "									<th>Priority</th>\n";
+	$content .= "									<th class=\"{sorter: 'shortDate'}\">Start Date</th>\n";
+	$content .= "									<th class=\"{sorter: 'shortDate'}\">End Date</th>\n";
+	$content .= "									<th>Managed</th>\n";
+	$content .= "									<th style=\"width:50px; text-align:center\" class=\"{sorter: false}\">Note</th>\n";
+	$content .= "								</tr>\n";
+	$content .= "							</thead>\n";
+	$content .= "							<tbody>\n";
 
 	//show all projects
 	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
@@ -382,9 +410,11 @@ $content .= "</div>\n";
 
 
 $content .= "						<div id=\"tabs-5\" class=\"ui-tabs-container ui-tabs-hide\">\n";
-$content .= "	<div>Browse Projects</div>\n";
-$content .= "</div>\n";
-$content .= "</div>\n";
+$content .= "							<div align=\"left\" style=\"height: 400px;\">\n";
+$content .= "								<table id=\"scrollTable\" class=\"scrollTable\" style=\"display:none\"></table>\n";
+$content .= "							</div>\n";
+$content .= "						</div>\n";
+$content .= "					</div>\n";
 
 echo $content;
 

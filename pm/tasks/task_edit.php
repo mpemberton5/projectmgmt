@@ -264,7 +264,7 @@ for ($i=0; $user_row = @db_fetch_array($q, $i); ++$i) {
 
 	$content .= "			<option value=\"".$user_row['employee_ID']."\"";
 
-	if ($user_row['employee_ID'] == $_SESSION['UID']) {
+	if ($user_row['employee_ID'] == $assigned_to) {
 		$content .= " selected=\"selected\"";
 	}
 	$content .= ">".$user_row['LastName'].", ".$user_row['FirstName']."</option>\n";

@@ -64,6 +64,10 @@ switch($_REQUEST['action']) {
 		include(BASE.'includes/print.php');
 		break;
 
+	case 'list_all':
+		include(BASE.'projects/projects_getdata.php');
+		break;
+
 //	case 'getMonitoredProjects':
 //		include(BASE.'projects/projects_getMonitoredProjects.php');
 //		break;

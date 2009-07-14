@@ -30,7 +30,7 @@ function list_records($pt_id) {
 
 	//query to get the children for this project_id
 	$SQL = "SELECT * FROM proj_template_details where pt_id=".$pt_id." ORDER BY ptd_parent_id, order_num";
-	
+
 	$q = db_query($SQL);
 
 	//check for any posts
@@ -112,7 +112,88 @@ function find_children($parent_id) {
 	return $content;
 }
 
-$content .= list_records( $_REQUEST['pt_id']);
+
+
+// Project Action
+switch($_REQUEST['action']) {
+
+	//Main Project List
+	case 'template_details':
+		$content .= list_records( $_REQUEST['pt_id']);
+		break;
+
+	//Main Project List
+	case 'list_all':
+		if (!isset($_POST['page'])) {
+			$page = 2;
+		} else {
+			$page = $_POST['page'];
+			if ($page < 0) {
+				$page = 1;
+			}
+		}
+		if (!isset($_POST['rp'])) {
+			$rp = 10;
+		} else {
+			$rp = $_POST['rp'];
+		}
+		if (!isset($_POST['sortname'])) {
+			$sortname = 'Project_Name';
+		} else {
+			$sortname = $_POST['sortname'];
+		}
+		if (!isset($_POST['sortorder'])) {
+			$sortorder = 'desc';
+		} else {
+			$sortorder = $_POST['sortorder'];
+		}
+
+		$sort = "ORDER BY $sortname $sortorder";
+
+		$start = (($page-1) * $rp);
+
+		$limit = "LIMIT $start, $rp";
+
+		$SQL  = "SELECT *, concat(emp.FirstName,' ',emp.LastName) as empName, ";
+		$SQL .= "(select Dept_Name from departments where departments.department_id=emp.department_id) as Dept ";
+		$SQL .= "FROM projects proj, employees emp ";
+		$SQL .= "WHERE emp.employee_id=proj.owner_id $sort $limit";
+		$result = db_query($SQL);
+
+		$total = db_result(db_query('SELECT count(*) FROM projects'),0,0);
+
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
+		header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" );
+		header("Cache-Control: no-cache, must-revalidate" );
+		header("Pragma: no-cache" );
+//		header("Content-type: text/x-json");
+		$json = "";
+		$json .= "{\n";
+		$json .= "page: $page,\n";
+		$json .= "total: $total,\n";
+		$json .= "rows: [";
+		$rc = false;
+		while ($row = mysql_fetch_array($result)) {
+			if ($rc) $json .= ",";
+			$json .= "\n{";
+			$json .= "id:\"".$row['project_ID']."\",";
+			$json .= "cell:[\"".mysql_escape_string($row['Project_Name'])."\"";
+			$json .= ",\"".$row['Status']."\"";
+			$json .= ",\"".$row['Dept']."\"";
+			$json .= ",\"".$row['empName']."\"";
+			$json .= "]}";
+			$rc = true;
+		}
+		$json .= "]\n";
+		$json .= "}";
+		$content = $json;
+			break;
+
+	//Error case
+	default:
+		error('Project action handler', 'Invalid request');
+		break;
+}
 
 echo $content;
 ?>
