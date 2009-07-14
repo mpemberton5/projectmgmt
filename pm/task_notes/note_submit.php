@@ -190,8 +190,20 @@ switch($_REQUEST['action']) {
 			if ($next_task_ID > 0) {
 				// - auto notify next task user
 				$ondeck_email = db_result(db_query('SELECT emp.EMail FROM employees emp, tasks t WHERE t.Assigned_To_ID=emp.employee_ID and t.task_ID='.$next_task_ID),0,0);
-				//TODO: change message
-				$message = "Batter Up!";
+				$project_name=db_result(db_query('SELECT project_name FROM projects WHERE project_ID='.$project_id), 0, 0);
+				$milestone_name=db_result(db_query('SELECT task_name FROM tasks WHERE task_ID='.$milestone_id), 0, 0);
+				$message = "";
+				$message .= "<h2>Active Task Notification</h2>\n";
+				$message .= "You now have the active task for the following project:\n";
+				$message .= "<br />\n";
+				$message .= "<table>\n";
+				$message .= "<tr><td>Project:</td><td>".$project_name."</td></tr>\n";
+				$message .= "<tr><td>Milestone:</td><td>".$milestone_name."</td></tr>\n";
+				$message .= "<tr><td>Task:</td><td>".$task_name."&nbsp;&nbsp;(".$percentcomplete."% complete)</td></tr>\n";
+				$message .= "<tr><td>Note:</td><td>".$_POST['note']."</td></tr>\n";
+				$message .= "</table><br /><br />\n";
+				$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+				$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 				send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
 				// - change on-deck task on milestone
 				db_query("UPDATE tasks SET Curr_Task_ID=".$next_task_ID." WHERE task_id=".$milestone_id." AND Project_id=".$project_id);
@@ -205,8 +217,20 @@ switch($_REQUEST['action']) {
 					if ($next_task_ID > 0) {
 						// - auto notify next task user
 						$ondeck_email = db_result(db_query('SELECT emp.EMail FROM employees emp, tasks t WHERE t.Assigned_To_ID=emp.employee_ID and t.task_ID='.$next_task_ID),0,0);
-						//TODO: change message
-						$message = "Batter Up!";
+						$project_name=db_result(db_query('SELECT project_name FROM projects WHERE project_ID='.$project_id), 0, 0);
+						$milestone_name=db_result(db_query('SELECT task_name FROM tasks WHERE task_ID='.$milestone_id), 0, 0);
+						$message = "";
+						$message .= "<h2>Active Task Notification</h2>\n";
+						$message .= "You now have the active task for the following project:\n";
+						$message .= "<br />\n";
+						$message .= "<table>\n";
+						$message .= "<tr><td>Project:</td><td>".$project_name."</td></tr>\n";
+						$message .= "<tr><td>Milestone:</td><td>".$milestone_name."</td></tr>\n";
+						$message .= "<tr><td>Task:</td><td>".$task_name."&nbsp;&nbsp;(".$percentcomplete."% complete)</td></tr>\n";
+						$message .= "<tr><td>Note:</td><td>".$_POST['note']."</td></tr>\n";
+						$message .= "</table><br /><br />\n";
+						$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+						$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 						send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
 						//    - change on deck user on milestone
 						db_query("UPDATE tasks SET Curr_Task_ID=".$next_task_ID." WHERE task_id=".$next_milestone_ID." AND Project_id=".$project_id);
@@ -218,8 +242,14 @@ switch($_REQUEST['action']) {
 					// this project is complete - notify project lead
 					$lead_notified = 1;
 					$lead_email = db_result(db_query('SELECT emp.EMail FROM employees emp, projects proj WHERE proj.Owner_ID=emp.employee_ID and proj.project_ID='.$project_id),0,0);
-					$message = "Project Done!";
-					//TODO: change message
+					$project_name=db_result(db_query('SELECT project_name FROM projects WHERE project_ID='.$project_id), 0, 0);
+					$message = "";
+					$message .= "<h2>A Project has been Completed!</h2>\n";
+					$message .= "<table>\n";
+					$message .= "<tr><td>Project:</td><td>".$project_name."</td></tr>\n";
+					$message .= "</table><br /><br />\n";
+					$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+					$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 					send_html_email($lead_email,"noreply@wfubmc.edu","Project Notification",$message);
 					// - change on deck user on milestone
 					db_query("UPDATE tasks SET Curr_Task_ID=0 WHERE task_id=".$next_milestone_ID." AND Project_id=".$project_id);
@@ -247,14 +277,25 @@ switch($_REQUEST['action']) {
 
 
 		if ($task_action=="Prev" and $task_row['order_num'] > 0) {
-			// TODO: Add Previous move
 			// send task back to previous task if exists
 			$prev_task_ID = db_result(db_query('SELECT task_ID FROM tasks WHERE parent_task_ID='.$milestone_id.' AND project_id='.$project_id.' AND order_num = '.($task_row['order_num']-1)), 0, 0);
 			if ($prev_task_ID > 0) {
 				// - auto notify prev task user
 				$ondeck_email = db_result(db_query('SELECT emp.EMail FROM employees emp, tasks t WHERE t.Assigned_To_ID=emp.employee_ID and t.task_ID='.$prev_task_ID),0,0);
-				//TODO: change message
-				$message = "Batter Up!";
+				$project_name=db_result(db_query('SELECT project_name FROM projects WHERE project_ID='.$project_id), 0, 0);
+				$milestone_name=db_result(db_query('SELECT task_name FROM tasks WHERE task_ID='.$milestone_id), 0, 0);
+				$message = "";
+				$message .= "<h2>Active Task Notification</h2>\n";
+				$message .= "You now have the active task for the following project:\n";
+				$message .= "<br />\n";
+				$message .= "<table>\n";
+				$message .= "<tr><td>Project:</td><td>".$project_name."</td></tr>\n";
+				$message .= "<tr><td>Milestone:</td><td>".$milestone_name."</td></tr>\n";
+				$message .= "<tr><td>Task:</td><td>".$task_name."&nbsp;&nbsp;(".$percentcomplete."% complete)</td></tr>\n";
+				$message .= "<tr><td>Note:</td><td>".$_POST['note']."</td></tr>\n";
+				$message .= "</table><br /><br />\n";
+				$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+				$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 				send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
 				// - change on deck user on milestone
 				db_query("UPDATE tasks SET Curr_Task_ID=".$prev_task_ID." WHERE task_id=".$milestone_id." AND Project_id=".$project_id);

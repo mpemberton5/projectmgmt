@@ -33,7 +33,7 @@ if ($_REQUEST['action'] == "popupEdit") {
 
 	$form_submit = "submit_update";
 	$return_page = "				parent.fb.loadPageOnClose='self';\n";
-	$project_name = $project_row['Project_Name'];
+	$project_name = html_escape($project_row['Project_Name']);
 	$client_id = $project_row['Client_ID'];
 	$owner_id = $project_row['Owner_ID'];
 	if (empty($project_row['StartDate']) or $project_row['StartDate']==="0000-00-00") {

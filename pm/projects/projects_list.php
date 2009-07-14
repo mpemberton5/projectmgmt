@@ -261,14 +261,12 @@ $content .= "</div>\n";
 
 $content .= "						<div id=\"tabs-3\" class=\"ui-tabs-container ui-tabs-hide\">\n";
 
-// PROJECT LIST THAT USER IS ASSOCIATED WITH
+// PROJECT LIST THAT USER OWNS
 // query to get the projects
 $SQL  = "SELECT *, ";
-$SQL .= "(select count(*) from tasks where tasks.project_id=proj.project_id) as TotTasks, ";
-$SQL .= "(select Dept_Name from departments where departments.department_id=emp.department_id) as Dept ";
-$SQL .= "FROM projects proj, employees emp ";
-$SQL .= "WHERE emp.employee_id=proj.owner_id ";
-$SQL .= "AND proj.owner_id='".$_SESSION['UID']."' ";
+$SQL .= "(select count(*) from tasks where tasks.project_id=proj.project_id) as TotTasks ";
+$SQL .= "FROM projects proj ";
+$SQL .= "WHERE proj.owner_id='".$_SESSION['UID']."' ";
 $SQL .= "ORDER BY EndDate";
 
 $q = db_query($SQL);
@@ -282,8 +280,7 @@ if (db_numrows($q) > 0) {
 	$content .= "    <thead>\n";
 	$content .= "      <tr>\n";
 	$content .= "        <th>Project Name</th>\n";
-	$content .= "        <th>Lead Contact</th>\n";
-	$content .= "        <th>Department</th>\n";
+	$content .= "        <th>Status</th>\n";
 	$content .= "        <th>Date Started</th>\n";
 	$content .= "        <th>Tasks</th>\n";
 	$content .= "      </tr>\n";
@@ -299,8 +296,7 @@ if (db_numrows($q) > 0) {
 		$content .= "<a href=\"projects.php?action=show&amp;project_id=".$row['project_ID']."\"><b>".$row['Project_Name']."</b></a>\n";
 		$content .= "</td>\n";
 
-		$content .= "<td>".$row['FirstName']." ".$row['LastName']."</td>\n";
-		$content .= "<td>".$row['Dept']."</td>\n";
+		$content .= "<td>".$row['Status']."</td>\n";
 		if (empty($row['StartDate']) or $row['StartDate']==='0000-00-00') {
 			$startdate = "";
 		} else {
@@ -334,7 +330,7 @@ $SQL .= "(select Dept_Name from departments where departments.department_id=emp.
 $SQL .= "FROM projects proj, employees emp ";
 $SQL .= "WHERE emp.employee_id=proj.owner_id ";
 $SQL .= "AND proj.project_id in (select value1 from user_prefs where user_ID=".$_SESSION['UID']." and pref_type='watchedProject') ";
-$SQL .= "AND (select count(*) from tasks where tasks.project_id=proj.project_id AND Assigned_To_ID=".$_SESSION['UID'].") > 0 ";
+//$SQL .= "AND (select count(*) from tasks where tasks.project_id=proj.project_id AND Assigned_To_ID=".$_SESSION['UID'].") > 0 ";
 $SQL .= "AND proj.status<>'Complete' ";
 $SQL .= "ORDER BY EndDate";
 

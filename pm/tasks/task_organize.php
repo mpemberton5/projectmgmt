@@ -52,7 +52,7 @@ $content .= "		return false;\n";
 $content .= "	});\n";
 // SUBMIT BUTTON FOR REWEIGHT TAB
 $content .= "	$(\"#ReWeighTasks\").submit(function() {\n";
-$content .= "		var parameters = $(\"input\").serialize();\n";
+$content .= "		var parameters = $(this).serialize();\n";
 $content .= "		$.ajax({\n";
 $content .= "			type: \"POST\",\n";
 $content .= "			url: \"tasks.php\",\n";
@@ -157,7 +157,7 @@ if ($task_id==0) {
 
 	$content .= "<p />\n";
 	$content .= "<div align=\"center\">\n";
-	$content .= "	<input type=\"submit\" name=\"submit\" class=\"button2\" id=\"submit_btn\" value=\"Save\" />\n";
+	$content .= "	<input type=\"submit\" name=\"submit\" class=\"button2\" id=\"submit_btnw\" value=\"Save\" />\n";
 	$content .= "	&nbsp;&nbsp;&nbsp;\n";
 	$content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
 	$content .= "</div>\n";
@@ -197,7 +197,7 @@ db_free_result($q);
 $content .= "<p />\n";
 $content .= "<p />\n";
 $content .= "<div align=\"center\">\n";
-$content .= "	<input type=\"submit\" name=\"submit\" class=\"button1\" id=\"submit_btn\" value=\"Save\" />\n";
+$content .= "	<input type=\"submit\" name=\"submit\" class=\"button1\" id=\"submit_btnrt\" value=\"Save\" />\n";
 $content .= "	&nbsp;&nbsp;&nbsp;\n";
 $content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
 $content .= "</div>\n";
