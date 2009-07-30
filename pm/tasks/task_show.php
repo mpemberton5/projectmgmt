@@ -71,8 +71,8 @@ $content .= "		closetimer = null;\n";
 $content .= "	}\n";
 $content .= "}\n";
 $content .= "$(document).ready(function() {\n";
-$content .= "	$('.jsddm > li').bind('mouseover', jsddm_open)\n";
-$content .= "	$('.jsddm > li').bind('mouseout', jsddm_timer)\n";
+$content .= "	$('.jsddm > li').bind('mouseover', jsddm_open);\n";
+$content .= "	$('.jsddm > li').bind('mouseout', jsddm_timer);\n";
 $content .= "});\n";
 $content .= "document.onclick = jsddm_close;\n";
 
@@ -365,7 +365,7 @@ if ($_GET['action']=="showTopLevel") {
 	$content .= "					<li><a href=\"javascript:void(0)\">Action</a>\n";
 	$content .= "						<ul>\n";
 	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupEdit&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc info:`feedback.php?currform=task_show.php-Edit Task` infoText:Feedback infoOptions:`width:555 height:350` disableScroll:true caption:`EDIT Task` doAnimations:false\" }); return false;'>Edit</a></li>\n";
-	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc info:`feedback.php?currform=task_show.php-New Task` infoText:Feedback infoOptions:`width:555 height:350` disableScroll:true caption:`NEW Task` doAnimations:false\" }); return false;'>New</a></li>\n";
+	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupAdd&project_id=".$project_id."&task_id=".$milestone_ID."\", rev:\"width:650 height:430 infoPos:tc info:`feedback.php?currform=task_show.php-New Task` infoText:Feedback infoOptions:`width:555 height:350` disableScroll:true caption:`NEW Task` doAnimations:false\" }); return false;'>New</a></li>\n";
 //	$content .= "							<li><a href=\"javascript:void(0)\" onclick='fb.start({ href: \"tasks.php?action=popupTaskPrint&project_id=".$project_id."&task_id=".$task_id."\", rev:\"width:650 height:430 infoPos:tc disableScroll:true caption:`PRINT Task` doAnimations:false\" }); return false;'>Print</a></li>\n";
 	$content .= "						</ul>\n";
 	$content .= "					</li>\n";

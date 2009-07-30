@@ -76,6 +76,22 @@ if ($_REQUEST['action'] == "popupEdit") {
 
 $content .= "<link type='text/css' rel='stylesheet' href='/public/slider/css/redmond/jquery-ui-1.7.1.custom.css'>\n";
 
+
+$content .= '<!-- calendar stylesheet -->';
+$content .= '<link rel="stylesheet" type="text/css" media="all" href="/public/jscalendar-1.0/calendar-win2k-cold-1.css" title="win2k-cold-1" />';
+
+$content .= '<!-- main calendar program -->';
+$content .= '<script type="text/javascript" src="/public/jscalendar-1.0/calendar.js"></script>';
+
+$content .= '<!-- language for the calendar -->';
+$content .= '<script type="text/javascript" src="/public/jscalendar-1.0/lang/calendar-en.js"></script>';
+
+$content .= '<!-- the following script defines the Calendar.setup helper function, which makes';
+$content .= '     adding a calendar a matter of 1 or 2 lines of code. -->';
+$content .= '<script type="text/javascript" src="/public/jscalendar-1.0/calendar-setup.js"></script>';
+
+
+
 $content .= "<script type='text/javascript' src='/public/jquery-validate/jquery.validate.min.js'></script>\n";
 $content .= "<script type='text/javascript' src='js/jquery.metadata.min.js'></script>\n";
 
@@ -127,7 +143,7 @@ $content .= "			});\n";
 $content .= "		}\n";
 $content .= "		return false;\n";
 $content .= "	});\n";
-
+/*
 $content .= "	$(\"#startdate\").datepicker({\n";
 $content .= "		dateFormat: 'mm-dd-yy',\n";
 $content .= "		showOn: 'button',\n";
@@ -149,11 +165,13 @@ $content .= "		beforeShow: function (i, e) {\n";
 $content .= "			e.dpDiv.css('z-index', '10000');\n";
 $content .= "		}\n";
 $content .= "	});\n";
+*/
 $content .= "});\n";
+
 $content .= "</script>\n";
 
 //all okay show task info
-$content .= "<div class=\"container\">\n";
+//$content .= "<div class=\"container\">\n";
 $content .= "<form action=\"\" name=\"UpdateForm\" id=\"UpdateForm\" method=\"post\">\n";
 $content .= "<input type=\"hidden\" name=\"action\" value=\"".$form_submit."\" />\n";
 $content .= "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
@@ -198,9 +216,7 @@ $content .= "	<td>\n";
 $content .= "		<select name=\"client_id\">\n";
 $content .= "			<option value=\"0\">None</option>\n";
 for ($i=0; $client_row = @db_fetch_array($q, $i); ++$i) {
-
 	$content .= "			<option value=\"".$client_row['client_ID']."\"";
-
 	if ($client_row['client_ID'] == $client_id) {
 		$content .= " selected=\"selected\"";
 	}
@@ -216,12 +232,14 @@ $content .= "<tr>\n";
 $content .= "	<td>Start Date:</td>\n";
 $content .= "	<td style=\"width:100%\">\n";
 $content .= "		<input id='startdate' name='startdate' type='text' size='12' value=\"".$startdate."\" />\n";
+$content .= "		<img src='/public/jquery/development-bundle/demos/datepicker/images/calendar.gif' id='startdate_img' style='cursor: pointer;' title='Date selector' />\n";
 $content .= "	</td>\n";
 $content .= "</tr>\n";
 $content .= "<tr>\n";
 $content .= "	<td>End Date:</td>\n";
 $content .= "	<td style=\"width:100%\">\n";
 $content .= "		<input id='enddate' name='enddate' type='text' size='12' value=\"".$enddate."\" />\n";
+$content .= "		<img src='/public/jquery/development-bundle/demos/datepicker/images/calendar.gif' id='enddate_img' style='cursor: pointer;' title='Date selector' />\n";
 $content .= "	</td>\n";
 $content .= "</tr>\n";
 
@@ -310,11 +328,27 @@ if ($project_id>0) {
 }
 $content .= "</div>";
 $content .= "</form>\n";
-$content .= "</div>\n";
+//$content .= "</div>\n";
 
 $content .= "<script language='javascript' type='text/javascript'>\n";
 $content .= "	var mytext = document.getElementById('name');\n";
 $content .= "	mytext.focus();\n";
+
+$content .= "Calendar.setup({\n";
+$content .= "	inputField	: 'startdate',\n";     // id of the input field
+$content .= "	ifFormat	: '%m-%d-%Y',\n";    // format of the input field
+$content .= "	button		: 'startdate_img',\n";  // trigger for the calendar (button ID)
+$content .= "	weekNumbers	: false,\n";
+$content .= "	singleClick	: true\n";
+$content .= "});\n";
+$content .= "Calendar.setup({\n";
+$content .= "	inputField	: 'enddate',\n";     // id of the input field
+$content .= "	ifFormat	: '%m-%d-%Y',\n";    // format of the input field
+$content .= "	button		: 'enddate_img',\n";  // trigger for the calendar (button ID)
+$content .= "	weekNumbers	: false,\n";
+$content .= "	singleClick	: true\n";
+$content .= "});\n";
+
 $content .= "</script>\n";
 
 echo $content;

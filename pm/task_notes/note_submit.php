@@ -213,7 +213,7 @@ switch($_REQUEST['action']) {
 				if ($next_milestone_ID > 0) {
 					// find first task and notify user
 					// if another task exists within this milestone
-					$next_task_ID = db_result(db_query('SELECT task_ID FROM tasks WHERE parent_task_ID='.$next_milestone_ID.' AND project_id='.$project_id.' AND order_num = '.($task_row['order_num']+1)), 0, 0);
+					$next_task_ID = db_result(db_query('SELECT task_ID FROM tasks WHERE parent_task_ID='.$next_milestone_ID.' AND project_id='.$project_id.' AND order_num = 0'), 0, 0);
 					if ($next_task_ID > 0) {
 						// - auto notify next task user
 						$ondeck_email = db_result(db_query('SELECT emp.EMail FROM employees emp, tasks t WHERE t.Assigned_To_ID=emp.employee_ID and t.task_ID='.$next_task_ID),0,0);
@@ -252,7 +252,7 @@ switch($_REQUEST['action']) {
 					$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 					send_html_email($lead_email,"noreply@wfubmc.edu","Project Notification",$message);
 					// - change on deck user on milestone
-					db_query("UPDATE tasks SET Curr_Task_ID=0 WHERE task_id=".$next_milestone_ID." AND Project_id=".$project_id);
+					db_query("UPDATE tasks SET Curr_Task_ID=0 WHERE task_id=".$milestone_id." AND Project_id=".$project_id);
 				}
 			}
 		}
