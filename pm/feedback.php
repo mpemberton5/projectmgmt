@@ -5,9 +5,9 @@ require_once('path.php');
 require_once(BASE.'includes/security.php');
 require_once(BASE.'includes/screen.php');
 
-$content = "";
-$content .= create_complete_top('Feedback', 4, 0, 'comments', 1);
+create_complete_top('Feedback', 4, 0, 'comments', 1);
 
+$content = "";
 $content .= "<script type='text/javascript'>\n";
 $content .= "$(function() {\n";
 $content .= "	$(\"#submit_btn2\").click(function() {\n";
@@ -40,7 +40,7 @@ $content .= "<input type=\"hidden\" name=\"currform\" value=\"".$_REQUEST['currf
 
 //$content .= "<br />\n";
 $content .= "<div align=\"center\">\n";
-$content .= "<textarea rows=\"15\" cols=\"65\" name=\"comments\" id=\"comments\"></textarea>\n";
+$content .= "<textarea rows=\"15\" cols=\"65\" name=\"comments\" id=\"comments\"></textarea><br />\n";
 
 $content .= "	<input type=\"submit\" name=\"submit\" class=\"button\" id=\"submit_btn2\" value=\"Submit Feedback\" />\n";
 $content .= "</div>\n";
@@ -50,7 +50,7 @@ $content .= "<script language='javascript' type='text/javascript'>\n";
 $content .= "	var mytext = document.getElementById('comments');\n";
 $content .= "	mytext.focus();\n";
 $content .= "</script>\n";
-$content .= create_bottom();
-
 echo $content;
+create_bottom();
+
 ?>

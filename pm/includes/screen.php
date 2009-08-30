@@ -290,9 +290,11 @@ function html_body_top($page_type=0) {
 			$content .= "<tr valign=\"top\"><td style=\"width: 576pt\" align=\"center\">\n";
 			//don't want bottom text
 			$bottom_text = 0;
+			break;
 		case 4:
 			$content .= "		<tr valign=\"top\">\n";
 			$content .= "			<td style=\"width: 100%; padding:0;\">\n";
+			break;
 	}
 
 	//flush buffer
@@ -317,11 +319,13 @@ function create_complete_top($title='', $page_type=0, $cursor=0, $check=0, $date
 	//remove /* and */ in section below to use compressed HTML output:
 	//Note: PHP manual recommends use of zlib.output_compression in php.ini instead of ob_gzhandler in here
 	//use compressed output (if web browser supports it) _and_ zlib.output_compression is not already enabled
-	/*
-	 if (!ini_get('zlib.output_compression')) {
-	 ob_start("ob_gzhandler");
-	 }
-	 */
+
+	if (!ini_get('zlib.output_compression')) {
+		ob_start("ob_gzhandler");
+	} else {
+		ob_start();
+	}
+
 	html_header($redirect_time);
 	html_pre_html();
 	html_html_start();
@@ -429,6 +433,7 @@ function create_bottom() {
 	//end xml parsing
 	$content .= "</body>\n</html>\n";
 	echo $content;
+	ob_end_flush();
 	return;
 }
 
