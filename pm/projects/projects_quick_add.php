@@ -61,7 +61,7 @@ $content .= "</script>\n";
 
 //all okay show task info
 $content .= "<div class=\"container\">\n";
-$content .= "	<form action=\"\" name=\"UpdateForm\" method=\"post\">\n";
+$content .= "	<form action=\"javascript:foo();\" name=\"UpdateForm\" method=\"post\">\n";
 $content .= "		<input type=\"hidden\" name=\"action\" value=\"".$form_submit."\" />\n";
 $content .= "		<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
 $content .= "		<input type=\"hidden\" name=\"assigned_to\" value=\"".$_SESSION['UID']."\" />\n";
@@ -94,7 +94,7 @@ $content .= "		</div>\n";
 $content .= "	</form>\n";
 $content .= "</div>\n";
 
-$content .= "<script language='javascript' type='text/javascript'>\n";
+$content .= "<script type='text/javascript'>\n";
 $content .= "	var mytext = document.getElementById('name');\n";
 $content .= "	mytext.focus();\n";
 $content .= "</script>\n";

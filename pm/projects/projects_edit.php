@@ -56,6 +56,7 @@ if ($_REQUEST['action'] == "popupEdit") {
 	$clientcontact = $project_row['ClientContact'];
 	$parent_project_id = "0"; // should never 'update' project this way
 	$parent_milestone_id = "0";
+	$selected_template_id = "0";
 	
 	db_free_result($q);
 
@@ -78,7 +79,11 @@ if ($_REQUEST['action'] == "popupEdit") {
 	$clientcontact = "";
 	$parent_project_id = $_REQUEST['parent_project_id'];
 	$parent_milestone_id = $_REQUEST['parent_milestone_id'];
-	$selected_template_id = $_REQUEST['selected_template_id'];
+	if (isset($_REQUEST['selected_template_id'])) {
+		$selected_template_id = $_REQUEST['selected_template_id'];
+	} else {
+		$selected_template_id = "0";
+	}
 }
 
 $content .= "<link type='text/css' rel='stylesheet' href='/public/slider/css/redmond/jquery-ui-1.7.1.custom.css'>\n";
