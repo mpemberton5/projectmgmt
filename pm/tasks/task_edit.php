@@ -212,7 +212,11 @@ $content .= "<input type=\"hidden\" name=\"parent_task_id\" value=\"".$parent_ta
 
 $content .= "<table style=\"width:100%\">\n";
 $content .= "<tr>\n";
-$content .= "	<td>Name:</td>\n";
+if ($parent_task_id>0) {
+	$content .= "	<td>Task Name:</td>\n";
+} else {
+	$content .= "	<td>Milestone Name:</td>\n";
+}
 $content .= "	<td style=\"width:100%\">\n";
 $content .= "		<input id=\"name\" type=\"text\" name=\"name\" size=\"30\" value=\"".$task_name."\" />\n";
 $content .= "	</td>\n";
@@ -232,18 +236,18 @@ $content .= "		<img src='/public/jquery/development-bundle/demos/datepicker/imag
 $content .= "	</td>\n";
 $content .= "</tr>";
 
-$content .= "<tr>\n";
-$content .= "	<td>Priority:</td>\n";
-$content .= "	<td style=\"width:100%\">\n";
-$content .= "		<select name=\"priority\">\n";
-$content .= "			<option value=\"Low\"".(($priority=='Low') ? ' selected=\'selected\'' : '') .">Low</option>\n";
-$content .= "			<option value=\"Normal\"".(($priority=='Normal') ? ' selected=\'selected\'' : '') .">Normal</option>\n";
-$content .= "			<option value=\"High\"".(($priority=='High') ? ' selected=\'selected\'' : '') .">High</option>\n";
-$content .= "		</select>\n";
-$content .= "	</td>\n";
-$content .= "</tr>\n";
-
 if ($parent_task_id>0) {
+	$content .= "<tr>\n";
+	$content .= "	<td>Priority:</td>\n";
+	$content .= "	<td style=\"width:100%\">\n";
+	$content .= "		<select name=\"priority\">\n";
+	$content .= "			<option value=\"Low\"".(($priority=='Low') ? ' selected=\'selected\'' : '') .">Low</option>\n";
+	$content .= "			<option value=\"Normal\"".(($priority=='Normal') ? ' selected=\'selected\'' : '') .">Normal</option>\n";
+	$content .= "			<option value=\"High\"".(($priority=='High') ? ' selected=\'selected\'' : '') .">High</option>\n";
+	$content .= "		</select>\n";
+	$content .= "	</td>\n";
+	$content .= "</tr>\n";
+
 	$content .= "<tr>\n";
 	$content .= "	<td>Status:</td>\n";
 	$content .= "	<td style=\"width:100%\">\n";
@@ -267,28 +271,28 @@ if ($parent_task_id>0) {
 	$content .= "			</div>\n";
 	$content .= "		</td>\n";
 	$content .= "	</tr>\n";
-}
 
-//task assigned_to
-$q = db_query('SELECT * FROM employees WHERE Department_ID=(select emp.Department_ID from employees emp where emp.employee_ID='.$_SESSION['UID'].') ORDER BY LastName,FirstName');
-
-//select contact
-$content .= "<tr>\n";
-$content .= "	<td>Assigned To:</td>\n";
-$content .= "	<td style=\"width:100%\">\n";
-$content .= "		<select name=\"assigned_to\">\n";
-for ($i=0; $user_row = @db_fetch_array($q, $i); ++$i) {
-
-	$content .= "			<option value=\"".$user_row['employee_ID']."\"";
-
-	if ($user_row['employee_ID'] == $assigned_to) {
-		$content .= " selected=\"selected\"";
+	//task assigned_to
+	$q = db_query('SELECT * FROM employees WHERE Department_ID=(select emp.Department_ID from employees emp where emp.employee_ID='.$_SESSION['UID'].') ORDER BY LastName,FirstName');
+	
+	//select contact
+	$content .= "<tr>\n";
+	$content .= "	<td>Assigned To:</td>\n";
+	$content .= "	<td style=\"width:100%\">\n";
+	$content .= "		<select name=\"assigned_to\">\n";
+	for ($i=0; $user_row = @db_fetch_array($q, $i); ++$i) {
+	
+		$content .= "			<option value=\"".$user_row['employee_ID']."\"";
+	
+		if ($user_row['employee_ID'] == $assigned_to) {
+			$content .= " selected=\"selected\"";
+		}
+		$content .= ">".$user_row['LastName'].", ".$user_row['FirstName']."</option>\n";
 	}
-	$content .= ">".$user_row['LastName'].", ".$user_row['FirstName']."</option>\n";
+	$content .= "		</select>\n";
+	$content .= "	</td>\n";
+	$content .= "</tr>\n";
 }
-$content .= "		</select>\n";
-$content .= "	</td>\n";
-$content .= "</tr>\n";
 
 $content .=  "<tr>\n";
 $content .= "	<td style=\"vertical-align: top\">Description</td><td style=\"width:100%\">\n";
@@ -311,10 +315,10 @@ if ($task_id>0) {
 	}
 	if (db_result(db_query($SQL), 0, 0) > 0) {
 		$content .= "	&nbsp;&nbsp;&nbsp;\n";
-		$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Discard\" /> Unable to delete with task notes.\n";
+		$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Delete\" /> Unable to delete with task notes.\n";
 	} else {
 		$content .= "	&nbsp;&nbsp;&nbsp;\n";
-		$content .= "	<input type=\"submit\" name=\"Discard\" class=\"button\" id=\"discard_btn\" value=\"Discard\" />\n";
+		$content .= "	<input type=\"submit\" name=\"Discard\" class=\"button\" id=\"discard_btn\" value=\"Delete\" />\n";
 	}
 }
 $content .= "</div>\n";

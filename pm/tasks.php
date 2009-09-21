@@ -49,6 +49,13 @@ switch($_REQUEST['action']) {
 		create_bottom();
 		break;
 
+	case 'popupAddPL':
+	case 'popupRemovePL':
+		create_complete_top('Create Project Link to Task', 4, 0, 'name', 1);
+		include(BASE.'tasks/task_link.php');
+		create_bottom();
+		break;
+
 		//update task
 	case 'submit_insert':
 	case 'submit_update':

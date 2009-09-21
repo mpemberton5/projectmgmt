@@ -26,6 +26,7 @@ switch($_REQUEST['action']) {
 		//submit to message engine
 	case 'submit_insert':
 	case 'submit_update':
+	case 'submit_delete':
 		include(BASE.'task_notes/note_submit.php');
 		break;
 

@@ -33,6 +33,8 @@ switch($_REQUEST['action']) {
 	case 'submit_quick_insert':
 	case 'submit_update':
 	case 'submit_watch':
+	case 'savePL':
+	case 'deletePL':
 		include(BASE.'projects/projects_submit.php');
 		break;
 
@@ -51,8 +53,15 @@ switch($_REQUEST['action']) {
 		break;
 
 	case 'popupTemplate':
+	case 'popupLinkNew':
 		create_complete_top('Project Templates', 4, 0, 'name', 1);
 		include(BASE.'projects/project_templates.php');
+		create_bottom();
+		break;
+
+	case 'popupLinkExisting':
+		create_complete_top('Project Templates', 4, 0, 'name', 1);
+		include(BASE.'projects/project_template_select_existing.php');
 		create_bottom();
 		break;
 

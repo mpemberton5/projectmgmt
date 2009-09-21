@@ -112,17 +112,15 @@ ignore_user_abort(TRUE);
 
 switch($_REQUEST['action']) {
 
+	case 'submit_update':
 	case 'submit_insert':
 
-		//if all values are filled in correctly we can submit the messages-item
-		$input_array = array('project_id', 'task_id', 'percentcomplete');
+		// if all values are filled in correctly we can submit the messages-item
+		$input_array = array('project_id', 'task_id', 'percentcomplete', 'note_id');
 		foreach ($input_array as $var) {
 			if (!@safe_integer($_POST[$var])) {
 				error('Task Note submit', "Variable $var is not set");
 			}
-//			if ($_POST[$var]==0) {
-//				error('Task Note submit', "Variable $var is zero");
-//			}
 			${$var} = $_POST[$var];
 		}
 
@@ -173,14 +171,19 @@ switch($_REQUEST['action']) {
 
 		//public post
 		db_begin();
-		db_query("INSERT INTO task_notes (project_ID, task_ID, TimeStamp, Note, user_ID, PercentComplete)
+
+		if ($note_id > 0) {
+			// UPDATE
+			db_query("UPDATE task_notes SET Note='$note', PercentComplete='$percentcomplete' WHERE note_ID=$note_id");
+		} else {
+			// INSERT
+			db_query("INSERT INTO task_notes (project_ID, task_ID, TimeStamp, Note, user_ID, PercentComplete)
 					VALUES ('$project_id', '$task_id', now(), '$note', ".$_SESSION["UID"].",'$percentcomplete')");
-
-		//get last insert id
-		$note_id = db_lastoid('note_ID');
-
+			//get last insert id
+			$note_id = db_lastoid('note_ID');
+		}
 		db_query("UPDATE tasks set PercentComplete=".$percentcomplete." where task_ID=".$task_id);
-
+		
 		$lead_notified = 0;
 
 		// next action
@@ -202,7 +205,7 @@ switch($_REQUEST['action']) {
 				$message .= "<tr><td>Task:</td><td>".$task_name."&nbsp;&nbsp;(".$percentcomplete."% complete)</td></tr>\n";
 				$message .= "<tr><td>Note:</td><td>".$_POST['note']."</td></tr>\n";
 				$message .= "</table><br /><br />\n";
-				$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+				$message .= "<a href=\"".BASE_URL."projects.php?action=show&project_id=".$project_id."\">Click Here to go directly to the project</a>";
 				$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 				send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
 				// - change on-deck task on milestone
@@ -229,7 +232,7 @@ switch($_REQUEST['action']) {
 						$message .= "<tr><td>Task:</td><td>".$task_name."&nbsp;&nbsp;(".$percentcomplete."% complete)</td></tr>\n";
 						$message .= "<tr><td>Note:</td><td>".$_POST['note']."</td></tr>\n";
 						$message .= "</table><br /><br />\n";
-						$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+						$message .= "<a href=\"".BASE_URL."projects.php?action=show&project_id=".$project_id."\">Click Here to go directly to the project</a>";
 						$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 						send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
 						//    - change on deck user on milestone
@@ -248,7 +251,7 @@ switch($_REQUEST['action']) {
 					$message .= "<table>\n";
 					$message .= "<tr><td>Project:</td><td>".$project_name."</td></tr>\n";
 					$message .= "</table><br /><br />\n";
-					$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+					$message .= "<a href=\"".BASE_URL."projects.php?action=show&project_id=".$project_id."\">Click Here to go directly to the project</a>";
 					$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 					send_html_email($lead_email,"noreply@wfubmc.edu","Project Notification",$message);
 					// - change on deck user on milestone
@@ -270,7 +273,7 @@ switch($_REQUEST['action']) {
 			$message .= "<tr><td>Task:</td><td>".$task_name."&nbsp;&nbsp;(".$percentcomplete."% complete)</td></tr>\n";
 			$message .= "<tr><td>Note:</td><td>".$_POST['note']."</td></tr>\n";
 			$message .= "</table><br /><br />\n";
-			$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+			$message .= "<a href=\"".BASE_URL."projects.php?action=show&project_id=".$project_id."\">Click Here to go directly to the project</a>";
 			$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 			send_html_email($lead_email,"noreply@wfubmc.edu","Project Notification",$message);
 		}
@@ -294,7 +297,7 @@ switch($_REQUEST['action']) {
 				$message .= "<tr><td>Task:</td><td>".$task_name."&nbsp;&nbsp;(".$percentcomplete."% complete)</td></tr>\n";
 				$message .= "<tr><td>Note:</td><td>".$_POST['note']."</td></tr>\n";
 				$message .= "</table><br /><br />\n";
-				$message .= "<a href=\"".BASE_URL."projects.php?project_id=".$project_id."\">Click Here to go directly to the project</a>";
+				$message .= "<a href=\"".BASE_URL."projects.php?action=show&project_id=".$project_id."\">Click Here to go directly to the project</a>";
 				$message .= "<br /><br /><br />NOTE: This is an automatic notification from WFUBMC Project Management.<br />";
 				send_html_email($ondeck_email,"noreply@wfubmc.edu","Project Notification",$message);
 				// - change on deck user on milestone
@@ -310,6 +313,13 @@ switch($_REQUEST['action']) {
 		// update total weight in Milestone
 		db_query('call spUpdateMilestoneTotalWeight('.$task_id.')');
 
+		// query to update all parent projects if exist
+		$pp = db_query('SELECT task_ID FROM tasks WHERE ParentProjectLink_ID='.$project_id);
+		for ($i=0; $pp_row = @db_fetch_array($pp, $i); ++$i) {
+			db_query('UPDATE tasks SET PercentComplete=(select PercentComplete from projects where project_ID='.$project_id.') WHERE task_ID='.$pp_row['task_ID']);
+			db_query('call spUpdateMilestoneTotalWeight('.$pp_row['task_ID'].')');
+		}
+		
 		//set time of last messages post to this project
 		//db_query('UPDATE projects SET lastmessagepost=now() WHERE id='.$project_id);
 
@@ -318,57 +328,30 @@ switch($_REQUEST['action']) {
 		// Free DB Results
 		db_free_result($q);
 		db_free_result($r);
-
+		db_free_result($pp);
+		
 		break;
 
-		//		//submit Edit
-		//	case 'submit_update':
-		//		$input_array = array('project_id', 'task_id', 'percentcomplete', 'note_id');
-		//		foreach ($input_array as $var) {
-		//			if (!@safe_integer($_POST[$var])) {
-		//				error('Task Note submit', "Variable $var is not set");
-		//			}
-		//			if ($_POST[$var]==0) {
-		//				error('Task Note submit', "Variable $var is zero");
-		//			}
-		//			${$var} = $_POST[$var];
-		//		}
-		//
-		//		$note = mysql_real_escape_string($_POST['note']);
-		//
-		//		//do data consistency check on parent_id
-		//		if (db_result(db_query('SELECT COUNT(*) FROM tasks WHERE task_id='.$task_id.' AND project_id='.$project_id), 0, 0) == 0){
-		//			error('Task Note submit', 'Data consistency error - child post has no parent');
-		//		}
-		//
-		//		//public post
-		//		db_begin();
-		//		db_query('UPDATE task_notes SET Note=\''.$note.'\', PercentComplete='.$percentcomplete.' WHERE note_ID ='.$note_id);
-		//
-		//		//set time of last messages post to this project
-		//		//db_query('UPDATE projects SET lastmessagepost=now() WHERE id='.$project_id);
-		//
-		//		db_commit();
-		//
-		//		break;
-		//
-		//		//owner of the thread can delete, admin can delete
-		//	case 'submit_del':
-		//		if (!@safe_integer($_GET['message_id'])) {
-		//			error('Message submit', 'Message_id not valid');
-		//		}
-		//		$message_id = $_GET['message_id'];
-		//
-		//		//check if user is owner of the task or the owner of the post
-		//		if ((db_result(db_query('SELECT COUNT(*) FROM messages LEFT JOIN projects ON (messages.project_id=projects.id) WHERE projects.owner='.UID.' AND messages.id='.$message_id), 0, 0) == 1) ||
-		//		(db_result(db_query('SELECT COUNT(*) FROM messages WHERE creator='.UID.' AND id='.$message_id), 0, 0 ) == 1)) {
-		//
-		//			db_begin();
-		//			delete_messages($message_id);
-		//			db_commit();
-		//		} else
-		//		error('Forum submit', 'You are not authorised to delete that post.');
-		//		break;
+	case 'submit_delete':
+		// if all values are filled in correctly we can submit the messages-item
+		$input_array = array('task_id', 'note_id');
+		foreach ($input_array as $var) {
+			if (!@safe_integer($_POST[$var])) {
+				error('Task Note submit', "Variable $var is not set");
+			}
+			${$var} = $_POST[$var];
+		}
+				
+		//delete task note
+		db_begin();
+		// first delete task
+		db_query("DELETE FROM task_notes WHERE note_ID=".$note_id);
+		// update task percent complete with last posted note
+		db_query("UPDATE tasks set PercentComplete=(select PercentComplete from task_notes where task_ID=".$task_id." order by TimeStamp desc limit 1) where task_ID=".$task_id);
+		// call sp to recalculate pct completes
+		db_query('call spUpdateMilestoneTotalWeight('.$task_id.')');
+		db_commit();
+		break;
 }
 
 ?>

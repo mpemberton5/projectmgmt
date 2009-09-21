@@ -53,7 +53,10 @@ if ($_REQUEST['action'] == "popupEdit") {
 	$priority = $project_row['Priority'];
 	$status = $project_row['Status'];
 	$description = $project_row['Description'];
-
+	$clientcontact = $project_row['ClientContact'];
+	$parent_project_id = "0"; // should never 'update' project this way
+	$parent_milestone_id = "0";
+	
 	db_free_result($q);
 
 } else if ($_REQUEST['action'] == "popupAdd") {
@@ -72,6 +75,10 @@ if ($_REQUEST['action'] == "popupEdit") {
 	$priority = "Normal";
 	$status = "Planning";
 	$description = "";
+	$clientcontact = "";
+	$parent_project_id = $_REQUEST['parent_project_id'];
+	$parent_milestone_id = $_REQUEST['parent_milestone_id'];
+	$selected_template_id = $_REQUEST['selected_template_id'];
 }
 
 $content .= "<link type='text/css' rel='stylesheet' href='/public/slider/css/redmond/jquery-ui-1.7.1.custom.css'>\n";
@@ -115,9 +122,9 @@ $content .= "				if (!$('#UpdateForm').valid()) return false;\n";
 $content .= "			},\n";
 $content .= "			error: function(xhr, ajaxOptions, thrownError){\n";
 $content .= "				parent.fb.start({href:'error.php?error='+xhr.responseText, rev:'theme:red showClose:true width:560 height:240', title:'Unexpected Error'});\n";
-$content .= "   			},\n";
+$content .= "   		},\n";
 $content .= "			success: function(data){\n";
-$content .= $return_page;
+$content .= 				$return_page;
 $content .= "				parent.fb.end(true);\n";
 $content .= "			}\n";
 $content .= "		});\n";
@@ -134,7 +141,7 @@ $content .= "				data: 'action=submit_delete&project_id=".$project_id."',\n";
 $content .= "				dataType: 'text',\n";
 $content .= "				error: function(xhr, ajaxOptions, thrownError){\n";
 $content .= "					parent.fb.start({href:'error.php?error='+xhr.responseText, rev:'theme:red showClose:true width:560 height:240', title:'Unexpected Error'});\n";
-$content .= "   				},\n";
+$content .= "   			},\n";
 $content .= "				success: function(data){\n";
 $content .= "					parent.fb.loadPageOnClose='projects.php?action=list';\n";
 $content .= "					parent.fb.end(true);\n";
@@ -143,29 +150,7 @@ $content .= "			});\n";
 $content .= "		}\n";
 $content .= "		return false;\n";
 $content .= "	});\n";
-/*
-$content .= "	$(\"#startdate\").datepicker({\n";
-$content .= "		dateFormat: 'mm-dd-yy',\n";
-$content .= "		showOn: 'button',\n";
-$content .= "		showButtonPanel: true,\n";
-$content .= "		buttonImage: '/public/jquery/development-bundle/demos/datepicker/images/calendar.gif',\n";
-$content .= "		buttonImageOnly: true,\n";
-$content .= "		beforeShow: function (i, e) {\n";
-$content .= "			e.dpDiv.css('z-index', '10000');\n";
-$content .= "		}\n";
-$content .= "	});\n";
 
-$content .= "	$(\"#enddate\").datepicker({\n";
-$content .= "		dateFormat: 'mm-dd-yy',\n";
-$content .= "		showOn: 'button',\n";
-$content .= "		showButtonPanel: true,\n";
-$content .= "		buttonImage: '/public/jquery/development-bundle/demos/datepicker/images/calendar.gif',\n";
-$content .= "		buttonImageOnly: true,\n";
-$content .= "		beforeShow: function (i, e) {\n";
-$content .= "			e.dpDiv.css('z-index', '10000');\n";
-$content .= "		}\n";
-$content .= "	});\n";
-*/
 $content .= "});\n";
 
 $content .= "</script>\n";
@@ -175,6 +160,9 @@ $content .= "</script>\n";
 $content .= "<form action=\"\" name=\"UpdateForm\" id=\"UpdateForm\" method=\"post\">\n";
 $content .= "<input type=\"hidden\" name=\"action\" value=\"".$form_submit."\" />\n";
 $content .= "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\" />\n";
+$content .= "<input type=\"hidden\" name=\"parent_project_id\" value=\"".$parent_project_id."\" />\n";
+$content .= "<input type=\"hidden\" name=\"parent_milestone_id\" value=\"".$parent_milestone_id."\" />\n";
+$content .= "<input type=\"hidden\" name=\"selected_template_id\" value=\"".$selected_template_id."\" />\n";
 
 $content .= "<table style=\"width:100%\">\n";
 
@@ -193,9 +181,7 @@ $content .= "	<td>Lead Contact:</td>\n";
 $content .= "	<td>\n";
 $content .= "		<select name=\"assigned_to\">\n";
 for ($i=0; $user_row = @db_fetch_array($q, $i); ++$i) {
-
 	$content .= "			<option value=\"".$user_row['employee_ID']."\"";
-
 	if ($user_row['employee_ID'] == $owner_id) {
 		$content .= " selected=\"selected\"";
 	}
@@ -225,6 +211,7 @@ for ($i=0; $client_row = @db_fetch_array($q, $i); ++$i) {
 db_free_result($q);
 
 $content .= "		</select>\n";
+$content .= "		&nbsp;&nbsp;&nbsp;Contact:&nbsp;<input id='clientcontact' name='clientcontact' type='text' size='40' value='".$clientcontact."' />\n";
 $content .= "	</td>\n";
 $content .= "</tr>\n";
 
@@ -255,11 +242,12 @@ $content .= "	</td>\n";
 $content .= "</tr>\n";
 
 $content .= "<tr>\n";
-$content .= "	<td>CE:</td>\n";
+$content .= "	<td>Requires CE:</td>\n";
 $content .= "	<td style=\"width:100%\">\n";
 $content .= "		<input id=\"CE\" type=\"checkbox\" name=\"CE\" value=\"1\"".(($CE=='1') ? ' checked' : '')." />\n";
 $content .= "	</td>\n";
 $content .= "</tr>\n";
+/** disabled for now
 $content .= "<tr>\n";
 $content .= "	<td>Managed:</td>\n";
 $content .= "	<td style=\"width:100%\">\n";
@@ -272,7 +260,7 @@ $content .= "	<td style=\"width:100%\">\n";
 $content .= "		<input id=\"contingency\" type=\"text\" name=\"contingency\" size=\"5\" value=\"".$contingency."\" />\n";
 $content .= "	</td>\n";
 $content .= "</tr>\n";
-
+***/
 $content .= "<tr>\n";
 $content .= "	<td>Priority:</td>\n";
 $content .= "	<td style=\"width:100%\">\n";
@@ -311,18 +299,18 @@ $content .= "<p />\n";
 $content .= "<div align=\"center\">\n";
 $content .= "	<input type=\"submit\" name=\"Submit\" class=\"button\" id=\"submit_btn\" value=\"Save\" />\n";
 $content .= "	&nbsp;&nbsp;&nbsp;\n";
-$content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
+$content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(); return false;\" />\n";
 if ($project_id>0) {
 	if (db_result(db_query('SELECT COUNT(*) FROM task_notes WHERE project_ID='.$project_id.' LIMIT 1'), 0, 0) > 0) {
 		$content .= "	&nbsp;&nbsp;&nbsp;\n";
-		$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Discard\" /> Unable to delete active project.\n";
+		$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Delete\" /> Unable to delete active project.\n";
 	} else {
-		if (db_result(db_query('SELECT COUNT(*) FROM projects WHERE Owner_ID='.$_SESSION['UID'].' LIMIT 1'), 0, 0) > 0) {
+		if (db_result(db_query('SELECT COUNT(*) FROM projects WHERE project_ID='.$project_id.' and Owner_ID='.$_SESSION['UID'].' LIMIT 1'), 0, 0) > 0) {
 			$content .= "	&nbsp;&nbsp;&nbsp;\n";
-			$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Discard\" /> Unable to delete active project.\n";
+			$content .= "	<input type=\"submit\" name=\"Discard\" class=\"button\" id=\"discard_btn\" value=\"Delete\" />\n";
 		} else {
 			$content .= "	&nbsp;&nbsp;&nbsp;\n";
-			$content .= "	<input type=\"submit\" name=\"Discard\" class=\"button\" id=\"discard_btn\" value=\"Discard\" />\n";
+			$content .= "	<input type=\"submit\" name=\"Discard\" title=\"help\" disabled=\"disabled\" class=\"button\" id=\"discard_btn\" value=\"Delete\" /> Unable to delete active project (not Owner).\n";
 		}
 	}
 }

@@ -14,6 +14,14 @@ include_once(BASE.'includes/time.php');
 //START OF MAIN PROGRAM
 //
 
+// SET UID IF MGMT FLAG
+$uid = $_SESSION['UID'];
+if ($_SESSION['MGMT']==1) {
+	if (isset($_REQUEST['uid'])) {
+		$uid = $_REQUEST['uid'];
+	}
+}
+
 //some inital values
 $content = '';
 
@@ -23,15 +31,9 @@ $content .= "<link type='text/css' rel='stylesheet' href='/public/flexigrid/css/
 $content .= "<script type=\"text/javascript\" src=\"".BASE."js/jquery.tablesorter.min.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"".BASE."js/jquery.metadata.min.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"/public/jquery-treeview/lib/jquery.cookie.js\"></script>\n";
-$content .= "<script type=\"text/javascript\" src=\"/public/flexigrid/flexigrid.js\"></script>\n";
+$content .= "<script type=\"text/javascript\" src=\"/public/flexigrid/flexigrid.pack.js\"></script>\n";
 
 $content .= "<script>\n";
-$content .= "	function goLite(node) {\n";
-$content .= "	   document.getElementById(node).style.backgroundColor = \"#99DDFF\";\n";
-$content .= "	}\n";
-$content .= "	function goDim(node) {\n";
-$content .= "	   document.getElementById(node).style.backgroundColor = \"\";\n";
-$content .= "	}\n";
 $content .= "	$(document).ready(function() {\n";
 $content .= "	$('#scrollTable').flexigrid({
 			url: 'projects.php',
@@ -56,15 +58,23 @@ $content .= "	$('#scrollTable').flexigrid({
 			height: 'auto'
 });\n";
 
-$content .= "		$(\"#tabs\").tabs({\n";
-$content .= "			load: function(event, ui) {\n";
-//	$content .= "alert('test');";
-$content .= "			}\n";
-$content .= "		});\n";
+$content .= "		$(\"#tabs\").tabs();\n";
 $content .= "		$(\"#mainTable\").tablesorter( {sortList: [[7,1],[4,1]]} );\n";
 $content .= "		$(\"#mainTable2\").tablesorter( {sortList: [[3,0]]} );\n";
 $content .= "		$(\"#mainTable3\").tablesorter( {sortList: [[3,0]]} );\n";
 $content .= "		$(\"#mainTable4\").tablesorter( {sortList: [[3,0]]} );\n";
+
+$content .= "		$(\"#filtertodo\").change(\n";
+$content .= "			function() {\n";
+$content .= "alert('good');\n";
+//$content .= "				$(\"//li/p\").toggle();\n";
+//$content .= "				$(\"li[p:hidden]\").removeClass(\"expanded\");\n";
+//$content .= "				$(\"li[p:visible]\").addClass(\"expanded\");\n";
+$content .= "				$(this).blur();\n";
+$content .= "			}\n";
+$content .= "		);\n";
+
+
 $content .= "	});\n";
 $content .= "	$.cookie('ui-dynatree-cookie-select', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-active', '');\n";
@@ -111,39 +121,7 @@ $content .= "	<img src=\"/public/jquery/development-bundle/demos/datepicker/imag
 $content .= "</div>\n";
 
 
-// TO DO LIST
-$SQL = "";
-// query to get the projects
-//		$SQL  = "SELECT t.*, p.managed ";
-//		$SQL .= "FROM tasks t, projects p ";
-//		$SQL .= "WHERE p.project_ID=t.Project_ID AND t.Assigned_To_ID=".$_SESSION['UID']." AND t.parent_task_ID<>0 AND t.PercentComplete<>100 ";
-//		$SQL .= "ORDER BY p.managed desc,t.Priority desc";
-
-//	$SQL = "select t.*, p.managed from tasks t, projects p where p.project_ID=t.Project_ID and t.task_ID in ( ";
-//	$SQL .= "select t1 from ( ";
-//	$SQL .= "select Project_ID, (select task_ID from tasks where tasks.Project_ID=projects.project_ID and Assigned_To_ID=".$_SESSION['UID']." and parent_task_ID=0 and PercentComplete<>100 order by Project_ID,order_num limit 1) as t1 from projects where Status<>\"Archived\") as zz ";
-//	$SQL .= "where t1 is not null); ";
-
-$uid = $_SESSION['UID'];
-if ($_SESSION['MGMT']==1) {
-	if (isset($_REQUEST['uid'])) {
-		$uid = $_REQUEST['uid'];
-	}
-}
-
-$SQL .= "select tsk.*, proj.managed from tasks tsk, projects proj where proj.project_ID=tsk.Project_ID and tsk.Assigned_To_ID=".$uid." and tsk.task_ID in (";
-$SQL .= "	select * from (";
-$SQL .= "		select ";
-$SQL .= "			(select Curr_Task_ID from tasks ";
-$SQL .= "			 where tasks.Project_ID=projects.project_ID ";
-$SQL .= "			 and parent_task_ID=0 ";
-$SQL .= "			 and PercentComplete<>100 ";
-$SQL .= "			 order by Project_ID,order_num limit 1) as tsk ";
-$SQL .= "		from projects where status='Active') as dta";
-$SQL .= "	where tsk is not null)";
-
-$q = db_query($SQL);
-
+// START TABS
 $content .= "				<div class=\"demo\" id=\"demo\">\n";
 $content .= "					<div id=\"tabs\" class=\"ui-tabs\">\n";
 $content .= "						<ul class=\"ui-tabs-nav\">\n";
@@ -156,6 +134,31 @@ $content .= "							<li><a href=\"#tabs-5\"><div style=\"font-size: 12px;\">Brow
 $content .= "						</ul>\n";
 
 
+// TO DO LIST
+$SQL = "";
+$SQL .= "select tsk.*, proj.managed, proj.Project_Name from tasks tsk, projects proj where proj.project_ID=tsk.Project_ID and tsk.Assigned_To_ID=".$uid." and tsk.task_ID in (";
+$SQL .= "	select * from (";
+$SQL .= "		select ";
+$SQL .= "			(select Curr_Task_ID from tasks ";
+$SQL .= "			 where tasks.Project_ID=projects.project_ID ";
+$SQL .= "			 and parent_task_ID=0 ";
+$SQL .= "			 and PercentComplete<>100 ";
+$SQL .= "			 order by Project_ID,order_num limit 1) as tsk ";
+$SQL .= "		from projects where status='Active') as dta";
+$SQL .= "	where tsk is not null)";
+
+$SQL = "
+select t.*, p.managed, p.Project_Name from tasks t, projects p
+where t.task_ID in (
+ select t.Curr_Task_ID from tasks t, projects p
+ where t.Project_ID=p.project_ID 
+ and t.parent_task_ID=0 
+ and t.PercentComplete<>100
+ and t.Curr_Task_ID >0
+ order by t.Project_ID,t.order_num)
+and p.project_ID=t.project_ID
+and t.Assigned_To_ID=2";
+$q = db_query($SQL);
 
 
 $content .= "						<div id=\"tabs-1\" class=\"ui-tabs-container ui-tabs-hide\">\n";
@@ -163,11 +166,17 @@ $content .= "						<div id=\"tabs-1\" class=\"ui-tabs-container ui-tabs-hide\">\
 //check if there are project
 if (db_numrows($q) > 0) {
 
-	//setup content table
+	/*
+	$content .= "<div style=\"text-align: left;\">\n";
+	$content .= "<input type=checkbox name='filtertodo' id='filtertodo'>Show Only In Progress Tasks\n";
+	$content .= "</div>\n";
+	*/
+	//setup table headers
 	$content .= "						<table id=\"mainTable\" cellpadding=\"0\" cellspacing=\"0\" class=\"tablesorter general\">\n";
 	$content .= "							<thead>\n";
 	$content .= "								<tr>\n";
 	$content .= "									<th>Task Name</th>\n";
+	$content .= "									<th>Project Name</th>\n";
 	$content .= "									<th class=\"{sorter: 'shortDate'}\">Last Updated</th>\n";
 	$content .= "									<th>% Complete</th>\n";
 	$content .= "									<th>Status</th>\n";
@@ -191,6 +200,7 @@ if (db_numrows($q) > 0) {
 		$content .= "<a href=\"projects.php?action=show&project_id=".$row['Project_ID']."#tasks.php?action=showTaskLevel&amp;project_id=".$row['Project_ID']."&amp;task_id=".$row['task_ID']."\"><b>".$row['task_name']."</b></a>\n";
 		$content .= "</td>\n";
 
+		$content .= "<td>".$row['Project_Name']."</td>\n";
 		$content .= "<td>".date('m-d-Y',strtotime($row['LastUpdated']))."</td>\n";
 		$content .= "<td>".$row['PercentComplete']."</td>\n";
 		$content .= "<td>".$row['Status']."</td>\n";
@@ -211,7 +221,7 @@ if (db_numrows($q) > 0) {
 
 		$content .= "<td style=\"text-align:center\">\n";
 
-		$content .= "<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"task_notes.php?action=popupAdd&project_id=".$row['Project_ID']."&task_id=".$row['task_ID']."\", rev:\"width:650 height:530 infoPos:tc info:`feedback.php?currform=projects_list.php-New Task Note` infoText:Feedback infoOptions:`width:555 height:350` disableScroll:true caption:`NEW Task Note` doAnimations:false\" }); return false;'\">New</a>\n";
+		$content .= "<a href=\"javascript:void(0);\" onclick='fb.start({ href: \"task_notes.php?action=popupAdd&project_id=".$row['Project_ID']."&task_id=".$row['task_ID']."\", rev:\"width:650 height:530 infoPos:tc disableScroll:true caption:`NEW Task Note` doAnimations:false\" }); return false;'\">New</a>\n";
 
 		$content .= "</td>\n";
 

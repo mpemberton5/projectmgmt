@@ -15,11 +15,10 @@ include_once(BASE.'includes/time.php');
 //
 $content = "";
 
-
 //
 // Recursive function for listing all posts of a task
 //
-function list_records($pt_id) {
+function list_records($pt_id,$parent_project_id,$parent_milestone_id) {
 
 	global $post_array, $parent_array, $post_count;
 
@@ -38,7 +37,7 @@ function list_records($pt_id) {
 		return "<p>";
 	}
 
-//	$content = "	<ul>\n";
+	$content = "	<ul>\n";
 	// First build an array of records
 	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
 
@@ -54,10 +53,10 @@ function list_records($pt_id) {
 			if ($parent_task_id != 0) {
 				$parent_array[$parent_task_id] = $parent_task_id;
 //				$this_post = "				<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=showTaskLevel&project_id=".$pt_id."&task_id=".$task_id."'\">".$task_name."</li>\n";
-				$this_post = "-- ".$task_name."<br />\n";
+				$this_post = "		<li >&#187; ".$task_name."</li>\n";
 			} else {
 //				$this_post = "		<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=showMilestoneLevel&project_id=".$pt_id."&task_id=".$task_id."'\">".$task_name."\n";
-				$this_post = "<b>".$task_name."</b><br />\n";
+				$this_post = "		<li style=\"font-weight: bold;\">".$task_name."</li>\n";
 			}
 
 			$post_array[$i]['post'] = $this_post;
@@ -75,11 +74,12 @@ function list_records($pt_id) {
 
 		//if this post has children (subposts), iterate recursively to find them
 		if (isset($parent_array[($post_array[$i]['id'])])) {
+			$content .= "		<ul>\n";
 			$content .= find_children($post_array[$i]['id']);
+			$content .= "		</ul>\n";
 		}
-//		$content .= "		</li>\n";
 	}
-//	$content .= "	</ul>\n";
+	$content .= "</ul>\n";
 
 	db_free_result($q);
 
@@ -119,7 +119,9 @@ switch($_REQUEST['action']) {
 
 	//Main Project List
 	case 'template_details':
-		$content .= list_records( $_REQUEST['pt_id']);
+		$content .= "<div class=\"generalbox\">\n";
+		$content .= list_records( $_REQUEST['pt_id'],$_REQUEST['parent_project_id'],$_REQUEST['parent_milestone_id']);
+		$content .= "</div>\n";
 		break;
 
 	//Main Project List
@@ -187,7 +189,7 @@ switch($_REQUEST['action']) {
 		$json .= "]\n";
 		$json .= "}";
 		$content = $json;
-			break;
+		break;
 
 	//Error case
 	default:

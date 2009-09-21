@@ -49,7 +49,11 @@ function list_posts_from_task($project_id) {
 			if ($parent_task_id != 0) {
 				$parent_array[$parent_task_id] = $parent_task_id;
 				//$this_post = "				<li><a class=\"clickMe\" id=\"task-".$task_id."\" href=\"tasks.php?action=showTaskLevel&project_id=".$project_id."&task_id=".$task_id."\">".$task_name."</a></li>\n";
-				$this_post = "				<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=showTaskLevel&project_id=".$project_id."&task_id=".$task_id."'\">".$task_name."</li>\n";
+				if ($row['ParentProjectLink_ID']>0) {
+					$this_post = "				<li id=\"task-".$task_id."\" data=\"icon: 'infinityA2.png', addClass: 'txtmaxsize', url: 'tasks.php?action=showTaskLevel&project_id=".$project_id."&task_id=".$task_id."'\">".$task_name."</li>\n";
+				} else {
+					$this_post = "				<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=showTaskLevel&project_id=".$project_id."&task_id=".$task_id."'\">".$task_name."</li>\n";
+				}
 			} else {
 				//$this_post = "		<li><a class=\"clickMe\" id=\"task-".$task_id."\" style=\"font-weight: bold;\" href=\"tasks.php?action=showMilestoneLevel&project_id=".$project_id."&task_id=".$task_id."\">".$task_name."</a>\n";
 				$this_post = "		<li id=\"task-".$task_id."\" data=\"addClass: 'txtmaxsize', url: 'tasks.php?action=showMilestoneLevel&project_id=".$project_id."&task_id=".$task_id."'\">".$task_name."\n";
@@ -129,9 +133,85 @@ $project_name = db_simplequery("projects","Project_Name","project_id",$project_i
 // TREEVIEW SCRIPTS
 $content .= "<script type=\"text/javascript\" src=\"/public/dynatree/jquery/jquery.cookie.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"/public/dynatree/src/jquery.dynatree.js\"></script>\n";
+/* - context menu - tabled for now
+$content .= "<script type=\"text/javascript\" src=\"/public/contextMenu/jquery.contextMenu.js\"></script>\n";
+$content .= "<link type='text/css' rel='stylesheet' href='/public/contextMenu/jquery.contextMenu.css' />\n";
+*/
+
 // - http://projects.allmarkedup.com/jquery_url_parser/
 $content .= "<script type=\"text/javascript\" src=\"/public/url/jquery.url.js\"></script>\n";
 $content .= "<script language=\"javascript\">\n";
+
+/* - context menu - tabled for now
+$content .= '    // --- Implement Cut/Copy/Paste --------------------------------------------
+  var clipboardNode = null;
+  var pasteMode = null;
+  
+  function copyPaste(action, dtnode) {
+    switch( action ) {
+    case "cut":
+    case "copy":
+      clipboardNode = dtnode;
+      pasteMode = action;
+      break;
+    case "paste":
+      if( !clipboardNode ) {
+        alert("Clipoard is empty.");
+        break;
+      }
+      if( pasteMode == "cut" ) {
+        // Cut mode: check for recursion and remove source
+        var isRecursive = false;
+        var cb = clipboardNode.toDict(true, function(dict){
+          // If one of the source nodes is the target, we must not move
+          if( dict.key == dtnode.data.key )
+            isRecursive = true;
+        });
+        if( isRecursive ) {
+          alert("Cannot move a node to a sub node.");
+          return;
+        }
+        dtnode.addChild(cb);
+        clipboardNode.remove();
+      } else {
+        // Copy mode: prevent duplicate keys:
+        var cb = clipboardNode.toDict(true, function(dict){
+          dict.title = "Copy of " + dict.title;
+          delete dict.key; // Remove key, so a new one will be created
+        });
+        dtnode.addChild(cb);
+      }
+      clipboardNode = pasteMode = null;
+      // Must enable context menu for new nodes
+      bindContextMenu();
+      break;
+    default:
+      alert("Unhandled clipboard action \'" + action + "\'");
+    }
+  };
+
+  // --- Contextmenu helper --------------------------------------------------
+  
+  function bindContextMenu() {
+    // Add context menu to document nodes:
+    $(".ui-dynatree-document,.ui-dynatree-folder")
+      .destroyContextMenu() // unbind first, to prevent duplicates      
+      .contextMenu({menu: "myMenu"}, function(action, el, pos) {
+      var dtnode = el.attr("dtnode");
+      switch( action ) {
+      case "cut":
+      case "copy":
+      case "paste":
+        copyPaste(action, dtnode);
+        break;
+      default:
+        alert("Todo: appply action \'" + action + "\' to node " + dtnode);
+      }
+    });
+  };
+';
+*/
+
 
 $content .= "$(document).ready(function() {\n";
 $content .= "	function hideLoader() {\n";
@@ -140,6 +220,7 @@ $content .= "	}\n";
 $content .= "	$(\"#treev\").dynatree({\n";
 $content .= "		persist: true,\n";
 $content .= "		selectMode: 1,\n";
+$content .= "		imagePath: 'images/', // Image folder used for data.icon attribute.\n";
 $content .= "		onActivate: function(dtnode) {\n";
 $content .= "			if( dtnode.data.url ) {\n";
 $content .= "				$('#loader').remove();\n";
@@ -157,6 +238,57 @@ $content .= "		},\n";
 $content .= "		onDblClick: function(dtnode, event) {\n";
 $content .= "			dtnode.toggleExpand();\n";
 $content .= "		}\n";
+/* - context menu - tabled for now
+$content .= '      onClick: function(dtnode, event) {
+        // Eat keyboard events, while a menu is open
+        if( $(".contextMenu:visible").length > 0 )
+          return false;
+      },
+      onKeydown: function(dtnode, event) {
+        // Eat keyboard events, when a menu is open
+        if( $(".contextMenu:visible").length > 0 )
+          return false;
+        
+        switch( event.which ) {
+
+        // Open context menu on [Space] key (simulate right click)
+        case 32: // [Space]
+          $(dtnode.span).trigger("mousedown", {
+            preventDefault: true,
+            button: 2
+            })
+          .trigger("mouseup", {
+            preventDefault: true,
+            pageX: dtnode.span.offsetLeft,
+            pageY: dtnode.span.offsetTop, 
+            button: 2
+            });
+          return false;
+
+        // Handle Ctrl-C, -X and -V 
+        case 67:
+          if( event.ctrlKey ) { // Ctrl-C
+            copyPaste("copy", dtnode);
+            return false;
+          }
+          break;
+        case 86:
+          if( event.ctrlKey ) { // Ctrl-V
+            copyPaste("paste", dtnode);
+            return false;
+          }
+          break;
+        case 88:
+          if( event.ctrlKey ) { // Ctrl-X
+            copyPaste("cut", dtnode);
+            return false;
+          }
+          break;
+        }
+        }
+';
+*/
+
 $content .= "	});\n";
 
 // AJAX DYNAMIC CONTENT LOADING
@@ -174,21 +306,44 @@ $content .= "				$('#contentArea').load(toLoad);\n";
 $content .= "			}\n";
 $content .= "		});\n";
 $content .= "	});\n";
+
+
+    // Add context menu handler to tree nodes
+//$content .= "bindContextMenu();\n";
+
+
 $content .= "});\n";
 
 $content .= "function gotoTopLevel() {\n";
 $content .= "	$.cookie('ui-dynatree-cookie-select', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-active', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-expand', '');\n";
+$content .= "	$.cookie('dynatree-focus', '');\n";
+$content .= "	$.cookie('dynatree-select', '');\n";
+$content .= "	$.cookie('dynatree-active', '');\n";
+$content .= "	$.cookie('dynatree-expand', '');\n";
+//$content .= "	location.href=href;\n";
 $content .= "}\n";
 
 $content .= "</script>\n";
+
+/* - context menu - tabled for now
+$content .= '  <!-- Definition of context menu -->  
+  <ul id="myMenu" class="contextMenu">
+    <li class="edit"><a href="#edit">Edit</a></li>
+    <li class="cut separator"><a href="#cut">Cut</a></li>
+    <li class="copy"><a href="#copy">Copy</a></li>
+    <li class="paste"><a href="#paste">Paste</a></li>
+    <li class="delete"><a href="#delete">Delete</a></li>
+    <li class="quit separator"><a href="#quit">Quit</a></li>
+  </ul>
+';
+*/
 
 // TABLE START
 $content .= "<table style=\"width:100%;\">\n";
 $content .= "	<tr>\n";
 $content .= "		<td align=\"left\" style=\"width: 180px; overflow:hidden; vertical-align:top;\">\n";
-
 $content .= "			<div class=\"clickMe txtmaxsize\" style=\"font-family: sans-serif; font-weight: bold; font-size: large; width: 250px; overflow:hidden;\">\n";
 $content .= "				<a onClick=\"gotoTopLevel();\" href=\"projects.php?action=show&project_id=".$project_id."\">".$project_name."</a>\n";
 $content .= "			</div>\n";
@@ -196,6 +351,34 @@ $content .= "			</div>\n";
 $content .= "			<div id=\"treev\">\n";
 $content .= list_posts_from_task($project_id);
 $content .= "			</div>\n";
+
+
+//$num_parents = db_simplequery("tasks","count(*)","ParentProjectLink_ID",$project_id);
+//if ($num_parents > 0) {
+//	$content .= "<br /><div class=\"generalbox\">Parent(s): (dropdown goes here)</div>";
+//}
+
+// query to get the projects
+$SQL  = "SELECT t.task_ID, t.project_ID, p.Project_Name from tasks t, projects p where p.project_ID=t.project_ID and t.ParentProjectLink_ID=".$project_id;
+$q = db_query($SQL);
+
+if (db_numrows($q)>0) {
+	$content .= "<br /><div class=\"generalbox\">Parent Project(s):\n";
+	$content .= "<ul style=\"margin: 0px 0px 0px 15px;\">\n";
+	for ($i=0; $row = @db_fetch_array($q, $i); ++$i) {
+		$content .= "<li>\n";
+//		$content .= "<a onClick=\"gotoTopLevel('projects.php?action=show&project_id=".$row['project_ID']."'); return false;\">".$row['Project_Name']."</a>\n";
+		$content .= "<a onClick=\"gotoTopLevel();\" href=\"projects.php?action=show&project_id=".$row['project_ID']."#tasks.php?action=showTaskLevel&project_id=".$row['project_ID']."&task_id=".$row['task_ID']."\">".$row['Project_Name']."</a>\n";
+		$content .= "</li>\n";
+	}
+	$content .= "</ul>\n";
+	$content .= "</div>";
+}
+db_free_result($q);
+
+
+
+
 
 $content .= "		</td>\n";
 $content .= "		<td valign=\"top\" align=\"left\">\n";

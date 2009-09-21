@@ -41,7 +41,7 @@ if ($_SESSION['MGMT']==0) {
 	$totctr = 1;
 	foreach($col_array as $var) {
 		$portlet_content .= "	<div class=\"column\" id=\"col".$colctr."\">\n";
-		$tmpArr1 = split(",",$var);
+		$tmpArr1 = explode(",",$var);
 		foreach ($tmpArr1 as &$value) {
 			if (strlen($value)>0) {
 				$portlet_content .= "		<div class=\"portlet\" id=\"".$value."\">\n";

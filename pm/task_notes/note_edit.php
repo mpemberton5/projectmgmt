@@ -29,6 +29,7 @@ if ($_REQUEST['action'] == "popupAdd") {
 	$note = '';
 	$note_id = 0;
 	$percentcomplete = db_result(db_query('SELECT PercentComplete FROM tasks WHERE task_ID='.$task_id),0,0);
+	$uid = 0;
 
 } else if ($_REQUEST['action'] == "popupEdit") {
 	if (!@safe_integer($_REQUEST['note_id'])) {
@@ -51,7 +52,7 @@ if ($_REQUEST['action'] == "popupAdd") {
 	$form_submit = "submit_update";
 	$note = $row['Note'];
 	$percentcomplete = $row['PercentComplete'];
-
+	$uid = $row['user_ID'];
 	db_free_result($q);
 }
 
@@ -67,7 +68,7 @@ $content .= "<script type='text/javascript' src='/public/tinymce/jscripts/tiny_m
 
 $content .= "<script type='text/javascript'>\n";
 $content .= "$(function() {\n";
-$content .= "	$(\".button\").click(function() {\n";
+$content .= "	$(\"#submit_btn\").click(function() {\n";
 $content .= "		var parameter1 = $(\"input\").serialize();\n";
 $content .= "		var parameter2 = $(\"select\").serialize();\n";
 $content .= "   	var parameter3 = 'note=' + escape(tinyMCE.get('note').getContent());\n";
@@ -86,6 +87,28 @@ $content .= "			}\n";
 $content .= "		});\n";
 $content .= "		return false;\n";
 $content .= "	});\n";
+
+$content .= "	$(\"#discard_btn\").click(function() {\n";
+$content .= "		var answer = confirm(\"Are you sure you want to Discard this Task Note?\")\n";
+$content .= "		if (answer) {\n";
+$content .= "			$.ajax({\n";
+$content .= "				type: \"POST\",\n";
+$content .= "				url: \"task_notes.php\",\n";
+$content .= "				data: 'action=submit_delete&task_id=".$task_id."&note_id=".$note_id."',\n";
+$content .= "				dataType: 'text',\n";
+$content .= "				error: function(xhr, ajaxOptions, thrownError){\n";
+$content .= "					parent.fb.start({href:'error.php?error='+xhr.responseText, rev:'theme:red showClose:true width:560 height:240', title:'Unexpected Error'});\n";
+$content .= "   				},\n";
+$content .= "				success: function(data){\n";
+//$content .= "					parent.fb.loadPageOnClose='projects.php?action=show&project_id=".$project_id."\#tasks.php?action=showTaskLevel&project_id=".$project_id."&task_id=".$task_id."';\n";
+$content .= "					parent.fb.loadPageOnClose='self';\n";
+$content .= "					parent.fb.end(true);\n";
+$content .= "				}\n";
+$content .= "			});\n";
+$content .= "		}\n";
+$content .= "		return false;\n";
+$content .= "	});\n";
+
 $content .= "	$('select#percentcomplete').selectToUISlider();\n";
 $content .= "});\n";
 $content .= "</script>\n";
@@ -186,7 +209,7 @@ $content .= "	</div>\n";
 $content .= "	<div style=\"float: right; width: 49%;\">\n";
 $content .= "		<fieldset class=\"gfs\" style=\"width: 90%; height: 83px;\">\n";
 $content .= "			<legend><span class=\"gl\" style=\"width: 90px;\">Attachments</span></legend>\n";
-$content .= "			<br /><div align=\"center\"><input type=\"button\" name=\"add_attach\" value=\"Add\" onclick='parent.fb.start({ href:\"files.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc info:`feedback.php?currform=note_edit.php-New Attachment` infoText:Feedback infoOptions:`width:555 height:350` disableScroll:true caption:`Add Attachment` doAnimations:false\" }); return false;' /></div>\n";
+$content .= "			<br /><div align=\"center\"><input type=\"button\" name=\"add_attach\" value=\"Add\" onclick='parent.fb.start({ href:\"files.php?action=popupAdd&project_id=".$project_id."\", rev:\"width:665 height:515 infoPos:tc disableScroll:true caption:`Add Attachment` doAnimations:false\" }); return false;' /></div>\n";
 $content .= "		</fieldset>\n";
 $content .= "	</div>\n";
 $content .= "</div>\n";
@@ -197,6 +220,10 @@ $content .= "<div align=\"center\">\n";
 $content .= "	<input type=\"submit\" name=\"submit\" class=\"button\" id=\"submit_btn\" value=\"Save\" />\n";
 $content .= "	&nbsp;&nbsp;&nbsp;\n";
 $content .= "	<input type=\"button\" value=\"Cancel\" onClick=\"parent.fb.end(true); return false;\" />\n";
+if ($_SESSION['UID']==$uid && $_REQUEST['action'] == "popupEdit") {
+	$content .= "	&nbsp;&nbsp;&nbsp;\n";
+	$content .= "	<input type=\"submit\" name=\"Discard\" class=\"button\" id=\"discard_btn\" value=\"Delete\" />\n";
+}
 $content .= "</div>\n";
 
 $content .= "</form>\n";
