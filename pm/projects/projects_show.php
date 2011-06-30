@@ -131,7 +131,8 @@ $project_id = $_GET['project_id'];
 $project_name = db_simplequery("projects","Project_Name","project_id",$project_id);
 
 // TREEVIEW SCRIPTS
-$content .= "<script type=\"text/javascript\" src=\"/public/dynatree/jquery/jquery.cookie.js\"></script>\n";
+//$content .= "<script type=\"text/javascript\" src=\"/public/dynatree/jquery/jquery.cookie.js\"></script>\n";
+$content .= "<script type=\"text/javascript\" src=\"/public/jquery-treeview/lib/jquery.cookie.js\"></script>\n";
 $content .= "<script type=\"text/javascript\" src=\"/public/dynatree/src/jquery.dynatree.js\"></script>\n";
 /* - context menu - tabled for now
 $content .= "<script type=\"text/javascript\" src=\"/public/contextMenu/jquery.contextMenu.js\"></script>\n";

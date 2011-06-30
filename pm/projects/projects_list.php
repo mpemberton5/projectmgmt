@@ -79,6 +79,10 @@ $content .= "	});\n";
 $content .= "	$.cookie('ui-dynatree-cookie-select', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-active', '');\n";
 $content .= "	$.cookie('ui-dynatree-cookie-expand', '');\n";
+$content .= "	$.cookie('dynatree-focus', '');\n";
+$content .= "	$.cookie('dynatree-select', '');\n";
+$content .= "	$.cookie('dynatree-active', '');\n";
+$content .= "	$.cookie('dynatree-expand', '');\n";
 
 $content .= "function onItemClick(cellDiv,id) {\n";
 $content .= "	$(cellDiv).click(\n";
@@ -157,7 +161,7 @@ where t.task_ID in (
  and t.Curr_Task_ID >0
  order by t.Project_ID,t.order_num)
 and p.project_ID=t.project_ID
-and t.Assigned_To_ID=2";
+and t.Assigned_To_ID=".$uid;
 $q = db_query($SQL);
 
 
