@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 30, 2011 at 04:29 PM
+-- Generation Time: Jul 07, 2011 at 11:18 AM
 -- Server version: 5.1.35
 -- PHP Version: 5.2.9-2
 
@@ -268,3 +268,105 @@ CREATE TABLE IF NOT EXISTS `user_prefs` (
   `value7` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`user_prefs_ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`%` PROCEDURE `ProjbyEmp`()
+BEGIN
+
+Select firstname,count(Owner_ID) from 
+employees
+INNER JOIN projects on employees.employee_ID = projects.Owner_ID
+group by employees.employee_ID
+order by count(employee_ID) desc;
+	
+END$$
+
+CREATE DEFINER=`pm`@`%` PROCEDURE `spSetCurrTaskInMilestone`(Milestone_ID INT)
+BEGIN
+	
+	
+	UPDATE tasks SET Curr_Task_ID = 
+		(SELECT * FROM 
+			(SELECT task_ID FROM tasks WHERE parent_task_ID=Milestone_ID AND PercentComplete<100 ORDER BY order_num) p 
+		LIMIT 1)
+	WHERE task_ID = Milestone_ID;
+END$$
+
+CREATE DEFINER=`pm`@`%` PROCEDURE `spUpdateMilestoneOrder`(Project_ID INT)
+BEGIN
+
+	
+	
+	UPDATE tasks SET order_num =
+		(SELECT @rownum:=@rownum+1 rownum FROM (SELECT @rownum:=0) r)-1
+		WHERE parent_task_ID = 0 and project_ID=Project_ID ORDER BY order_num;
+
+END$$
+
+CREATE DEFINER=`pm`@`%` PROCEDURE `spUpdateMilestoneTotalWeight`(IN t_id INT)
+BEGIN
+	DECLARE p_task_id INT;
+	DECLARE proj_id INT;
+	DECLARE t_weight INT;
+	DECLARE t_pctcmp INT;
+
+	
+	SELECT Parent_Task_ID INTO p_task_id
+		FROM tasks WHERE task_id=t_id;
+
+	
+	SELECT Project_ID INTO proj_id
+		FROM tasks WHERE task_id=t_id;
+
+	
+	SELECT sum(weight) INTO t_weight
+		FROM tasks WHERE Parent_Task_ID=p_task_id;
+
+	
+	UPDATE tasks SET ipctcmp=((weight/t_weight)*percentcomplete)
+		WHERE Parent_Task_ID=p_task_id;
+
+	
+	SELECT sum(ipctcmp) INTO t_pctcmp
+		FROM tasks WHERE Parent_Task_ID=p_task_id;
+
+	
+	UPDATE tasks SET weight=t_weight, percentcomplete=t_pctcmp
+		WHERE task_id=p_task_id;
+
+	
+	
+	
+
+	
+	SELECT sum(weight) INTO t_weight
+		FROM tasks WHERE Project_ID=proj_id AND Parent_Task_ID=0;
+
+	
+	UPDATE tasks SET ipctcmp=((weight/t_weight)*percentcomplete)
+		WHERE Project_ID=proj_id AND Parent_Task_ID=0;
+
+	
+	SELECT sum(ipctcmp) INTO t_pctcmp
+		FROM tasks WHERE Project_ID=proj_id AND Parent_Task_ID=0;
+
+	
+	UPDATE projects SET percentcomplete=t_pctcmp WHERE project_id=proj_id;
+
+END$$
+
+CREATE DEFINER=`pm`@`%` PROCEDURE `spUpdateTaskOrder`(Milestone_ID INT)
+BEGIN
+
+	
+	
+	UPDATE tasks SET order_num =
+		(SELECT @rownum:=@rownum+1 rownum FROM (SELECT @rownum:=0) r)-1
+		WHERE parent_task_ID = Milestone_ID ORDER BY order_num;
+
+END$$
+
+DELIMITER ;
